@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>市場 AI 智慧掃描雷達</title>
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- TradingView Lightweight Charts -->
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-  <!-- Firebase SDKs -->
+  <!-- TradingView Lightweight Charts CDN -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -17,15 +17,18 @@
     .nav-active { background-color: #1e293b; color: #38bdf8; border-left: 3px solid #38bdf8; }
   </style>
 </head>
-<body class="min-h-screen flex">
+<body class="min-h-screen flex antialiased">
 
-  <!-- ================= 左側側邊欄 ================= -->
+  <!-- ================= 左側固定側邊欄 ================= -->
   <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 flex-shrink-0 min-h-screen">
     <div>
-      <!-- 品牌標誌 -->
+      <!-- 標題 Logo -->
       <div class="flex items-center gap-2.5 px-3 py-4 border-b border-slate-800 mb-6">
-        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">⚡</div>
-        <span class="text-base font-bold text-white tracking-wide">市場 AI 雷達</span>
+        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-base">⚡</div>
+        <div>
+          <div class="text-sm font-bold text-white tracking-wide">市場 AI 雷達</div>
+          <div class="text-[10px] text-slate-500">量化分析掃描終端</div>
+        </div>
       </div>
 
       <!-- 市場分類導覽 -->
@@ -45,8 +48,8 @@
         </button>
       </nav>
 
-      <!-- 自選股專區 -->
-      <div class="text-[11px] font-semibold text-slate-500 uppercase px-3 mt-6 mb-2">個人自選追蹤</div>
+      <!-- 自選股分類 -->
+      <div class="text-[11px] font-semibold text-slate-500 uppercase px-3 mt-6 mb-2">自選追蹤</div>
       <nav class="space-y-1">
         <button onclick="switchTab('watchlist')" id="nav-watchlist" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-slate-800/60 transition">
           <span class="flex items-center gap-2.5"><span>⭐</span> 我的自選標的</span>
@@ -55,40 +58,47 @@
       </nav>
     </div>
 
-    <!-- 底部會員登入區塊 -->
+    <!-- 會員狀態 / 登入區 -->
     <div class="border-t border-slate-800 pt-4">
       <div id="user-info-area" class="hidden">
-        <div class="text-xs text-slate-400 mb-1">目前登入帳號：</div>
-        <div id="user-email-display" class="text-xs font-mono text-white truncate mb-3"></div>
-        <button onclick="handleLogout()" class="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded-lg text-xs font-medium transition">登出帳號</button>
+        <div class="text-[11px] text-slate-400 mb-1">已登入雲端帳號：</div>
+        <div id="user-email-display" class="text-xs font-mono text-sky-400 truncate mb-3"></div>
+        <button onclick="handleLogout()" class="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded-lg text-xs font-medium transition">登出</button>
       </div>
       <div id="guest-area">
-        <button onclick="openAuthModal()" class="w-full py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-sky-600/20 transition">註冊 / 登入以同步自選</button>
+        <div class="text-[11px] text-amber-400/80 mb-2 px-1 flex items-center gap-1">
+          <span>●</span> <span>訪客模式 (本機儲存)</span>
+        </div>
+        <button onclick="openAuthModal()" class="w-full py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-sky-600/20 transition">註冊 / 登入雲端同步</button>
       </div>
     </div>
   </aside>
 
   <!-- ================= 右側主內容區 ================= -->
-  <main class="flex-1 flex flex-col min-w-0 bg-slate-950/50">
+  <main class="flex-1 flex flex-col min-w-0 bg-slate-950">
     <!-- Top Bar -->
-    <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-900/40 backdrop-blur">
+    <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-900/40 backdrop-blur sticky top-0 z-10">
       <div class="flex items-center gap-4">
-        <h2 id="page-title" class="text-lg font-bold text-white">⚡ 加密貨幣市場</h2>
-        <!-- 自選清單子分頁 (在自選頁面時才顯示) -->
-        <div id="watchlist-subtabs" class="hidden flex items-center gap-1.5 bg-slate-800/80 p-1 rounded-lg text-xs">
-          <button onclick="filterWatchlist('all')" id="wtab-all" class="px-2.5 py-1 rounded bg-slate-700 text-white font-medium">全部</button>
+        <h2 id="page-title" class="text-base font-bold text-white flex items-center gap-2">⚡ 加密貨幣市場</h2>
+        
+        <!-- 自選股子分頁（只有在自選標的頁面會展開） -->
+        <div id="watchlist-subtabs" class="hidden flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-lg text-xs">
+          <button onclick="filterWatchlist('all')" id="wtab-all" class="px-2.5 py-1 rounded bg-slate-800 text-white font-medium">全部</button>
           <button onclick="filterWatchlist('tw')" id="wtab-tw" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">台股自選</button>
           <button onclick="filterWatchlist('us')" id="wtab-us" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">美股自選</button>
           <button onclick="filterWatchlist('crypto')" id="wtab-crypto" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">貨幣自選</button>
         </div>
       </div>
-      <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋代號或名稱..." class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 w-52" />
+
+      <div class="flex items-center gap-3">
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋代號、名稱..." class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 w-56" />
+      </div>
     </header>
 
-    <!-- 標的卡片列表 -->
+    <!-- 卡片網格列表 -->
     <div class="flex-1 p-8 overflow-y-auto">
       <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-      <div id="empty-state" class="hidden text-center py-20 text-slate-500 text-sm">此分類下尚無標的或自選清單為空。</div>
+      <div id="empty-state" class="hidden text-center py-24 text-slate-500 text-xs">此分類下尚無標的，或您的自選清單為空。</div>
     </div>
   </main>
 
@@ -97,7 +107,7 @@
     <div class="bg-slate-900 border border-slate-700 w-full max-w-4xl max-h-[92vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
       <div class="flex items-center justify-between p-5 border-b border-slate-800">
         <div>
-          <h2 id="modal-title" class="text-xl font-bold text-white flex items-center gap-2"></h2>
+          <h2 id="modal-title" class="text-lg font-bold text-white flex items-center gap-2"></h2>
           <div id="modal-subtitle" class="text-xs text-slate-400 mt-1"></div>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">✕</button>
@@ -105,12 +115,15 @@
 
       <div class="flex-1 overflow-y-auto p-6 space-y-6">
         <div>
-          <div class="text-xs font-semibold text-slate-400 mb-2">日線 K 棒 ｜ MA20 (藍) ｜ MA60 (橘)</div>
-          <div id="chart-container" class="w-full h-72 bg-slate-950 rounded-xl overflow-hidden border border-slate-800"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-slate-400">日線 K 棒 ｜ MA20 (藍) ｜ MA60 (橘)</span>
+          </div>
+          <!-- 圖表容器（固定高度以保證渲染） -->
+          <div id="chart-container" style="height: 320px; width: 100%;" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800"></div>
         </div>
 
-        <!-- AI 報告區塊 -->
-        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4">
+        <!-- AI 報告面板 -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-5 space-y-4">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
               <span class="px-2 py-0.5 text-xs rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold">AI 深度分析</span>
@@ -128,16 +141,16 @@
           </div>
           <div>
             <div class="text-xs font-bold text-sky-400 mb-1">③ 風險報酬情境推演 (Asymmetry)</div>
-            <div class="grid grid-cols-3 gap-2 mt-2">
-              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
-                <div class="text-[11px] text-rose-400 font-semibold">Bear (保守支撐)</div>
+            <div class="grid grid-cols-3 gap-3 mt-2">
+              <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg text-center">
+                <div class="text-[11px] text-rose-400 font-semibold">Bear (保守下檔)</div>
                 <div id="ai-bear" class="text-xs text-slate-200 mt-1 font-mono"></div>
               </div>
-              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
-                <div class="text-[11px] text-slate-400 font-semibold">Base (基準評估)</div>
+              <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg text-center">
+                <div class="text-[11px] text-slate-400 font-semibold">Base (中性區間)</div>
                 <div id="ai-base" class="text-xs text-slate-200 mt-1 font-mono"></div>
               </div>
-              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
+              <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg text-center">
                 <div class="text-[11px] text-emerald-400 font-semibold">Bull (樂觀目標)</div>
                 <div id="ai-bull" class="text-xs text-slate-200 mt-1 font-mono"></div>
               </div>
@@ -151,86 +164,95 @@
   <!-- ================= 註冊 / 登入彈窗 ================= -->
   <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-2xl p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-5">
-        <h3 id="auth-modal-title" class="text-lg font-bold text-white">會員登入</h3>
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="auth-modal-title" class="text-base font-bold text-white">會員登入</h3>
         <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <div class="space-y-3">
         <div>
-          <label class="text-xs text-slate-400 block mb-1">電子郵件信箱</label>
+          <label class="text-xs text-slate-400 block mb-1">電子信箱</label>
           <input type="email" id="auth-email" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="your@email.com" />
         </div>
         <div>
-          <label class="text-xs text-slate-400 block mb-1">登入密碼</label>
+          <label class="text-xs text-slate-400 block mb-1">密碼</label>
           <input type="password" id="auth-password" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="至少 6 位字元" />
         </div>
         <div id="auth-error" class="text-xs text-rose-400 hidden"></div>
         <button onclick="submitAuth()" id="auth-submit-btn" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition mt-2">登入</button>
         <div class="text-center pt-2">
-          <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs text-sky-400 hover:underline">還沒有帳號？立即免費註冊</button>
+          <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs text-sky-400 hover:underline">還沒有帳號？免費註冊</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ================= 1. Firebase 初始化 =================
-    // ⚠️ 請替換為你在 Firebase Console 專案設定裡複製的設定檔
+    // ================= 1. 安全降級架構（Firebase 設定） =================
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyDUtSiVeBmq2Sr1Ny2x6oi0P3usZRR24nU",
+      authDomain: "market-ai-radar-abc1c.firebaseapp.com",
+      projectId: "market-ai-radar-abc1c",
+      storageBucket: "market-ai-radar-abc1c.firebasestorage.app",
+      messagingSenderId: "926851166318",
+      appId: "1:926851166318:web:e9f313b120950e7f24f67f",
+      measurementId: "G-RXWC5X2HMR"
     };
 
-    let auth, db;
+    let auth = null, db = null;
     let currentUser = null;
-    let userWatchlist = []; // 格式：["BTCUSDT", "2330", "NVDA"]
+    let userWatchlist = JSON.parse(localStorage.getItem('user_watchlist') || '[]');
 
-    try {
-      firebase.initializeApp(firebaseConfig);
-      auth = firebase.auth();
-      db = firebase.firestore();
-      
-      auth.onAuthStateChanged(user => {
-        currentUser = user;
-        if (user) {
-          document.getElementById('guest-area').classList.add('hidden');
-          document.getElementById('user-info-area').classList.remove('hidden');
-          document.getElementById('user-email-display').textContent = user.email;
-          loadUserWatchlist(user.uid);
-        } else {
-          document.getElementById('guest-area').classList.remove('hidden');
-          document.getElementById('user-info-area').classList.add('hidden');
-          userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
-          renderCards();
-        }
-      });
-    } catch (e) {
-      console.warn("尚未設定 Firebase 或以離線訪客模式運作", e);
-      userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
+    // 判斷是否已設定好 Firebase
+    const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY");
+
+    if (isFirebaseConfigured && typeof firebase !== 'undefined') {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+
+        auth.onAuthStateChanged(user => {
+          currentUser = user;
+          if (user) {
+            document.getElementById('guest-area').classList.add('hidden');
+            document.getElementById('user-info-area').classList.remove('hidden');
+            document.getElementById('user-email-display').textContent = user.email;
+            loadCloudWatchlist(user.uid);
+          } else {
+            document.getElementById('guest-area').classList.remove('hidden');
+            document.getElementById('user-info-area').classList.add('hidden');
+            userWatchlist = JSON.parse(localStorage.getItem('user_watchlist') || '[]');
+            renderCards();
+          }
+        });
+      } catch (err) {
+        console.warn("Firebase 初始化略過：", err);
+      }
     }
 
-    // ================= 2. 市場預設數據 =================
-    // 佈署後可使用 fetch('./data/market_data.json') 取代
+    // ================= 2. 市場資料庫 =================
     const marketStore = {
       crypto: [
         { id: "BTCUSDT", type: "crypto", symbol: "BTC / USDT", name: "比特幣", price: "68,450.00", change: "+3.42%", isUp: true, badge: "突破 60MA",
-          ai: { valuation: "動能擴張中", catalyst: "現貨 ETF 淨流入連續破億美元，微策略再度增持。長期籌碼持續鎖定。", fundamentals: "交易所存底創歷史低點，資金費率中性健康。", bear: "64,000 (-6.5%)", base: "72,000 (+5.2%)", bull: "85,000 (+24.1%)" } },
+          ai: { valuation: "動能擴張中", catalyst: "現貨 ETF 淨流入持續破億美元，微策略增持，長期籌碼鎖定率高。", fundamentals: "交易所存底創三年新低，資金費率處於中性健康區間。", bear: "64,000 (-6.5%)", base: "72,000 (+5.2%)", bull: "85,000 (+24.1%)" } },
         { id: "ETHUSDT", type: "crypto", symbol: "ETH / USDT", name: "以太坊", price: "2,620.10", change: "-0.85%", isUp: false, badge: "回測 20MA",
-          ai: { valuation: "合理偏低", catalyst: "Layer 2 生態鎖倉量提升，質押率維持 28% 以上。", fundamentals: "短期匯率承壓，但結構性質押支撐下檔空間。", bear: "2,400 (-8.4%)", base: "2,850 (+8.8%)", bull: "3,400 (+29.7%)" } }
+          ai: { valuation: "合理偏低", catalyst: "Layer 2 生態鎖倉量持續成長，全網質押比例穩居 28% 以上。", fundamentals: "短期匯率承壓，但結構性質押為下檔帶來扎實防守支撐。", bear: "2,400 (-8.4%)", base: "2,850 (+8.8%)", bull: "3,400 (+29.7%)" } },
+        { id: "SOLUSDT", type: "crypto", symbol: "SOL / USDT", name: "Solana", price: "182.40", change: "+5.12%", isUp: true, badge: "帶量上攻",
+          ai: { valuation: "強勢擴張", catalyst: "鏈上 DEX 交易量連續多週維持高位，生態熱度與開發者活躍度持續升高。", fundamentals: "手續費收入成長亮眼，技術均線維持陡峭多頭排列。", bear: "165 (-9.5%)", base: "205 (+12.3%)", bull: "240 (+31.5%)" } }
       ],
       tw: [
         { id: "2330", type: "tw", symbol: "2330", name: "台積電", price: "1,045.00", change: "+2.45%", isUp: true, badge: "多頭排列",
-          ai: { valuation: "合理偏低 (2026e 22x)", catalyst: "先進封裝產能持續翻倍，先進製程產能滿載至明年下半年。", fundamentals: "毛利率維持 55% 高檔，外資法人持股回升。", bear: "960 (-8.1%)", base: "1,120 (+7.1%)", bull: "1,250 (+19.6%)" } },
+          ai: { valuation: "合理偏低 (2026e 22x)", catalyst: "先進封裝 CoWoS 產能持續翻倍，先進製程被各大客戶全面鎖死包下。", fundamentals: "毛利率持續站穩 55% 以上，資本支出調升，外資買盤回籠。", bear: "960 (-8.1%)", base: "1,120 (+7.1%)", bull: "1,250 (+19.6%)" } },
         { id: "2345", type: "tw", symbol: "2345", name: "智邦", price: "560.00", change: "-1.23%", isUp: false, badge: "均線整理",
-          ai: { valuation: "合理估值", catalyst: "AI 資料中心轉型帶動高階交換器出貨放量。", fundamentals: "產品組合優化毛利率維持 20% 以上，投信籌碼沉澱。", bear: "510 (-8.9%)", base: "590 (+5.3%)", bull: "660 (+17.8%)" } }
+          ai: { valuation: "合理估值", catalyst: "AI 算力中心轉型帶動高階交換器放量，代客購料降低讓毛利率回升。", fundamentals: "毛利率維持 20% 高檔，投信賣壓進入尾聲。", bear: "510 (-8.9%)", base: "590 (+5.3%)", bull: "660 (+17.8%)" } },
+        { id: "2454", type: "tw", symbol: "2454", name: "聯發科", price: "1,310.00", change: "+1.95%", isUp: true, badge: "站上月線",
+          ai: { valuation: "合理偏低", catalyst: "旗艦天璣晶片在終端旗艦手機滲透率創高，ASIC 特規晶片進展順利。", fundamentals: "現金股利殖利率具備吸引力，營收動能維持雙位數增長。", bear: "1,220 (-6.8%)", base: "1,400 (+6.8%)", bull: "1,550 (+18.3%)" } }
       ],
       us: [
-        { id: "NVDA", type: "us", symbol: "NVDA", name: "NVIDIA", price: "138.25", change: "+3.80%", isUp: true, badge: "多頭趨勢",
-          ai: { valuation: "成長股評價 (Forward PE 32x)", catalyst: "次世代架構晶片量產出貨，各大雲端業者資本支出持續上調。", fundamentals: "營收維持高雙位數成長，自由現金流充沛。", bear: "120 (-13.2%)", base: "150 (+8.5%)", bull: "180 (+30.2%)" } }
+        { id: "NVDA", type: "us", symbol: "NVDA", name: "NVIDIA", price: "138.25", change: "+3.80%", isUp: true, badge: "多頭走勢",
+          ai: { valuation: "成長股評價 (Forward PE 32x)", catalyst: "新架構晶片量產出貨順利，各大雲端 CSP 資本支出維持向上無下修跡象。", fundamentals: "營收維持高雙位數成長，自由現金流充沛，庫藏股買回力道強勁。", bear: "120 (-13.2%)", base: "150 (+8.5%)", bull: "180 (+30.2%)" } },
+        { id: "AAPL", type: "us", symbol: "AAPL", name: "Apple", price: "232.10", change: "+0.45%", isUp: true, badge: "高檔整理",
+          ai: { valuation: "合理估值", catalyst: "Apple Intelligence 陸續拓展多國語系，換機週期預期將在明年發酵。", fundamentals: "服務營收佔比創新高，硬體毛利率保持穩定。", bear: "215 (-7.3%)", base: "245 (+5.5%)", bull: "270 (+16.3%)" } }
       ]
     };
 
@@ -239,25 +261,23 @@
     let isRegisterMode = false;
     let chartInstance = null;
 
-    // 載入與同步自選股
-    function loadUserWatchlist(uid) {
+    // ================= 3. 自選股同步邏輯 =================
+    function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
         if (doc.exists) {
           userWatchlist = doc.data().items || [];
         } else {
-          userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
-          saveUserWatchlist();
+          saveWatchlist();
         }
         renderCards();
-      });
+      }).catch(err => console.error("讀取雲端自選失敗：", err));
     }
 
-    function saveUserWatchlist() {
+    function saveWatchlist() {
+      localStorage.setItem('user_watchlist', JSON.stringify(userWatchlist));
       if (currentUser && db) {
-        db.collection('user_watchlists').doc(currentUser.uid).set({ items: userWatchlist });
-      } else {
-        localStorage.setItem('guest_watchlist', JSON.stringify(userWatchlist));
+        db.collection('user_watchlists').doc(currentUser.uid).set({ items: userWatchlist }).catch(console.error);
       }
       renderCards();
     }
@@ -269,10 +289,10 @@
       } else {
         userWatchlist.push(id);
       }
-      saveUserWatchlist();
+      saveWatchlist();
     }
 
-    // 頁面切換
+    // ================= 4. 分頁與卡片渲染 =================
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -280,10 +300,12 @@
         b.classList.add('text-slate-400');
       });
       const activeBtn = document.getElementById(`nav-${tab}`);
-      activeBtn.classList.add('nav-active');
-      activeBtn.classList.remove('text-slate-400');
+      if (activeBtn) {
+        activeBtn.classList.add('nav-active');
+        activeBtn.classList.remove('text-slate-400');
+      }
 
-      const titleMap = { crypto: '⚡ 加密貨幣市場', tw: '📊 台股市場掃描', us: '🇺🇸 美股市場掃描', watchlist: '⭐ 我的自選清單' };
+      const titleMap = { crypto: '⚡ 加密貨幣市場', tw: '📊 台股市場掃描', us: '🇺🇸 美股市場掃描', watchlist: '⭐ 我的自選標的' };
       document.getElementById('page-title').textContent = titleMap[tab];
 
       const wSubtabs = document.getElementById('watchlist-subtabs');
@@ -299,18 +321,17 @@
       currentWatchlistFilter = type;
       ['all', 'tw', 'us', 'crypto'].forEach(t => {
         const btn = document.getElementById(`wtab-${t}`);
-        if (t === type) {
-          btn.className = "px-2.5 py-1 rounded bg-slate-700 text-white font-medium";
-        } else {
-          btn.className = "px-2.5 py-1 rounded text-slate-400 hover:text-white";
+        if (btn) {
+          btn.className = (t === type)
+            ? "px-2.5 py-1 rounded bg-slate-800 text-white font-medium"
+            : "px-2.5 py-1 rounded text-slate-400 hover:text-white";
         }
       });
       renderCards();
     }
 
-    // 渲染卡片
     function renderCards() {
-      // 更新徽章數字
+      // 統計各分類數量
       document.getElementById('badge-crypto').textContent = marketStore.crypto.length;
       document.getElementById('badge-tw').textContent = marketStore.tw.length;
       document.getElementById('badge-us').textContent = marketStore.us.length;
@@ -328,7 +349,6 @@
         displayList = marketStore[currentTab] || [];
       }
 
-      // 搜尋關鍵字過濾
       const q = document.getElementById('search-input').value.trim().toLowerCase();
       if (q) {
         displayList = displayList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
@@ -346,8 +366,9 @@
 
       container.innerHTML = displayList.map(item => {
         const isFav = userWatchlist.includes(item.id);
+        const dataStr = encodeURIComponent(JSON.stringify(item));
         return `
-          <div onclick='openDetailModal(${JSON.stringify(item)})' class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-5 rounded-xl cursor-pointer transition flex flex-col justify-between group">
+          <div onclick="handleCardClick('${dataStr}')" class="bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-850 p-5 rounded-xl cursor-pointer transition flex flex-col justify-between group">
             <div class="flex items-start justify-between">
               <div>
                 <div class="text-xs font-mono text-slate-400">${item.symbol}</div>
@@ -355,7 +376,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.badge}</span>
-                <button onclick="toggleWatchlist('${item.id}', event)" class="p-1.5 rounded hover:bg-slate-800 transition ${isFav ? 'text-amber-400' : 'text-slate-600 hover:text-slate-300'}">
+                <button onclick="toggleWatchlist('${item.id}', event)" class="p-1 rounded text-base transition ${isFav ? 'text-amber-400' : 'text-slate-600 hover:text-slate-300'}">
                   ${isFav ? '★' : '☆'}
                 </button>
               </div>
@@ -383,10 +404,15 @@
       renderCards();
     }
 
-    // ================= 3. 彈出 K 線圖與 AI 報告 =================
+    function handleCardClick(encodedStr) {
+      const item = JSON.parse(decodeURIComponent(encodedStr));
+      openDetailModal(item);
+    }
+
+    // ================= 5. K 線圖與 AI 報告彈窗（解決圖表空白關鍵） =================
     function openDetailModal(item) {
       document.getElementById('modal-title').textContent = `${item.name} (${item.symbol})`;
-      document.getElementById('modal-subtitle').textContent = `即時現價：${item.price} ｜ 漲跌幅：${item.change}`;
+      document.getElementById('modal-subtitle').textContent = `現價：${item.price} ｜ 漲跌幅：${item.change}`;
       document.getElementById('ai-valuation').textContent = item.ai.valuation;
       document.getElementById('ai-catalyst').textContent = item.ai.catalyst;
       document.getElementById('ai-fundamentals').textContent = item.ai.fundamentals;
@@ -394,52 +420,72 @@
       document.getElementById('ai-base').textContent = item.ai.base;
       document.getElementById('ai-bull').textContent = item.ai.bull;
 
-      document.getElementById('detail-modal').classList.remove('hidden');
+      // 步驟 1：先讓彈跳視窗解除隱藏（讓 DOM 具備寬高）
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('hidden');
 
-      // 初始化圖表
-      const chartEl = document.getElementById('chart-container');
-      chartEl.innerHTML = '';
-      chartInstance = LightweightCharts.createChart(chartEl, {
-        layout: { background: { color: '#090d16' }, textColor: '#94a3b8' },
-        grid: { vertLines: { color: '#1e293b' }, horzLines: { color: '#1e293b' } },
-        timeScale: { borderColor: '#334155' }
-      });
+      // 步驟 2：延遲一個 frame 初始化圖表，保證抓到容器像素寬度
+      setTimeout(() => {
+        const chartContainer = document.getElementById('chart-container');
+        chartContainer.innerHTML = ''; // 清空舊圖表
 
-      const candleSeries = chartInstance.addCandlestickSeries({
-        upColor: '#10b981', downColor: '#ef4444', borderVisible: false,
-        wickUpColor: '#10b981', wickDownColor: '#ef4444'
-      });
-      const ma20 = chartInstance.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
-      const ma60 = chartInstance.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+        if (typeof LightweightCharts === 'undefined') {
+          chartContainer.innerHTML = '<div class="text-center py-24 text-rose-400 text-xs">圖表套件載入中，請重新嘗試</div>';
+          return;
+        }
 
-      // 生成模擬 K 線並套用
-      let base = 100;
-      const candles = [];
-      const now = new Date();
-      for (let i = 120; i >= 0; i--) {
-        const d = new Date(now);
-        d.setDate(d.getDate() - i);
-        const delta = (Math.random() - 0.48) * 4;
-        const open = base;
-        const close = base + delta;
-        candles.push({
-          time: d.toISOString().split('T')[0],
-          open: parseFloat(open.toFixed(2)),
-          high: parseFloat((Math.max(open, close) + Math.random() * 2).toFixed(2)),
-          low: parseFloat((Math.min(open, close) - Math.random() * 2).toFixed(2)),
-          close: parseFloat(close.toFixed(2))
+        chartInstance = LightweightCharts.createChart(chartContainer, {
+          width: chartContainer.clientWidth,
+          height: 320,
+          layout: { background: { color: '#090d16' }, textColor: '#94a3b8' },
+          grid: { vertLines: { color: '#1e293b' }, horzLines: { color: '#1e293b' } },
+          timeScale: { borderColor: '#334155' }
         });
-        base = close;
-      }
-      candleSeries.setData(candles);
 
-      const calcMA = (p) => candles.slice(p - 1).map((_, i) => ({
-        time: candles[i + p - 1].time,
-        value: parseFloat((candles.slice(i, i + p).reduce((a, b) => a + b.close, 0) / p).toFixed(2))
-      }));
-      ma20.setData(calcMA(20));
-      ma60.setData(calcMA(60));
-      chartInstance.timeScale().fitContent();
+        // 台股套用紅漲綠跌，其餘套用綠漲紅跌
+        const isTw = item.type === 'tw';
+        const upColor = isTw ? '#ef4444' : '#10b981';
+        const downColor = isTw ? '#10b981' : '#ef4444';
+
+        const candleSeries = chartInstance.addCandlestickSeries({
+          upColor: upColor, downColor: downColor, borderVisible: false,
+          wickUpColor: upColor, wickDownColor: downColor
+        });
+
+        const ma20 = chartInstance.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+        const ma60 = chartInstance.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+
+        // 生成 90 日擬真 K 線資料
+        let base = parseFloat(item.price.replace(/,/g, '')) * 0.9;
+        const candles = [];
+        const now = new Date();
+        for (let i = 90; i >= 0; i--) {
+          const d = new Date(now);
+          d.setDate(d.getDate() - i);
+          const delta = (Math.random() - 0.48) * (base * 0.03);
+          const open = base;
+          const close = base + delta;
+          candles.push({
+            time: d.toISOString().split('T')[0],
+            open: parseFloat(open.toFixed(2)),
+            high: parseFloat((Math.max(open, close) + Math.random() * (base * 0.015)).toFixed(2)),
+            low: parseFloat((Math.min(open, close) - Math.random() * (base * 0.015)).toFixed(2)),
+            close: parseFloat(close.toFixed(2))
+          });
+          base = close;
+        }
+
+        candleSeries.setData(candles);
+
+        const calcMA = (p) => candles.slice(p - 1).map((_, i) => ({
+          time: candles[i + p - 1].time,
+          value: parseFloat((candles.slice(i, i + p).reduce((a, b) => a + b.close, 0) / p).toFixed(2))
+        }));
+
+        ma20.setData(calcMA(20));
+        ma60.setData(calcMA(60));
+        chartInstance.timeScale().fitContent();
+      }, 50);
     }
 
     function closeModal() {
@@ -450,7 +496,7 @@
       }
     }
 
-    // ================= 4. 會員登入 / 註冊邏輯 =================
+    // ================= 6. 註冊 / 登入功能 =================
     function openAuthModal() {
       document.getElementById('auth-modal').classList.remove('hidden');
     }
@@ -461,25 +507,27 @@
       isRegisterMode = !isRegisterMode;
       document.getElementById('auth-modal-title').textContent = isRegisterMode ? '註冊新帳號' : '會員登入';
       document.getElementById('auth-submit-btn').textContent = isRegisterMode ? '立即註冊' : '登入';
-      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? '已有帳號？前往登入' : '還沒有帳號？立即免費註冊';
+      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? '已有帳號？前往登入' : '還沒有帳號？免費註冊';
     }
 
     function submitAuth() {
-      const email = document.getElementById('auth-email').value;
-      const pass = document.getElementById('auth-password').value;
+      const email = document.getElementById('auth-email').value.trim();
+      const pass = document.getElementById('auth-password').value.trim();
       const errBox = document.getElementById('auth-error');
       errBox.classList.add('hidden');
 
-      if (!auth) {
-        alert("請先在 index.html 填入您的 Firebase Config 參數！");
+      if (!isFirebaseConfigured || !auth) {
+        // 若尚未設定 Firebase，提供友善通知並示範訪客模擬登入
+        alert("目前運行於本機訪客模式！您的自選股已自動安全儲存在此瀏覽器中。\n\n若需跨裝置雲端同步，請在 index.html 填入您申請的 Firebase 金鑰參數。");
+        closeAuthModal();
         return;
       }
 
-      const p = isRegisterMode ? auth.createUserWithEmailAndPassword(email, pass) : auth.signInWithEmailAndPassword(email, pass);
-      p.then(() => {
+      const promise = isRegisterMode ? auth.createUserWithEmailAndPassword(email, pass) : auth.signInWithEmailAndPassword(email, pass);
+      promise.then(() => {
         closeAuthModal();
       }).catch(err => {
-        errBox.textContent = err.message;
+        errBox.textContent = "操作失敗：" + err.message;
         errBox.classList.remove('hidden');
       });
     }
@@ -488,7 +536,7 @@
       if (auth) auth.signOut();
     }
 
-    // 預設渲染
+    // 啟動首次渲染
     renderCards();
   </script>
 </body>
