@@ -1,1 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>市場 AI 智慧掃描雷達</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- TradingView Lightweight Charts -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <style>
+    body { background-color: #0b0e14; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .nav-active { background-color: #1e293b; color: #38bdf8; border-left: 3px solid #38bdf8; }
+  </style>
+</head>
+<body class="min-h-screen flex">
 
+  <!-- ================= 左側側邊欄 ================= -->
+  <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 flex-shrink-0 min-h-screen">
+    <div>
+      <!-- 品牌標誌 -->
+      <div class="flex items-center gap-2.5 px-3 py-4 border-b border-slate-800 mb-6">
+        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">⚡</div>
+        <span class="text-base font-bold text-white tracking-wide">市場 AI 雷達</span>
+      </div>
+
+      <!-- 市場分類導覽 -->
+      <div class="text-[11px] font-semibold text-slate-500 uppercase px-3 mb-2">市場掃描</div>
+      <nav class="space-y-1">
+        <button onclick="switchTab('crypto')" id="nav-crypto" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm nav-active transition">
+          <span class="flex items-center gap-2.5"><span>⚡</span> 加密貨幣</span>
+          <span id="badge-crypto" class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400 font-mono">0</span>
+        </button>
+        <button onclick="switchTab('tw')" id="nav-tw" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-slate-800/60 transition">
+          <span class="flex items-center gap-2.5"><span>📊</span> 台股掃描</span>
+          <span id="badge-tw" class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400 font-mono">0</span>
+        </button>
+        <button onclick="switchTab('us')" id="nav-us" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-slate-800/60 transition">
+          <span class="flex items-center gap-2.5"><span>🇺🇸</span> 美股掃描</span>
+          <span id="badge-us" class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-400 font-mono">0</span>
+        </button>
+      </nav>
+
+      <!-- 自選股專區 -->
+      <div class="text-[11px] font-semibold text-slate-500 uppercase px-3 mt-6 mb-2">個人自選追蹤</div>
+      <nav class="space-y-1">
+        <button onclick="switchTab('watchlist')" id="nav-watchlist" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:bg-slate-800/60 transition">
+          <span class="flex items-center gap-2.5"><span>⭐</span> 我的自選標的</span>
+          <span id="badge-fav" class="text-xs bg-amber-950/60 border border-amber-800/80 px-2 py-0.5 rounded text-amber-300 font-mono">0</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- 底部會員登入區塊 -->
+    <div class="border-t border-slate-800 pt-4">
+      <div id="user-info-area" class="hidden">
+        <div class="text-xs text-slate-400 mb-1">目前登入帳號：</div>
+        <div id="user-email-display" class="text-xs font-mono text-white truncate mb-3"></div>
+        <button onclick="handleLogout()" class="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded-lg text-xs font-medium transition">登出帳號</button>
+      </div>
+      <div id="guest-area">
+        <button onclick="openAuthModal()" class="w-full py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-sky-600/20 transition">註冊 / 登入以同步自選</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= 右側主內容區 ================= -->
+  <main class="flex-1 flex flex-col min-w-0 bg-slate-950/50">
+    <!-- Top Bar -->
+    <header class="h-16 border-b border-slate-800 px-8 flex items-center justify-between bg-slate-900/40 backdrop-blur">
+      <div class="flex items-center gap-4">
+        <h2 id="page-title" class="text-lg font-bold text-white">⚡ 加密貨幣市場</h2>
+        <!-- 自選清單子分頁 (在自選頁面時才顯示) -->
+        <div id="watchlist-subtabs" class="hidden flex items-center gap-1.5 bg-slate-800/80 p-1 rounded-lg text-xs">
+          <button onclick="filterWatchlist('all')" id="wtab-all" class="px-2.5 py-1 rounded bg-slate-700 text-white font-medium">全部</button>
+          <button onclick="filterWatchlist('tw')" id="wtab-tw" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">台股自選</button>
+          <button onclick="filterWatchlist('us')" id="wtab-us" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">美股自選</button>
+          <button onclick="filterWatchlist('crypto')" id="wtab-crypto" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">貨幣自選</button>
+        </div>
+      </div>
+      <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋代號或名稱..." class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 w-52" />
+    </header>
+
+    <!-- 標的卡片列表 -->
+    <div class="flex-1 p-8 overflow-y-auto">
+      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="empty-state" class="hidden text-center py-20 text-slate-500 text-sm">此分類下尚無標的或自選清單為空。</div>
+    </div>
+  </main>
+
+  <!-- ================= 彈出視窗：K 線圖與 AI 報告 ================= -->
+  <div id="detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-4xl max-h-[92vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between p-5 border-b border-slate-800">
+        <div>
+          <h2 id="modal-title" class="text-xl font-bold text-white flex items-center gap-2"></h2>
+          <div id="modal-subtitle" class="text-xs text-slate-400 mt-1"></div>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        <div>
+          <div class="text-xs font-semibold text-slate-400 mb-2">日線 K 棒 ｜ MA20 (藍) ｜ MA60 (橘)</div>
+          <div id="chart-container" class="w-full h-72 bg-slate-950 rounded-xl overflow-hidden border border-slate-800"></div>
+        </div>
+
+        <!-- AI 報告區塊 -->
+        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+              <span class="px-2 py-0.5 text-xs rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold">AI 深度分析</span>
+              <span>全維度估值評估</span>
+            </span>
+            <div id="ai-valuation" class="text-xs px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-medium"></div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-sky-400 mb-1">① 催化因素 (Catalyst Breakdown)</div>
+            <p id="ai-catalyst" class="text-xs text-slate-300 leading-relaxed"></p>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-sky-400 mb-1">② 財務與同業估值 (Valuation & Peers)</div>
+            <p id="ai-fundamentals" class="text-xs text-slate-300 leading-relaxed"></p>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-sky-400 mb-1">③ 風險報酬情境推演 (Asymmetry)</div>
+            <div class="grid grid-cols-3 gap-2 mt-2">
+              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
+                <div class="text-[11px] text-rose-400 font-semibold">Bear (保守支撐)</div>
+                <div id="ai-bear" class="text-xs text-slate-200 mt-1 font-mono"></div>
+              </div>
+              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
+                <div class="text-[11px] text-slate-400 font-semibold">Base (基準評估)</div>
+                <div id="ai-base" class="text-xs text-slate-200 mt-1 font-mono"></div>
+              </div>
+              <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-lg text-center">
+                <div class="text-[11px] text-emerald-400 font-semibold">Bull (樂觀目標)</div>
+                <div id="ai-bull" class="text-xs text-slate-200 mt-1 font-mono"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 註冊 / 登入彈窗 ================= -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-5">
+        <h3 id="auth-modal-title" class="text-lg font-bold text-white">會員登入</h3>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">電子郵件信箱</label>
+          <input type="email" id="auth-email" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="your@email.com" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">登入密碼</label>
+          <input type="password" id="auth-password" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="至少 6 位字元" />
+        </div>
+        <div id="auth-error" class="text-xs text-rose-400 hidden"></div>
+        <button onclick="submitAuth()" id="auth-submit-btn" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition mt-2">登入</button>
+        <div class="text-center pt-2">
+          <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs text-sky-400 hover:underline">還沒有帳號？立即免費註冊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= 1. Firebase 初始化 =================
+    // ⚠️ 請替換為你在 Firebase Console 專案設定裡複製的設定檔
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    let auth, db;
+    let currentUser = null;
+    let userWatchlist = []; // 格式：["BTCUSDT", "2330", "NVDA"]
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.firestore();
+      
+      auth.onAuthStateChanged(user => {
+        currentUser = user;
+        if (user) {
+          document.getElementById('guest-area').classList.add('hidden');
+          document.getElementById('user-info-area').classList.remove('hidden');
+          document.getElementById('user-email-display').textContent = user.email;
+          loadUserWatchlist(user.uid);
+        } else {
+          document.getElementById('guest-area').classList.remove('hidden');
+          document.getElementById('user-info-area').classList.add('hidden');
+          userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
+          renderCards();
+        }
+      });
+    } catch (e) {
+      console.warn("尚未設定 Firebase 或以離線訪客模式運作", e);
+      userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
+    }
+
+    // ================= 2. 市場預設數據 =================
+    // 佈署後可使用 fetch('./data/market_data.json') 取代
+    const marketStore = {
+      crypto: [
+        { id: "BTCUSDT", type: "crypto", symbol: "BTC / USDT", name: "比特幣", price: "68,450.00", change: "+3.42%", isUp: true, badge: "突破 60MA",
+          ai: { valuation: "動能擴張中", catalyst: "現貨 ETF 淨流入連續破億美元，微策略再度增持。長期籌碼持續鎖定。", fundamentals: "交易所存底創歷史低點，資金費率中性健康。", bear: "64,000 (-6.5%)", base: "72,000 (+5.2%)", bull: "85,000 (+24.1%)" } },
+        { id: "ETHUSDT", type: "crypto", symbol: "ETH / USDT", name: "以太坊", price: "2,620.10", change: "-0.85%", isUp: false, badge: "回測 20MA",
+          ai: { valuation: "合理偏低", catalyst: "Layer 2 生態鎖倉量提升，質押率維持 28% 以上。", fundamentals: "短期匯率承壓，但結構性質押支撐下檔空間。", bear: "2,400 (-8.4%)", base: "2,850 (+8.8%)", bull: "3,400 (+29.7%)" } }
+      ],
+      tw: [
+        { id: "2330", type: "tw", symbol: "2330", name: "台積電", price: "1,045.00", change: "+2.45%", isUp: true, badge: "多頭排列",
+          ai: { valuation: "合理偏低 (2026e 22x)", catalyst: "先進封裝產能持續翻倍，先進製程產能滿載至明年下半年。", fundamentals: "毛利率維持 55% 高檔，外資法人持股回升。", bear: "960 (-8.1%)", base: "1,120 (+7.1%)", bull: "1,250 (+19.6%)" } },
+        { id: "2345", type: "tw", symbol: "2345", name: "智邦", price: "560.00", change: "-1.23%", isUp: false, badge: "均線整理",
+          ai: { valuation: "合理估值", catalyst: "AI 資料中心轉型帶動高階交換器出貨放量。", fundamentals: "產品組合優化毛利率維持 20% 以上，投信籌碼沉澱。", bear: "510 (-8.9%)", base: "590 (+5.3%)", bull: "660 (+17.8%)" } }
+      ],
+      us: [
+        { id: "NVDA", type: "us", symbol: "NVDA", name: "NVIDIA", price: "138.25", change: "+3.80%", isUp: true, badge: "多頭趨勢",
+          ai: { valuation: "成長股評價 (Forward PE 32x)", catalyst: "次世代架構晶片量產出貨，各大雲端業者資本支出持續上調。", fundamentals: "營收維持高雙位數成長，自由現金流充沛。", bear: "120 (-13.2%)", base: "150 (+8.5%)", bull: "180 (+30.2%)" } }
+      ]
+    };
+
+    let currentTab = 'crypto';
+    let currentWatchlistFilter = 'all';
+    let isRegisterMode = false;
+    let chartInstance = null;
+
+    // 載入與同步自選股
+    function loadUserWatchlist(uid) {
+      if (!db) return;
+      db.collection('user_watchlists').doc(uid).get().then(doc => {
+        if (doc.exists) {
+          userWatchlist = doc.data().items || [];
+        } else {
+          userWatchlist = JSON.parse(localStorage.getItem('guest_watchlist') || '[]');
+          saveUserWatchlist();
+        }
+        renderCards();
+      });
+    }
+
+    function saveUserWatchlist() {
+      if (currentUser && db) {
+        db.collection('user_watchlists').doc(currentUser.uid).set({ items: userWatchlist });
+      } else {
+        localStorage.setItem('guest_watchlist', JSON.stringify(userWatchlist));
+      }
+      renderCards();
+    }
+
+    function toggleWatchlist(id, event) {
+      event.stopPropagation();
+      if (userWatchlist.includes(id)) {
+        userWatchlist = userWatchlist.filter(x => x !== id);
+      } else {
+        userWatchlist.push(id);
+      }
+      saveUserWatchlist();
+    }
+
+    // 頁面切換
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('nav-active');
+        b.classList.add('text-slate-400');
+      });
+      const activeBtn = document.getElementById(`nav-${tab}`);
+      activeBtn.classList.add('nav-active');
+      activeBtn.classList.remove('text-slate-400');
+
+      const titleMap = { crypto: '⚡ 加密貨幣市場', tw: '📊 台股市場掃描', us: '🇺🇸 美股市場掃描', watchlist: '⭐ 我的自選清單' };
+      document.getElementById('page-title').textContent = titleMap[tab];
+
+      const wSubtabs = document.getElementById('watchlist-subtabs');
+      if (tab === 'watchlist') {
+        wSubtabs.classList.remove('hidden');
+      } else {
+        wSubtabs.classList.add('hidden');
+      }
+      renderCards();
+    }
+
+    function filterWatchlist(type) {
+      currentWatchlistFilter = type;
+      ['all', 'tw', 'us', 'crypto'].forEach(t => {
+        const btn = document.getElementById(`wtab-${t}`);
+        if (t === type) {
+          btn.className = "px-2.5 py-1 rounded bg-slate-700 text-white font-medium";
+        } else {
+          btn.className = "px-2.5 py-1 rounded text-slate-400 hover:text-white";
+        }
+      });
+      renderCards();
+    }
+
+    // 渲染卡片
+    function renderCards() {
+      // 更新徽章數字
+      document.getElementById('badge-crypto').textContent = marketStore.crypto.length;
+      document.getElementById('badge-tw').textContent = marketStore.tw.length;
+      document.getElementById('badge-us').textContent = marketStore.us.length;
+      document.getElementById('badge-fav').textContent = userWatchlist.length;
+
+      let displayList = [];
+      const allItems = [...marketStore.crypto, ...marketStore.tw, ...marketStore.us];
+
+      if (currentTab === 'watchlist') {
+        displayList = allItems.filter(item => userWatchlist.includes(item.id));
+        if (currentWatchlistFilter !== 'all') {
+          displayList = displayList.filter(item => item.type === currentWatchlistFilter);
+        }
+      } else {
+        displayList = marketStore[currentTab] || [];
+      }
+
+      // 搜尋關鍵字過濾
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+      if (q) {
+        displayList = displayList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
+      }
+
+      const container = document.getElementById('cards-container');
+      const emptyState = document.getElementById('empty-state');
+
+      if (displayList.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      container.innerHTML = displayList.map(item => {
+        const isFav = userWatchlist.includes(item.id);
+        return `
+          <div onclick='openDetailModal(${JSON.stringify(item)})' class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-5 rounded-xl cursor-pointer transition flex flex-col justify-between group">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="text-xs font-mono text-slate-400">${item.symbol}</div>
+                <div class="text-lg font-bold text-white mt-0.5 group-hover:text-sky-400 transition">${item.name}</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.badge}</span>
+                <button onclick="toggleWatchlist('${item.id}', event)" class="p-1.5 rounded hover:bg-slate-800 transition ${isFav ? 'text-amber-400' : 'text-slate-600 hover:text-slate-300'}">
+                  ${isFav ? '★' : '☆'}
+                </button>
+              </div>
+            </div>
+            <div class="flex items-end justify-between mt-6">
+              <div>
+                <div class="text-[11px] text-slate-500">現價</div>
+                <div class="text-xl font-mono font-bold text-slate-100">${item.price}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[11px] text-slate-500">漲跌幅</div>
+                <div class="text-base font-mono font-semibold ${item.isUp ? 'text-emerald-400' : 'text-rose-400'}">${item.change}</div>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+              <span>AI 估值：<span class="text-slate-200">${item.ai.valuation}</span></span>
+              <span class="text-sky-400">點擊查看報告 →</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleSearch() {
+      renderCards();
+    }
+
+    // ================= 3. 彈出 K 線圖與 AI 報告 =================
+    function openDetailModal(item) {
+      document.getElementById('modal-title').textContent = `${item.name} (${item.symbol})`;
+      document.getElementById('modal-subtitle').textContent = `即時現價：${item.price} ｜ 漲跌幅：${item.change}`;
+      document.getElementById('ai-valuation').textContent = item.ai.valuation;
+      document.getElementById('ai-catalyst').textContent = item.ai.catalyst;
+      document.getElementById('ai-fundamentals').textContent = item.ai.fundamentals;
+      document.getElementById('ai-bear').textContent = item.ai.bear;
+      document.getElementById('ai-base').textContent = item.ai.base;
+      document.getElementById('ai-bull').textContent = item.ai.bull;
+
+      document.getElementById('detail-modal').classList.remove('hidden');
+
+      // 初始化圖表
+      const chartEl = document.getElementById('chart-container');
+      chartEl.innerHTML = '';
+      chartInstance = LightweightCharts.createChart(chartEl, {
+        layout: { background: { color: '#090d16' }, textColor: '#94a3b8' },
+        grid: { vertLines: { color: '#1e293b' }, horzLines: { color: '#1e293b' } },
+        timeScale: { borderColor: '#334155' }
+      });
+
+      const candleSeries = chartInstance.addCandlestickSeries({
+        upColor: '#10b981', downColor: '#ef4444', borderVisible: false,
+        wickUpColor: '#10b981', wickDownColor: '#ef4444'
+      });
+      const ma20 = chartInstance.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const ma60 = chartInstance.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+
+      // 生成模擬 K 線並套用
+      let base = 100;
+      const candles = [];
+      const now = new Date();
+      for (let i = 120; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const delta = (Math.random() - 0.48) * 4;
+        const open = base;
+        const close = base + delta;
+        candles.push({
+          time: d.toISOString().split('T')[0],
+          open: parseFloat(open.toFixed(2)),
+          high: parseFloat((Math.max(open, close) + Math.random() * 2).toFixed(2)),
+          low: parseFloat((Math.min(open, close) - Math.random() * 2).toFixed(2)),
+          close: parseFloat(close.toFixed(2))
+        });
+        base = close;
+      }
+      candleSeries.setData(candles);
+
+      const calcMA = (p) => candles.slice(p - 1).map((_, i) => ({
+        time: candles[i + p - 1].time,
+        value: parseFloat((candles.slice(i, i + p).reduce((a, b) => a + b.close, 0) / p).toFixed(2))
+      }));
+      ma20.setData(calcMA(20));
+      ma60.setData(calcMA(60));
+      chartInstance.timeScale().fitContent();
+    }
+
+    function closeModal() {
+      document.getElementById('detail-modal').classList.add('hidden');
+      if (chartInstance) {
+        chartInstance.remove();
+        chartInstance = null;
+      }
+    }
+
+    // ================= 4. 會員登入 / 註冊邏輯 =================
+    function openAuthModal() {
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('auth-modal-title').textContent = isRegisterMode ? '註冊新帳號' : '會員登入';
+      document.getElementById('auth-submit-btn').textContent = isRegisterMode ? '立即註冊' : '登入';
+      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? '已有帳號？前往登入' : '還沒有帳號？立即免費註冊';
+    }
+
+    function submitAuth() {
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-password').value;
+      const errBox = document.getElementById('auth-error');
+      errBox.classList.add('hidden');
+
+      if (!auth) {
+        alert("請先在 index.html 填入您的 Firebase Config 參數！");
+        return;
+      }
+
+      const p = isRegisterMode ? auth.createUserWithEmailAndPassword(email, pass) : auth.signInWithEmailAndPassword(email, pass);
+      p.then(() => {
+        closeAuthModal();
+      }).catch(err => {
+        errBox.textContent = err.message;
+        errBox.classList.remove('hidden');
+      });
+    }
+
+    function handleLogout() {
+      if (auth) auth.signOut();
+    }
+
+    // 預設渲染
+    renderCards();
+  </script>
+</body>
+</html>
