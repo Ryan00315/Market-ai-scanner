@@ -1,10 +1,12 @@
-name: Daily Post-Market Update
+name: Update Market Data
 
 on:
   schedule:
-    # 台灣時間週一至週五 15:30 (UTC 07:30) 每天只跑一次收盤結算
+    # 台灣時間週一至週五 09:00 ~ 13:30 (UTC 01:00 ~ 05:30) 每 30 分鐘更新一次
+    - cron: '*/30 1-5 * * 1-5'
+    # 收盤結算 15:30 (UTC 07:30) 跑一次
     - cron: '30 7 * * 1-5'
-  workflow_dispatch: # 支援在 GitHub 網頁上點擊 Run workflow 手動觸發
+  workflow_dispatch: # 支援在 GitHub 網頁上手動點擊執行
 
 permissions:
   contents: write
@@ -34,5 +36,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/market_data.json
-          git commit -m "chore: update daily post-market data" || exit 0
+          git commit -m "chore: auto-update market data" || exit 0
           git push
