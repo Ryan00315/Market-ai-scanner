@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- TradingView Lightweight Charts CDN (台股專用) -->
   <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
-  <!-- TradingView 官方高級 Widget CDN (美股與幣圈專用) -->
+  <!-- TradingView 官方高級 Widget CDN (美股/幣圈專用) -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -294,7 +294,7 @@
     </div>
   </main>
 
-  <!-- ================= 彈出視窗：智慧分流 (台股：自建三層圖 / 美股與幣圈：TradingView 原生圖) ================= -->
+  <!-- ================= 彈出視窗：實體徹底隔離 ================= -->
   <div id="detail-modal">
     <div class="bg-[#0d1117] border border-slate-700 w-full max-w-5xl max-h-[96vh] rounded-xl flex flex-col overflow-hidden shadow-2xl p-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -303,7 +303,7 @@
           <div id="modal-subtitle" class="text-[11px] text-slate-400 mt-0.5 font-mono"></div>
         </div>
         <div class="flex items-center gap-3">
-          <!-- 台股專用日/週/月切換 -->
+          <!-- 只有台股顯示日/週/月切換 -->
           <div id="tw-tf-controls" class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded text-xs">
             <button onclick="changeTimeframe('1d')" id="tf-1d" class="px-2.5 py-0.5 rounded tf-active transition">日線</button>
             <button onclick="changeTimeframe('1wk')" id="tf-1wk" class="px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition">週線</button>
@@ -315,7 +315,7 @@
 
       <div class="flex-1 overflow-y-auto pt-4 space-y-4">
         
-        <!-- 容器 1：台股專用 Lightweight Charts 三層獨立面板 -->
+        <!-- 【分流 1】台股專用 Lightweight Charts 三層獨立面板 -->
         <div id="container-tw-chart" class="space-y-1">
           <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
             <span>台股真實走勢 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
@@ -326,10 +326,10 @@
           <div id="chart-macd" style="height: 85px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
         </div>
 
-        <!-- 容器 2：美股與加密貨幣專用 TradingView 官方高級 Widget -->
+        <!-- 【分流 2】美股與加密貨幣專用 TradingView 官方 Widget -->
         <div id="container-tv-chart" class="hidden">
           <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-1 px-1">
-            <span>TradingView 官方即時撮合走勢圖 (內建即時成交量、完整指標與週期切換)</span>
+            <span>TradingView 官方即時撮合走勢圖 (內建 Volume、完整指標與週期切換)</span>
           </div>
           <div id="tradingview-embed-box" style="height: 380px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800 overflow-hidden"></div>
         </div>
@@ -451,7 +451,7 @@
     // -------------------------------------------------------------
     const WORKER_PROXY_URL = "https://tw-stock-proxy.你的帳號.workers.dev"; 
 
-    // Firebase
+    // Firebase 初始化
     const firebaseConfig = {
       apiKey: "AIzaSyDUtSiVeBmq2Sr1Ny2x6oi0P3usZRR24nU",
       authDomain: "market-ai-radar-abc1c.firebaseapp.com",
@@ -507,11 +507,12 @@
     let currentTimeframe = '1d';
     let isRegisterMode = false;
 
+    // 台股專用圖表實例
     let chartMain = null;
     let chartVolume = null;
     let chartMacd = null;
 
-    // 全域點擊監聽
+    // 全域點擊監聽 (委派給每一列)
     document.addEventListener('click', function(e) {
       const row = e.target.closest('[data-stock-id]');
       if (row && !e.target.closest('button[data-fav-btn]')) {
@@ -586,25 +587,42 @@
       const modal = document.getElementById('detail-modal');
       modal.classList.add('is-open');
 
-      // 核心：智能分流！台股用自建圖表，美股與幣圈直接用 TradingView 原生圖表！
+      // 核心隔離：台股 vs 美股/幣圈 完全物理分開
       const twChartEl = document.getElementById('container-tw-chart');
       const tvChartEl = document.getElementById('container-tv-chart');
       const twControls = document.getElementById('tw-tf-controls');
 
       if (isTw) {
+        // 銷毀舊的 TradingView Widget
+        const box = document.getElementById('tradingview-embed-box');
+        if (box) box.innerHTML = '';
+        
         twChartEl.classList.remove('hidden');
         tvChartEl.classList.add('hidden');
         twControls.classList.remove('hidden');
-        await fetchAndDrawCandles(item.symbol, currentTimeframe, p);
+
+        // 呼叫台股 Worker 真實抓取
+        await fetchAndDrawTwCandles(item.symbol, currentTimeframe, p);
       } else {
+        // 清理台股圖表
+        destroyTwCharts();
+
         twChartEl.classList.add('hidden');
         tvChartEl.classList.remove('hidden');
         twControls.classList.add('hidden');
+
+        // 呼叫 TradingView 官方 Widget
         renderTradingViewNative(item);
       }
     }
 
-    // 渲染美股與加密貨幣的 TradingView 原生高級圖表
+    function destroyTwCharts() {
+      if (chartMain) { chartMain.remove(); chartMain = null; }
+      if (chartVolume) { chartVolume.remove(); chartVolume = null; }
+      if (chartMacd) { chartMacd.remove(); chartMacd = null; }
+    }
+
+    // 渲染美股與加密貨幣的 TradingView 官方原裝圖表 (100% 穩定支援)
     function renderTradingViewNative(item) {
       let tvSymbol = "";
       if (item.type === 'crypto') {
@@ -644,9 +662,7 @@
     function closeModal() {
       const modal = document.getElementById('detail-modal');
       modal.classList.remove('is-open');
-      if (chartMain) { chartMain.remove(); chartMain = null; }
-      if (chartVolume) { chartVolume.remove(); chartVolume = null; }
-      if (chartMacd) { chartMacd.remove(); chartMacd = null; }
+      destroyTwCharts();
       const box = document.getElementById('tradingview-embed-box');
       if (box) box.innerHTML = '';
       currentModalItem = null;
@@ -657,7 +673,7 @@
       updateTfButtonStyles();
       if (currentModalItem && currentModalItem.type === 'tw') {
         const p = parseFloat(String(currentModalItem.price).replace(/,/g, '')) || 100;
-        await fetchAndDrawCandles(currentModalItem.symbol, currentTimeframe, p);
+        await fetchAndDrawTwCandles(currentModalItem.symbol, currentTimeframe, p);
       }
     }
 
@@ -672,9 +688,9 @@
       });
     }
 
-    // 台股：透過 Worker 抓取 100% 真實歷史 K 棒
-    async function fetchAndDrawCandles(symbol, interval, basePrice) {
-      document.getElementById('chart-date-display').textContent = "連線取得真實 K 棒中...";
+    // 台股專屬：透過 Worker 抓取真實日/週/月 K 棒
+    async function fetchAndDrawTwCandles(symbol, interval, basePrice) {
+      document.getElementById('chart-date-display').textContent = "正在透過專屬代理連線真實 K 線...";
       
       const rangeMap = { '1d': '6mo', '1wk': '2y', '1mo': '5y' };
       const range = rangeMap[interval] || '6mo';
@@ -694,7 +710,7 @@
 
       document.getElementById('chart-date-display').textContent = "";
 
-      // 嚴格確保時間遞增與資料純淨
+      // 嚴格確保時間遞增與資料格式正確
       const map = new Map();
       candles.forEach(c => {
         if (c && c.time && !isNaN(c.open)) {
@@ -710,10 +726,13 @@
       });
       const sortedCandles = Array.from(map.values()).sort((a, b) => new Date(a.time) - new Date(b.time));
 
-      renderMultiPaneCharts(sortedCandles);
+      // 渲染台股 Lightweight Charts
+      renderTwCharts(sortedCandles);
     }
 
-    function renderMultiPaneCharts(candles) {
+    function renderTwCharts(candles) {
+      destroyTwCharts();
+
       const mainEl = document.getElementById('chart-main');
       const volEl = document.getElementById('chart-volume');
       const macdEl = document.getElementById('chart-macd');
@@ -728,9 +747,8 @@
       }
 
       const w = mainEl.clientWidth || 800;
-      const isTw = currentModalItem && currentModalItem.type === 'tw';
-      const upColor = isTw ? '#ef4444' : '#10b981';
-      const downColor = isTw ? '#10b981' : '#ef4444';
+      const upColor = '#ef4444';
+      const downColor = '#10b981';
 
       const opts = {
         layout: { background: { color: '#070a0f' }, textColor: '#94a3b8' },
@@ -759,7 +777,7 @@
       volSeries.setData(candles.map(c => ({
         time: c.time,
         value: c.volume,
-        color: c.close >= c.open ? (isTw ? '#ef444488' : '#10b98188') : (isTw ? '#10b98188' : '#ef444488')
+        color: c.close >= c.open ? '#ef444488' : '#10b98188'
       })));
 
       // 3. 獨立 MACD
@@ -854,13 +872,12 @@
       } catch (e) {}
     }
 
-    // 核心修復：雙軌平滑機制，徹底告別「載入即時行情中...」
+    // 雙軌自動回退，確保即時表格絕不卡在載入中
     async function syncMarketDataFromJson() {
       try {
         const res = await fetch('./data/market_data.json?t=' + Date.now());
         if (res.ok) {
           const remote = await res.json();
-          // 若無 tw_live 則自動平滑退回使用 remote.tw
           if (remote.tw_live && remote.tw_live.length > 0) {
             twLiveStocks = remote.tw_live;
           } else if (remote.tw && remote.tw.length > 0) {
@@ -880,7 +897,6 @@
     }
 
     function renderTWLiveSection() {
-      // 若尚未拿到，拿 fullMarketData.tw 當備用，絕不留白
       const list = (twLiveStocks && twLiveStocks.length > 0) ? twLiveStocks : (fullMarketData.tw || []);
       if (!list || list.length === 0) return;
 
@@ -973,7 +989,6 @@
       document.getElementById('badge-fav').textContent = userWatchlist.length;
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
-      // 自選清單渲染
       if (currentMarket === 'watchlist') {
         const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto, ...fullMarketData.us];
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
@@ -1144,6 +1159,7 @@
       renderAll();
     }
 
+    // 帳號與自選雲端管理
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
