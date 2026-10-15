@@ -8,46 +8,46 @@ HEADERS = {
     "Referer": "https://tw.tradingview.com/"
 }
 
-# 1. 抓取 TradingView 台股即時全市場排行
-def fetch_tw_from_tradingview():
-    print("正在向 TradingView 請求台股真實排行...")
+# 1. 抓取 TradingView 台股即時開盤全市場數據 (依成交額過濾)
+def fetch_tw_live_tradingview():
+    print("正在向 TradingView 抓取台股即時開盤數據...")
     url = "https://scanner.tradingview.com/taiwan/scan"
     payload = {
         "filter": [
             {"left": "type", "operation": "in_range", "right": ["stock", "dr"]},
             {"left": "subtype", "operation": "in_range", "right": ["common"]},
-            {"left": "value", "operation": "greater", "right": 30000000} # 當日成交額大於 3000 萬台幣
+            {"left": "value", "operation": "greater", "right": 30000000} # 當日成交金額大於 3000 萬台幣
         ],
         "options": {"lang": "zh_TW"},
         "columns": [
             "name",           # 代號 (如 2330)
             "description",    # 名稱 (如 台積電)
-            "close",          # 現價
+            "close",          # 即時現價
             "change",         # 漲跌幅 %
-            "Value",          # 成交金額 (元)
-            "Volatility.D"    # 當日振幅 %
+            "Value",          # 官方即時成交金額 (元)
+            "Volatility.D"    # 官方當日振幅 %
         ],
         "sort": {"sortBy": "Value", "sortOrder": "desc"},
-        "range": [0, 80]
+        "range": [0, 80] # 取市場最活躍前 80 檔主流標的
     }
     try:
         res = requests.post(url, json=payload, headers=HEADERS, timeout=15)
         if res.status_code != 200:
-            print(f"TradingView 回應碼異常: {res.status_code}")
+            print(f"TradingView 回應異常: {res.status_code}")
             return []
-        
+
         data = res.json().get("data", [])
         stocks = []
         for row in data:
             d = row.get("d", [])
             if len(d) < 5 or d[2] is None or d[3] is None:
                 continue
-            
+
             sym = d[0]
             name = d[1]
             close = d[2]
             pct = d[3]
-            val_yi = round((d[4] or 0) / 100000000, 2) # 換算億元
+            val_yi = round((d[4] or 0) / 100000000, 2) # 成交金額換算為億元
             amp = round(d[5] or 0, 2)
 
             stocks.append({
@@ -58,24 +58,24 @@ def fetch_tw_from_tradingview():
                 "price": f"{close:,.2f}",
                 "change": round(pct, 2),
                 "volumeVal": val_yi, # 億元
-                "ampVal": amp,
+                "ampVal": amp,      # 振幅 %
                 "badge": "漲停表態" if pct >= 9.5 else ("強勢突破" if pct > 3 else "常態整理"),
                 "ai": {
                     "valuation": "量能充沛" if val_yi > 30 else "籌碼集中",
                     "catalyst": f"TradingView 即時成交金額達 {val_yi} 億元，當日波幅 {amp}%。",
-                    "fundamentals": f"全市場即時焦點標的，成交動能維持熱絡。",
+                    "fundamentals": f"即時盤中人氣標的，多空交易熱絡。",
                     "bear": f"{round(close * 0.92, 1)} (-8%)",
                     "base": f"{round(close * 1.05, 1)} (+5%)",
                     "bull": f"{round(close * 1.20, 1)} (+20%)"
                 }
             })
-        print(f"TradingView 成功解析 {len(stocks)} 檔台股真實數據")
+        print(f"TradingView 即時解析成功，共 {len(stocks)} 檔")
         return stocks
     except Exception as e:
         print(f"TradingView 抓取失敗: {e}")
         return []
 
-# 2. 抓取加密貨幣 (幣安官方公開 API)
+# 2. 抓取加密貨幣 (幣安官方即時 API)
 def fetch_crypto_real():
     try:
         url = "https://api.binance.com/api/v3/ticker/24hr"
@@ -119,15 +119,17 @@ def fetch_crypto_real():
         return []
 
 def main():
+    tw_live = fetch_tw_live_tradingview()
     payload = {
-        "tw": fetch_tw_from_tradingview(),
+        "tw_live": tw_live, # 上方：TradingView 開盤即時四大排行
+        "tw": tw_live,      # 下方：同時同步為台股基準數據
         "crypto": fetch_crypto_real(),
         "us": []
     }
     os.makedirs("data", exist_ok=True)
     with open("data/market_data.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print("market_data.json 更新完成！")
+    print("data/market_data.json 產出完畢！")
 
 if __name__ == "__main__":
     main()
