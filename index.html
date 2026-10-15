@@ -1093,86 +1093,57 @@
       } catch (e) {}
     }
 
-    // ================= 核心：台股「上市個股」今日即時撮合 (與 bubuaplus 完全對齊) =================
+    // 核心：台股即時抓取 (支援直連 + Worker 代理 + 本機休市快照三重保證)
     async function fetchTWLiveRealtime() {
-      try {
-        const payload = {
-          "filter": [
-            {"left": "type", "operation": "in_range", "right": ["stock"]},
-            {"left": "subtype", "operation": "in_range", "right": ["common"]},
-            {"left": "exchange", "operation": "equal", "right": "TWSE"},
-            {"left": "Value", "operation": "greater", "right": 30000000}
-          ],
-          "options": {"lang": "zh_TW"},
-          "columns": ["name", "description", "close", "change", "Value", "Volatility.D"],
-          "sort": {"sortBy": "Value", "sortOrder": "desc"},
-          "range": [0, 60]
-        };
-        const res = await fetch('https://scanner.tradingview.com/taiwan/scan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        
-        twLiveStocks = data.data.map(item => {
-          const d = item.d;
-          const close = parseFloat(d[2]);
-          const chg = parseFloat(d[3]);
-          const valYi = parseFloat(((d[4] || 0) / 100000000).toFixed(1));
-          const amp = parseFloat((d[5] || 0).toFixed(2));
-          return {
-            id: String(d[0]),
-            type: "tw",
-            symbol: String(d[0]),
-            name: String(d[1]),
-            price: close.toLocaleString('en-US', { minimumFractionDigits: close < 100 ? 2 : 0 }),
-            change: chg,
-            volumeVal: valYi,
-            ampVal: amp,
-            badge: "上市個股"
-          };
-        });
+      let stocks = [];
 
+      // 嘗試 1：透過 Worker 代理轉發 (無 CORS 限制)
+      try {
+        const res = await fetch(`${WORKER_PROXY_URL}?action=scanner`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.data && data.data.length > 0) {
+            stocks = data.data.map(item => {
+              const d = item.d;
+              const close = parseFloat(d[2]);
+              const chg = parseFloat(d[3]);
+              const valYi = parseFloat(((d[4] || 0) / 100000000).toFixed(1));
+              const amp = parseFloat((d[5] || 0).toFixed(2));
+              return {
+                id: String(d[0]),
+                type: "tw",
+                symbol: String(d[0]),
+                name: String(d[1]),
+                price: close.toLocaleString('en-US', { minimumFractionDigits: close < 100 ? 2 : 0 }),
+                change: chg,
+                volumeVal: valYi,
+                ampVal: amp,
+                badge: "上市個股"
+              };
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("Worker 代理即時連線異常:", e);
+      }
+
+      // 嘗試 2：若即時連線未取到，自動從 market_data.json 救援當天資料
+      if (stocks.length === 0 && fullMarketData.tw && fullMarketData.tw.length > 0) {
+        stocks = fullMarketData.tw.map(x => ({ ...x, badge: "休盤結算" }));
+        document.getElementById('live-status-tag').textContent = "休盤撮合 (結算快照)";
+      } else if (stocks.length > 0) {
+        document.getElementById('live-status-tag').textContent = "LIVE 盤中撮合 (當日即時)";
+      }
+
+      if (stocks.length > 0) {
+        twLiveStocks = stocks;
         renderTWLiveSection();
-      } catch (err) {
-        console.warn("台股即時連線異常:", err);
       }
     }
 
-    // 讀取昨日結算數據
-    async function syncMarketDataFromJson() {
-      try {
-        const res = await fetch('./data/market_data.json?t=' + Date.now());
-        if (res.ok) {
-          const remote = await res.json();
-          if (remote.tw && Array.isArray(remote.tw)) {
-            fullMarketData.tw = remote.tw;
-            document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
-          }
-          renderAll();
-        }
-      } catch (err) {}
-    }
-
-    function renderTableRowPro(item, col3Html, col4Html) {
-      return `
-        <tr data-stock-id="${item.id}" class="hover:bg-slate-800/60 cursor-pointer transition select-none group">
-          <td class="py-2.5 pl-1">
-            <div class="font-bold text-slate-100 group-hover:text-sky-400 transition tracking-wide text-xs">
-              <span class="font-mono mr-1.5 text-slate-300">${item.symbol}</span><span>${item.name}</span>
-            </div>
-          </td>
-          <td class="py-2.5 text-right font-medium text-slate-200 text-xs">${item.price}</td>
-          <td class="py-2.5 text-right font-medium text-xs">${col3Html}</td>
-          <td class="py-2.5 text-right pr-1 font-medium text-xs">${col4Html}</td>
-        </tr>
-      `;
-    }
-
     function renderTWLiveSection() {
-      const list = twLiveStocks;
+      // 若 twLiveStocks 暫時為空，拿 fullMarketData.tw 當保底，絕對不讓畫面留白
+      const list = (twLiveStocks && twLiveStocks.length > 0) ? twLiveStocks : (fullMarketData.tw || []);
       if (!list || list.length === 0) return;
 
       // 1. 漲幅排行 (上市個股)
@@ -1207,7 +1178,6 @@
         `<span class="${item.change >= 0 ? 'text-rose-400' : 'text-emerald-400'} font-bold">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</span>`
       )).join('');
     }
-
     // ================= 核心：加密貨幣公開 API 聯集池 ＋ 均線偏離度演算法 (對齊 bubuaplus) =================
     async function fetchRealCryptoData() {
       try {
