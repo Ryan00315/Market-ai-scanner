@@ -2,6 +2,7 @@ name: Update Market Data
 
 on:
   schedule:
+    # 每天固定抓取兩次 (UTC 06:00 與 21:00)
     - cron: '0 6,21 * * 1-5'
   workflow_dispatch:
 
