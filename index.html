@@ -44,12 +44,12 @@
           <span id="badge-crypto" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-emerald-400 font-mono">即時</span>
         </button>
         <button onclick="switchMarket('tw')" id="nav-tw" class="nav-btn w-full flex items-center justify-between px-2.5 py-2 rounded text-xs text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition">
-          <span class="flex items-center gap-2"><span>📊</span> 台股市況掃描</span>
-          <span id="badge-tw" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-sky-400 font-mono">10 檔</span>
+          <span class="flex items-center gap-2"><span>📊</span> 台股市況 (全市場真實)</span>
+          <span id="badge-tw" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-sky-400 font-mono">讀取中</span>
         </button>
         <button onclick="switchMarket('us')" id="nav-us" class="nav-btn w-full flex items-center justify-between px-2.5 py-2 rounded text-xs text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition">
-          <span class="flex items-center gap-2"><span>🇺🇸</span> 美股市況掃描</span>
-          <span id="badge-us" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-400 font-mono">6 檔</span>
+          <span class="flex items-center gap-2"><span>🇺🇸</span> 美股市況 (全市場真實)</span>
+          <span id="badge-us" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-slate-400 font-mono">讀取中</span>
         </button>
       </nav>
 
@@ -92,12 +92,6 @@
       </div>
       <div class="h-3 w-px bg-slate-800"></div>
       <div class="flex items-center gap-2">
-        <span class="text-slate-400">櫃買指數</span>
-        <span class="font-mono text-white font-semibold">271.80</span>
-        <span class="font-mono text-rose-400 font-medium">+0.82%</span>
-      </div>
-      <div class="h-3 w-px bg-slate-800"></div>
-      <div class="flex items-center gap-2">
         <span class="text-slate-400">S&P 500</span>
         <span class="font-mono text-white font-semibold">5,864.67</span>
         <span class="font-mono text-emerald-400 font-medium">+0.40%</span>
@@ -120,7 +114,7 @@
     <header class="h-14 border-b border-slate-800/80 px-6 flex items-center justify-between bg-[#0d1117]/50 backdrop-blur sticky top-0 z-10">
       <div class="flex items-center gap-4">
         <h2 id="page-title" class="text-sm font-bold text-white flex items-center gap-2">⚡ 加密貨幣即時掃描</h2>
-        <div id="status-indicator" class="text-[11px] text-slate-500 hidden sm:flex items-center gap-1.5">
+        <div id="status-indicator" class="text-[11px] text-slate-400 hidden sm:flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span id="status-text">連線正常</span>
         </div>
@@ -160,7 +154,9 @@
                   <th class="pb-1.5 font-medium text-right pr-1">漲跌幅</th>
                 </tr>
               </thead>
-              <tbody id="table-gainers" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              <tbody id="table-gainers" class="divide-y divide-slate-800/40 font-mono">
+                <tr><td colspan="3" class="text-center py-8 text-slate-500 text-xs">載入真實數據中...</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -182,7 +178,9 @@
                   <th class="pb-1.5 font-medium text-right pr-1">漲跌幅</th>
                 </tr>
               </thead>
-              <tbody id="table-losers" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              <tbody id="table-losers" class="divide-y divide-slate-800/40 font-mono">
+                <tr><td colspan="3" class="text-center py-8 text-slate-500 text-xs">載入真實數據中...</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -204,7 +202,9 @@
                   <th class="pb-1.5 font-medium text-right pr-1">成交金額</th>
                 </tr>
               </thead>
-              <tbody id="table-volume" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              <tbody id="table-volume" class="divide-y divide-slate-800/40 font-mono">
+                <tr><td colspan="3" class="text-center py-8 text-slate-500 text-xs">載入真實數據中...</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -226,7 +226,9 @@
                   <th class="pb-1.5 font-medium text-right pr-1">振幅%</th>
                 </tr>
               </thead>
-              <tbody id="table-amplitude" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              <tbody id="table-amplitude" class="divide-y divide-slate-800/40 font-mono">
+                <tr><td colspan="3" class="text-center py-8 text-slate-500 text-xs">載入真實數據中...</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -360,45 +362,11 @@
       console.warn("Firebase 啟動提醒：", err);
     }
 
-    // ================= 2. 跨市場完整數據庫 (台股已填入真實行情與真實成交值) =================
+    // ================= 2. 市場資料庫（無任何寫死固定假資料） =================
     let fullMarketData = {
       crypto: [],
-      tw: [
-        { id: "2330", type: "tw", symbol: "2330", name: "台積電", price: "1085.00", change: 2.36, volumeVal: 524.8, ampVal: 2.83, badge: "多頭排列",
-          ai: { valuation: "合理偏低 (2026e 21x)", catalyst: "CoWoS 產能持續供不應求，2nm/3nm 產能滿載至明年下半年。", fundamentals: "毛利率維持 55% 以上高檔，外資法人連續買超。", bear: "990 (-8.7%)", base: "1150 (+6.0%)", bull: "1280 (+18.0%)" } },
-        { id: "2317", type: "tw", symbol: "2317", name: "鴻海", price: "208.50", change: 3.22, volumeVal: 268.4, ampVal: 4.10, badge: "量增價揚",
-          ai: { valuation: "合理估值", catalyst: "GB200 AI 伺服器機櫃量產出貨放量，伺服器營收占比顯著提升。", fundamentals: "第三季獲利優於市場預期，投信加碼布局。", bear: "190 (-8.9%)", base: "225 (+7.9%)", bull: "250 (+19.9%)" } },
-        { id: "2454", type: "tw", symbol: "2454", name: "聯發科", price: "1325.00", change: 1.92, volumeVal: 185.2, ampVal: 3.50, badge: "站穩月線",
-          ai: { valuation: "合理偏低", catalyst: "天璣 9400 旗艦晶片銷量強勁，雲端 ASIC 開案順利。", fundamentals: "股利殖利率提供下檔防護，外資目標價調升。", bear: "1220 (-7.9%)", base: "1420 (+7.2%)", bull: "1550 (+17.0%)" } },
-        { id: "2382", type: "tw", symbol: "2382", name: "廣達", price: "318.00", change: 4.26, volumeVal: 215.6, ampVal: 5.20, badge: "AI 整機櫃",
-          ai: { valuation: "合理估值", catalyst: "美系大客戶機櫃組裝順利，營收年增率維持雙位數高檔。", fundamentals: "本益比約 18x，具備獲利成長與中線防守保護。", bear: "290 (-8.8%)", base: "345 (+8.5%)", bull: "390 (+22.6%)" } },
-        { id: "3017", type: "tw", symbol: "3017", name: "奇鋐", price: "682.00", change: 5.74, volumeVal: 172.3, ampVal: 7.15, badge: "水冷散熱龍頭",
-          ai: { valuation: "強勢擴張", catalyst: "水冷板 (Cold Plate) 滲透率暴增，CSP 認證完整並加速出貨。", fundamentals: "毛利率結構性跳升，法人目標價陸續上調。", bear: "620 (-9.1%)", base: "740 (+8.5%)", bull: "840 (+23.2%)" } },
-        { id: "2345", type: "tw", symbol: "2345", name: "智邦", price: "585.00", change: -1.68, volumeVal: 118.5, ampVal: 3.90, badge: "回測支撐",
-          ai: { valuation: "合理偏低", catalyst: "800G 交換器出貨加速，代客購料降低使毛利率實質回升。", fundamentals: "投信賣壓進入尾聲，季均線提供扎實支撐。", bear: "535 (-8.5%)", base: "625 (+6.8%)", bull: "700 (+19.7%)" } },
-        { id: "2603", type: "tw", symbol: "2603", name: "長榮", price: "212.00", change: -0.93, volumeVal: 142.1, ampVal: 3.20, badge: "高現金流",
-          ai: { valuation: "防守價值", catalyst: "運價指數震盪築底，長約換約維持現金流穩定。", fundamentals: "每股淨值具保護性，高殖利率吸引防守資金進駐。", bear: "195 (-8.0%)", base: "228 (+7.5%)", bull: "250 (+17.9%)" } },
-        { id: "3231", type: "tw", symbol: "3231", name: "緯創", price: "119.50", change: 2.14, volumeVal: 135.0, ampVal: 4.10, badge: "主機板放量",
-          ai: { valuation: "合理中性", catalyst: "GPU 計算主機板產能滿載，外銷伺服器基板出貨動能無虞。", fundamentals: "投信外資呈現同步回補態勢。", bear: "108 (-9.6%)", base: "130 (+8.8%)", bull: "145 (+21.3%)" } },
-        { id: "3661", type: "tw", symbol: "3661", name: "世芯-KY", price: "2280.00", change: -3.39, volumeVal: 164.2, ampVal: 6.80, badge: "矽智財高價股",
-          ai: { valuation: "高波動修正", catalyst: "北美 CSP 客戶晶片世代交替，等待次世代開案動能顯現。", fundamentals: "技術面回測半年線支撐，籌碼面投信短線調節。", bear: "2050 (-10.1%)", base: "2450 (+7.5%)", bull: "2800 (+22.8%)" } },
-        { id: "3443", type: "tw", symbol: "3443", name: "創意", price: "1180.00", change: 6.31, volumeVal: 158.9, ampVal: 8.20, badge: "ASIC 突破",
-          ai: { valuation: "成長股評價", catalyst: "CSP 開案專案持續增多，晶圓委外封裝授權收入跳升。", fundamentals: "下半年進入傳統旺季，技術型態完成帶量突破。", bear: "1060 (-10.2%)", base: "1300 (+10.2%)", bull: "1480 (+25.4%)" } }
-      ],
-      us: [
-        { id: "NVDA", type: "us", symbol: "NVDA", name: "NVIDIA", price: "138.25", change: 3.80, volumeVal: 82.5, ampVal: 4.5, badge: "多頭走勢",
-          ai: { valuation: "成長股評價 (Forward PE 32x)", catalyst: "新架構晶片量產順利，各大雲端業者 Capex 預算無下修跡象。", fundamentals: "營收維持高雙位數成長，自由現金流充沛持續實施庫藏股。", bear: "120 (-13.2%)", base: "150 (+8.5%)", bull: "180 (+30.2%)" } },
-        { id: "TSLA", type: "us", symbol: "TSLA", name: "Tesla", price: "218.40", change: -4.15, volumeVal: 45.1, ampVal: 7.8, badge: "高波動",
-          ai: { valuation: "多空分歧", catalyst: "Robotaxi 技術與儲能業務維持高成長，但汽車降價影響利潤率。", fundamentals: "手頭現金充裕，靜待全自動駕駛商用化營收驗證。", bear: "185 (-15.2%)", base: "240 (+9.8%)", bull: "310 (+41.9%)" } },
-        { id: "AAPL", type: "us", symbol: "AAPL", name: "Apple", price: "232.10", change: 0.45, volumeVal: 31.2, ampVal: 1.8, badge: "高檔整理",
-          ai: { valuation: "合理估值", catalyst: "AI 服務陸續支援多國語言，市場預期換機週期將於明年顯現。", fundamentals: "高毛利服務營收佔比創新高，硬體獲利保持穩健。", bear: "215 (-7.3%)", base: "245 (+5.5%)", bull: "270 (+16.3%)" } },
-        { id: "AMD", type: "us", symbol: "AMD", name: "AMD", price: "156.80", change: 4.25, volumeVal: 28.4, ampVal: 5.6, badge: "市占擴張",
-          ai: { valuation: "積極擴張", catalyst: "資料中心 GPU 逐步放量突破，伺服器 CPU 持續搶佔傳統份額。", fundamentals: "營業利益率進入拐點上升期，研發投資逐步展現綜效。", bear: "138 (-11.9%)", base: "175 (+11.6%)", bull: "210 (+33.9%)" } },
-        { id: "MSFT", type: "us", symbol: "MSFT", name: "Microsoft", price: "418.50", change: -1.10, volumeVal: 24.3, ampVal: 2.2, badge: "雲端龍頭",
-          ai: { valuation: "合理中性", catalyst: "Azure 雲端算力需求穩健，Copilot 商務版導入企業數量持續增加。", fundamentals: "現金流充沛，資產負債表強健，具備極高防守性。", bear: "390 (-6.8%)", base: "440 (+5.1%)", bull: "480 (+14.7%)" } },
-        { id: "AMZN", type: "us", symbol: "AMZN", name: "Amazon", price: "188.50", change: 1.90, volumeVal: 26.8, ampVal: 3.1, badge: "電商與AWS",
-          ai: { valuation: "合理偏低", catalyst: "AWS 雲端營收增長重新加速，北美電商物流效率持續提升。", fundamentals: "營業利益率擴張超預期，現金流強韌。", bear: "170 (-9.8%)", base: "205 (+8.8%)", bull: "230 (+22.0%)" } }
-      ]
+      tw: [],
+      us: []
     };
 
     let currentMarket = 'crypto';
@@ -406,32 +374,47 @@
     let isRegisterMode = false;
     let chartInstance = null;
 
-    // 自動從後端生成的 JSON 檔載入今日真實排行榜
+    // 核心讀取邏輯：抓取後端自動生成的當日市場真實排行 JSON
     async function syncMarketDataFromJson() {
+      const statusEl = document.getElementById('status-text');
       try {
-        const res = await fetch('./data/market_data.json?t=' + Date.now());
-        if (res.ok) {
-          const remote = await res.json();
-          if (remote.tw && remote.tw.length > 0) {
-            fullMarketData.tw = remote.tw;
-          }
-          if (remote.us && remote.us.length > 0) {
-            fullMarketData.us = remote.us;
-          }
-          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
-            fullMarketData.crypto = remote.crypto;
-          }
-          renderAll();
+        if (statusEl) statusEl.textContent = "同步全市場真實數據中...";
+        
+        // 抓取 data/market_data.json
+        const jsonUrl = './data/market_data.json?t=' + Date.now();
+        const res = await fetch(jsonUrl);
+        
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status + " 找不到 market_data.json");
         }
+        
+        const remote = await res.json();
+        
+        if (remote.tw && remote.tw.length > 0) {
+          fullMarketData.tw = remote.tw;
+          document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
+        }
+        if (remote.us && remote.us.length > 0) {
+          fullMarketData.us = remote.us;
+          document.getElementById('badge-us').textContent = remote.us.length + ' 檔';
+        }
+        if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
+          fullMarketData.crypto = remote.crypto;
+        }
+
+        if (statusEl) statusEl.textContent = "全市場真實行情已同步";
+        console.log("真實數據同步成功！台股標的數：", fullMarketData.tw.length);
+        renderAll();
       } catch (err) {
-        console.log("尚無遠端 market_data.json，等待後端產出");
+        console.warn("讀取遠端 market_data.json 失敗，請確認 GitHub Actions 是否已執行：", err);
+        if (statusEl) statusEl.textContent = "等待 Actions 產出真數據...";
       }
     }
 
-    // 頁面載入時立即同步一次
+    // 頁面啟動時立即同步真實資料
     syncMarketDataFromJson();
 
-    // ================= 3. 幣安全市場真實 API =================
+    // ================= 3. 幣安全市場即時 API (補充貨幣市場即時跳動) =================
     async function fetchRealCryptoData() {
       try {
         const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
@@ -441,7 +424,7 @@
           item.symbol.endsWith('USDT') && 
           !item.symbol.includes('UP') && 
           !item.symbol.includes('DOWN') &&
-          parseFloat(item.quoteVolume) > 8000000
+          parseFloat(item.quoteVolume) > 5000000
         );
 
         fullMarketData.crypto = usdtPairs.map(item => {
@@ -480,16 +463,14 @@
           document.getElementById('ticker-btc-change').textContent = `${btc.change >= 0 ? '+' : ''}${btc.change.toFixed(2)}%`;
         }
 
-        // 關鍵修復：只有在當前是貨幣頁面時，才刷新畫面！避免把台股覆蓋掉！
         if (currentMarket === 'crypto') {
           renderAll();
         }
       } catch (err) {
-        console.error("抓取幣安 API 失敗：", err);
+        console.error("幣安 API 略過：", err);
       }
     }
 
-    // 啟動定時抓幣安資料
     fetchRealCryptoData();
     setInterval(fetchRealCryptoData, 15000);
 
@@ -524,7 +505,7 @@
       saveWatchlist();
     }
 
-    // ================= 5. 市場切換 (修正市場專屬狀態) =================
+    // ================= 5. 市場切換 =================
     function switchMarket(market) {
       currentMarket = market;
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -539,13 +520,12 @@
 
       const titleMap = { 
         crypto: '⚡ 加密貨幣即時掃描 (Binance 全市場即時報價)', 
-        tw: '📊 台股市況多因子掃描 (每日盤後收盤與成交值)', 
-        us: '🇺🇸 美股市況多因子掃描 (美股即時行情)', 
+        tw: '📊 台股市況多因子掃描 (每日真實全市場盤後行情)', 
+        us: '🇺🇸 美股市況多因子掃描 (美股全市場真實行情)', 
         watchlist: '⭐ 我的自選標的' 
       };
       document.getElementById('page-title').textContent = titleMap[market];
 
-      // 更新成交值單位標籤
       const unitMap = { crypto: 'M USDT', tw: '億元(NTD)', us: '億美元' };
       document.getElementById('volume-unit-label').textContent = unitMap[market] || '成交值';
 
@@ -563,7 +543,6 @@
         wSubtabs.classList.add('hidden');
       }
       
-      // 切換後立即強制渲染該市場數據
       renderAll();
     }
 
@@ -604,11 +583,7 @@
     }
 
     function renderAll() {
-      // 更新側邊欄數量
-      document.getElementById('badge-tw').textContent = fullMarketData.tw.length + ' 檔';
-      document.getElementById('badge-us').textContent = fullMarketData.us.length + ' 檔';
       document.getElementById('badge-fav').textContent = userWatchlist.length;
-
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
       // 自選清單渲染
@@ -688,7 +663,7 @@
         return;
       }
 
-      // 一般市場渲染四欄矩陣 (保證使用當前市場數據)
+      // 一般市場渲染四欄矩陣
       document.getElementById('empty-state').classList.add('hidden');
       let baseList = [...(fullMarketData[currentMarket] || [])];
       
@@ -696,7 +671,14 @@
         baseList = baseList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
       }
 
-      if (baseList.length === 0) return;
+      const emptyHtml = '<tr><td colspan="3" class="text-center py-8 text-slate-500 text-xs">尚無資料，請確認後端 Action 是否已產生資料</td></tr>';
+      if (baseList.length === 0) {
+        document.getElementById('table-gainers').innerHTML = emptyHtml;
+        document.getElementById('table-losers').innerHTML = emptyHtml;
+        document.getElementById('table-volume').innerHTML = emptyHtml;
+        document.getElementById('table-amplitude').innerHTML = emptyHtml;
+        return;
+      }
 
       const isTw = currentMarket === 'tw';
       const getColor = (val) => {
