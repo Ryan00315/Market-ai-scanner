@@ -406,6 +406,31 @@
     let isRegisterMode = false;
     let chartInstance = null;
 
+    // 自動從後端生成的 JSON 檔載入今日真實排行榜
+    async function syncMarketDataFromJson() {
+      try {
+        const res = await fetch('./data/market_data.json?t=' + Date.now());
+        if (res.ok) {
+          const remote = await res.json();
+          if (remote.tw && remote.tw.length > 0) {
+            fullMarketData.tw = remote.tw;
+          }
+          if (remote.us && remote.us.length > 0) {
+            fullMarketData.us = remote.us;
+          }
+          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
+            fullMarketData.crypto = remote.crypto;
+          }
+          renderAll();
+        }
+      } catch (err) {
+        console.log("尚無遠端 market_data.json，等待後端產出");
+      }
+    }
+
+    // 頁面載入時立即同步一次
+    syncMarketDataFromJson();
+
     // ================= 3. 幣安全市場真實 API =================
     async function fetchRealCryptoData() {
       try {
