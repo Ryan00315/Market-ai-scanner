@@ -2,11 +2,9 @@ name: Update Market Data
 
 on:
   schedule:
-    # 台灣時間週一至週五 09:00 ~ 13:30 (UTC 01:00 ~ 05:30) 每 30 分鐘自動更新一次
-    - cron: '*/30 1-5 * * 1-5'
-    # 收盤結算 15:30 (UTC 07:30) 跑一次
-    - cron: '30 7 * * 1-5'
-  workflow_dispatch: # 支援在 GitHub 網頁上手動點擊執行
+    # 台灣開盤時間排程 (UTC 01:00 ~ 06:00 即台灣時間 09:00 ~ 14:00，每 30 分鐘執行一次)
+    - cron: '*/30 1-6 * * 1-5'
+  workflow_dispatch: # 支援手動按按鈕執行
 
 permissions:
   contents: write
@@ -15,26 +13,26 @@ jobs:
   run-crawler:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          pip install requests
+          python -m pip install --upgrade pip
+          pip install requests yfinance
 
-      - name: Run Market Collector
+      - name: Run Crawler Script
         run: |
           python scripts/update_market.py
 
-      - name: Commit and Push
+      - name: Commit and Push if Changed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/market_data.json
-          git commit -m "chore: auto-update tradingview market data" || exit 0
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update market data [skip ci]" && git push)
