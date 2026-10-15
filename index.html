@@ -1211,101 +1211,34 @@
     // ================= 核心：加密貨幣永續合約熱門池 (徹底對齊 bubuaplus.com) =================
     async function fetchRealCryptoData() {
       try {
-        const res = await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr');
-        const data = await res.json();
-        
-        // 排除大盤權重老幣與非動能標的，鎖定合約短線火拼幣
-        const blacklist = new Set([
-          'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'TONUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT',
-          'EURUSDT', 'GBPUSDT', 'USD1USDT', 'BFUSDUSDT', 'PAXGUSDT', 'XAUTUSDT', 'SOXSBUSDT', 'SOXLBUSDT'
-        ]);
+        // 優先讀取後端 Python 算好的真實合約動能特徵 (包含真實 1H、EMA20 與適合度)
+        const res = await fetch('./data/market_data.json?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          if (data.crypto && data.crypto.length > 0) {
+            fullMarketData.crypto = data.crypto;
+            
+            // 更新跑馬燈 BTC
+            const btc = fullMarketData.crypto.find(x => x.symbol === 'BTC');
+            if (btc) {
+              document.getElementById('ticker-btc-price').textContent = `$${btc.price}`;
+              const btcEl = document.getElementById('ticker-btc-change');
+              btcEl.textContent = `${btc.change >= 0 ? '+' : ''}${btc.change.toFixed(2)}%`;
+              btcEl.className = `font-mono font-medium ${btc.change >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+            }
 
-        const futuresPairs = data.filter(item => 
-          item.symbol.endsWith('USDT') && 
-          !item.symbol.includes('_') && 
-          !blacklist.has(item.symbol) &&
-          parseFloat(item.quoteVolume) > 12000000
-        );
+            document.getElementById('badge-crypto').textContent = fullMarketData.crypto.length + ' 檔';
+            const now = new Date();
+            document.getElementById('crypto-updated-time').textContent = now.toTimeString().split(' ')[0];
 
-        fullMarketData.crypto = futuresPairs.map(item => {
-          const last = parseFloat(item.lastPrice);
-          const pct24 = parseFloat(item.priceChangePercent);
-          const volM = (parseFloat(item.quoteVolume) / 1000000).toFixed(1);
-          const sym = item.symbol.replace('USDT', '');
-          
-          const seed = Math.abs(sym.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0));
-          
-          // 衍生 1H 漲跌幅
-          const pct1h = parseFloat(((pct24 * 0.18) + ((seed % 17) - 8) * 0.35).toFixed(2));
-          
-          // 均線突破乖離率 (漲破 / 跌破均線)
-          let overEma = 0;
-          if (pct1h > 0 && pct24 > 0) {
-            overEma = parseFloat((pct1h * 1.35 + (seed % 9) * 0.45).toFixed(2));
-          } else {
-            overEma = parseFloat((-Math.abs(pct1h) * 1.4 - (seed % 11) * 0.55).toFixed(2));
+            if (currentMarket === 'crypto') {
+              renderCryptoSection();
+            }
+            return;
           }
-
-          // 核心適合度評分
-          let score = Math.floor(70 + (Math.abs(pct24) * 0.22) + (Math.abs(pct1h) * 1.8) + (seed % 12));
-          if (Math.abs(pct24) > 30) score += 6;
-          score = Math.min(94, Math.max(68, score));
-
-          const rv5m = 75 + (seed % 230);
-          const rangeVol = 65 + (seed % 220);
-          const tickSpeed = parseFloat((25 + (seed % 1200) * 0.85).toFixed(1));
-          const expandRatio = parseFloat((0.65 + (seed % 35) * 0.08).toFixed(2));
-          const er = parseFloat((0.02 + (seed % 30) * 0.012).toFixed(2));
-          const tradesPerMin = 280 + (seed % 5800);
-          const spread = parseFloat((0.3 + (seed % 85) * 0.08).toFixed(1));
-          const passThreshold = score >= 75;
-
-          return {
-            id: item.symbol,
-            type: "crypto",
-            symbol: sym,
-            name: sym,
-            price: last > 1 ? last.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : last.toString(),
-            change: pct24,
-            change1h: pct1h,
-            overMa: overEma,
-            volumeVal: parseFloat(volM),
-            ampVal: parseFloat((Math.abs(pct24) * 0.75 + 2.5).toFixed(2)),
-            score: score,
-            rv5m: rv5m,
-            rangeVol: rangeVol,
-            tickSpeed: tickSpeed,
-            expandRatio: expandRatio,
-            er: er,
-            tradesPerMin: tradesPerMin,
-            spread: spread,
-            passThreshold: passThreshold,
-            badge: pct24 >= 0 ? "多頭動能" : "回檔整理"
-          };
-        });
-
-        // 獨立抓 BTC 價格給跑馬燈
-        const btcData = data.find(x => x.symbol === 'BTCUSDT');
-        if (btcData) {
-          const btcPrice = parseFloat(btcData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-          const btcPct = parseFloat(btcData.priceChangePercent);
-          document.getElementById('ticker-btc-price').textContent = `$${btcPrice}`;
-          const btcEl = document.getElementById('ticker-btc-change');
-          btcEl.textContent = `${btcPct >= 0 ? '+' : ''}${btcPct.toFixed(2)}%`;
-          btcEl.className = `font-mono font-medium ${btcPct >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
-        }
-
-        document.getElementById('badge-crypto').textContent = fullMarketData.crypto.length + ' 檔';
-        
-        const now = new Date();
-        document.getElementById('crypto-updated-time').textContent = now.toTimeString().split(' ')[0];
-
-        if (currentMarket === 'crypto') {
-          renderCryptoSection();
         }
       } catch (err) {}
     }
-
     function renderCryptoSection() {
       const list = fullMarketData.crypto || [];
       if (list.length === 0) return;
