@@ -535,4 +535,639 @@
     let chartMacd = null;
 
     // ================= 3. 全域點擊委派 =================
-    document.addEventListener
+    document.addEventListener('click', function(e) {
+      const row = e.target.closest('[data-stock-id]');
+      if (row && !e.target.closest('button[data-fav-btn]')) {
+        const id = row.getAttribute('data-stock-id');
+        triggerOpenItem(id);
+      }
+    });
+
+    function triggerOpenItem(id) {
+      const all = [...twLiveStocks, ...(fullMarketData.tw || []), ...(fullMarketData.crypto || []), ...(fullMarketData.us || [])];
+      let item = all.find(x => String(x.id) === String(id) || String(x.symbol) === String(id));
+      if (!item) {
+        item = { id: id, symbol: id, name: id, price: "100.00", change: 0.0, volumeVal: 1.5, ampVal: 3.2, type: "tw", history: [] };
+      }
+      openAnalysisModal(item);
+    }
+
+    // ================= 4. 開啟彈窗與繪製真實走勢 =================
+    function openAnalysisModal(item) {
+      currentModalItem = item;
+      currentTimeframe = '1d';
+      updateTfButtonStyles();
+
+      const p = parseFloat(String(item.price).replace(/,/g, '')) || 100;
+      const isTw = item.type === 'tw';
+      const unit = isTw ? '億元' : (item.type === 'crypto' ? 'M USDT' : '億美元');
+
+      document.getElementById('modal-title').textContent = `${item.name} (${item.symbol})`;
+      document.getElementById('modal-subtitle').textContent = `現價：${item.price} ｜ 當日漲跌：${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}% ｜ 成交值：${item.volumeVal} ${unit} ｜ 振幅：${item.ampVal || '0.00'}%`;
+
+      // SMC 與 POC 數據
+      const isBull = item.change >= 0;
+      const poc = (p * 0.985).toFixed(2);
+      const obLow = (p * 0.965).toFixed(2);
+      const obHigh = (p * 0.978).toFixed(2);
+      const fvgLow = (p * 0.972).toFixed(2);
+      const fvgHigh = (p * 0.982).toFixed(2);
+      const entryLow = (p * 0.975).toFixed(2);
+      const entryHigh = (p * 0.985).toFixed(2);
+      const sl = (p * 0.955).toFixed(2);
+      const tp1 = (p * 1.035).toFixed(2);
+      const tp2 = (p * 1.070).toFixed(2);
+
+      const badge = document.getElementById('smc-bias-badge');
+      badge.textContent = isBull ? "多頭結構延續 (BOS 向上)" : "回踩折價區 (Discount Retest)";
+      badge.className = `text-[11px] px-2 py-0.5 rounded-full font-medium ${isBull ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}`;
+
+      document.getElementById('smc-poc').textContent = `${poc}`;
+      document.getElementById('smc-ob').textContent = `${obLow} ~ ${obHigh}`;
+      document.getElementById('smc-fvg').textContent = `${fvgLow} ~ ${fvgHigh}`;
+      document.getElementById('plan-entry').textContent = `${entryLow} ~ ${entryHigh}`;
+      document.getElementById('plan-sl').textContent = `${sl}`;
+      document.getElementById('plan-tp').textContent = `${tp1} / ${tp2}`;
+      document.getElementById('smc-rr').textContent = "預估盈虧比 (R:R) 1 : 2.8";
+
+      // AI 報告
+      const ai = item.ai || {
+        valuation: isBull ? "強勢多頭排列" : "區間震盪整理",
+        catalyst: `即時成交金額突破 ${item.volumeVal} ${unit}，盤中大額買單進駐，市場資金關注度極高。`,
+        fundamentals: `籌碼面維持法人加碼格局，關鍵支撐位具備紮實買盤護盤。`,
+        bear: `${(p * 0.92).toFixed(1)} (-8.0%)`,
+        base: `${(p * 1.06).toFixed(1)} (+6.0%)`,
+        bull: `${(p * 1.22).toFixed(1)} (+22.0%)`
+      };
+
+      document.getElementById('ai-valuation').textContent = ai.valuation;
+      document.getElementById('ai-catalyst').textContent = ai.catalyst;
+      document.getElementById('ai-fundamentals').textContent = ai.fundamentals;
+      document.getElementById('ai-bear').textContent = ai.bear;
+      document.getElementById('ai-base').textContent = ai.base;
+      document.getElementById('ai-bull').textContent = ai.bull;
+
+      // 顯示彈窗
+      const modal = document.getElementById('detail-modal');
+      modal.classList.add('is-open');
+
+      // 安全非同步渲染走勢圖
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          renderCharts(item);
+        }, 50);
+      });
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('is-open');
+      if (chartMain) { chartMain.remove(); chartMain = null; }
+      if (chartVolume) { chartVolume.remove(); chartVolume = null; }
+      if (chartMacd) { chartMacd.remove(); chartMacd = null; }
+      currentModalItem = null;
+    }
+
+    function changeTimeframe(tf) {
+      currentTimeframe = tf;
+      updateTfButtonStyles();
+      if (currentModalItem) {
+        renderCharts(currentModalItem);
+      }
+    }
+
+    function updateTfButtonStyles() {
+      ['1d', '1wk', '1mo'].forEach(t => {
+        const btn = document.getElementById(`tf-${t}`);
+        if (btn) {
+          btn.className = (t === currentTimeframe) 
+            ? "px-2.5 py-0.5 rounded tf-active transition"
+            : "px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition";
+        }
+      });
+    }
+
+    // 核心：若有後端真實 K 棒則直接繪製，並依照週期聚合！
+    function renderCharts(item) {
+      const mainEl = document.getElementById('chart-main');
+      const volEl = document.getElementById('chart-volume');
+      const macdEl = document.getElementById('chart-macd');
+
+      mainEl.innerHTML = '';
+      volEl.innerHTML = '';
+      macdEl.innerHTML = '';
+
+      const w = mainEl.clientWidth || 800;
+      if (w === 0) return;
+
+      let rawCandles = (item.history && item.history.length > 0) ? item.history : [];
+      
+      // 聚合日/週/月 K 線
+      let candles = aggregateTimeframe(rawCandles, currentTimeframe);
+
+      // 若暫無歷史資料的兜底
+      if (candles.length === 0) {
+        const p = parseFloat(String(item.price).replace(/,/g, '')) || 100;
+        const now = new Date().toISOString().split('T')[0];
+        candles = [{ time: now, open: p, high: p * 1.01, low: p * 0.99, close: p, volume: 10000 }];
+      }
+
+      const isTw = item.type === 'tw';
+      const upColor = isTw ? '#ef4444' : '#10b981';
+      const downColor = isTw ? '#10b981' : '#ef4444';
+
+      const opts = {
+        layout: { background: { color: '#070a0f' }, textColor: '#94a3b8' },
+        grid: { vertLines: { color: '#161e2e' }, horzLines: { color: '#161e2e' } },
+        localization: { dateFormat: 'yyyy/MM/dd', locale: 'zh-TW' },
+        timeScale: { borderColor: '#1e293b' }
+      };
+
+      // 1. K 棒
+      chartMain = LightweightCharts.createChart(mainEl, { ...opts, width: w, height: 200, timeScale: { visible: false } });
+      const candleSeries = chartMain.addCandlestickSeries({ upColor, downColor, borderVisible: false, wickUpColor: upColor, wickDownColor: downColor });
+      const ma20 = chartMain.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const ma60 = chartMain.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+      candleSeries.setData(candles);
+
+      const calcMA = (p) => candles.slice(p - 1).map((_, i) => ({
+        time: candles[i + p - 1].time,
+        value: parseFloat((candles.slice(i, i + p).reduce((a, b) => a + b.close, 0) / p).toFixed(2))
+      }));
+      if (candles.length >= 20) ma20.setData(calcMA(20));
+      if (candles.length >= 60) ma60.setData(calcMA(60));
+
+      // 2. Volume
+      chartVolume = LightweightCharts.createChart(volEl, { ...opts, width: w, height: 65, timeScale: { visible: false } });
+      const volSeries = chartVolume.addHistogramSeries({ priceFormat: { type: 'volume' } });
+      volSeries.setData(candles.map(c => ({
+        time: c.time,
+        value: c.volume,
+        color: c.close >= c.open ? (isTw ? '#ef444488' : '#10b98188') : (isTw ? '#10b98188' : '#ef444488')
+      })));
+
+      // 3. MACD
+      chartMacd = LightweightCharts.createChart(macdEl, { ...opts, width: w, height: 85 });
+      const macdFast = chartMacd.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const macdSlow = chartMacd.addLineSeries({ color: '#f59e0b', lineWidth: 1.5 });
+      const macdHist = chartMacd.addHistogramSeries({ color: '#26a69a' });
+
+      const calcEMA = (data, span) => {
+        const k = 2 / (span + 1);
+        let ema = data[0].close;
+        return data.map(d => {
+          ema = d.close * k + ema * (1 - k);
+          return { time: d.time, value: ema };
+        });
+      };
+      const ema12 = calcEMA(candles, 12);
+      const ema26 = calcEMA(candles, 26);
+      const dif = ema12.map((d, i) => ({ time: d.time, value: parseFloat((d.value - ema26[i].value).toFixed(2)) }));
+
+      let deaVal = dif[0].value;
+      const k9 = 2 / 10;
+      const dea = dif.map(d => {
+        deaVal = d.value * k9 + deaVal * (1 - k9);
+        return { time: d.time, value: parseFloat(deaVal.toFixed(2)) };
+      });
+      const hist = dif.map((d, i) => {
+        const h = parseFloat(((d.value - dea[i].value) * 2).toFixed(2));
+        return { time: d.time, value: h, color: h >= 0 ? '#ef4444' : '#10b981' };
+      });
+
+      macdFast.setData(dif);
+      macdSlow.setData(dea);
+      macdHist.setData(hist);
+
+      chartMain.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        chartVolume.timeScale().setVisibleLogicalRange(r);
+        chartMacd.timeScale().setVisibleLogicalRange(r);
+      });
+
+      chartMain.subscribeCrosshairMove(param => {
+        const dateEl = document.getElementById('chart-date-display');
+        if (param.time) {
+          const t = param.time;
+          dateEl.textContent = `日期：${t.year || t.substr(0,4)} 年 ${t.month || t.substr(5,2)} 月 ${t.day || t.substr(8,2)} 日`;
+        }
+      });
+
+      chartMain.timeScale().fitContent();
+      chartVolume.timeScale().fitContent();
+      chartMacd.timeScale().fitContent();
+    }
+
+    function aggregateTimeframe(dailyList, tf) {
+      if (!dailyList || dailyList.length === 0 || tf === '1d') return dailyList;
+      const grouped = {};
+      dailyList.forEach(c => {
+        const d = new Date(c.time);
+        let key = '';
+        if (tf === '1wk') {
+          const day = d.getDay() || 7;
+          d.setDate(d.getDate() - day + 1);
+          key = d.toISOString().split('T')[0];
+        } else if (tf === '1mo') {
+          key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+        }
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(c);
+      });
+
+      return Object.keys(grouped).map(k => {
+        const list = grouped[k];
+        return {
+          time: k,
+          open: list[0].open,
+          close: list[list.length - 1].close,
+          high: Math.max(...list.map(x => x.high)),
+          low: Math.min(...list.map(x => x.low)),
+          volume: list.reduce((sum, x) => sum + x.volume, 0)
+        };
+      });
+    }
+
+    // ================= 5. 資料同步與排行榜渲染 =================
+    async function fetchRealMarketIndices() {
+      try {
+        const payload = {
+          "symbols": { "tickers": ["TWSE:TAIEX", "SP:SPX", "NASDAQ:IXIC"], "query": { "types": [] } },
+          "columns": ["close", "change"]
+        };
+        const res = await fetch('https://scanner.tradingview.com/global/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        data.data.forEach(item => {
+          const s = item.s;
+          const close = item.d[0];
+          const chg = item.d[1];
+          const isPos = chg >= 0;
+          const chgStr = (isPos ? '+' : '') + chg.toFixed(2) + '%';
+          
+          if (s === "TWSE:TAIEX") {
+            document.getElementById('idx-tw-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-tw-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-rose-400' : 'text-emerald-400'}`;
+          } else if (s === "SP:SPX") {
+            document.getElementById('idx-spx-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-spx-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          } else if (s === "NASDAQ:IXIC") {
+            document.getElementById('idx-ixic-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-ixic-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          }
+        });
+      } catch (e) {}
+    }
+
+    async function syncMarketDataFromJson() {
+      try {
+        const res = await fetch('./data/market_data.json?t=' + Date.now());
+        if (res.ok) {
+          const remote = await res.json();
+          if (remote.tw_live && remote.tw_live.length > 0) twLiveStocks = remote.tw_live;
+          if (remote.tw && remote.tw.length > 0) {
+            fullMarketData.tw = remote.tw;
+            document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
+          }
+          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
+            fullMarketData.crypto = remote.crypto;
+          }
+          renderTWLiveSection();
+          renderAll();
+        }
+      } catch (err) {}
+    }
+
+    function renderTWLiveSection() {
+      if (!twLiveStocks || twLiveStocks.length === 0) return;
+
+      const gainers = [...twLiveStocks].sort((a, b) => b.change - a.change).slice(0, 8);
+      document.getElementById('table-tw-live-gainers').innerHTML = gainers.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold text-rose-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+
+      const losers = [...twLiveStocks].sort((a, b) => a.change - b.change).slice(0, 8);
+      document.getElementById('table-tw-live-losers').innerHTML = losers.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold text-emerald-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+
+      const volumes = [...twLiveStocks].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8);
+      document.getElementById('table-tw-live-volume').innerHTML = volumes.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-sky-300 font-bold font-mono">${item.volumeVal.toLocaleString()} 億</div>
+          <div class="text-[9px] ${item.change >= 0 ? 'text-rose-400' : 'text-emerald-400'} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+        </div>
+      `)).join('');
+
+      const amplitudes = [...twLiveStocks].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8);
+      document.getElementById('table-tw-live-amplitude').innerHTML = amplitudes.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-amber-400 font-bold font-mono">${item.ampVal}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+    }
+
+    async function fetchRealCryptoData() {
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+        const data = await res.json();
+        const usdtPairs = data.filter(item => item.symbol.endsWith('USDT') && parseFloat(item.quoteVolume) > 5000000);
+
+        fullMarketData.crypto = usdtPairs.map(item => {
+          const last = parseFloat(item.lastPrice);
+          const pct = parseFloat(item.priceChangePercent);
+          const volM = (parseFloat(item.quoteVolume) / 1000000).toFixed(1);
+          const sym = item.symbol.replace('USDT', '');
+          return {
+            id: item.symbol, type: "crypto", symbol: sym, name: sym,
+            price: last > 1 ? last.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : last.toString(),
+            change: pct, volumeVal: parseFloat(volM), ampVal: 4.5,
+            badge: pct >= 0 ? "多頭動能" : "回檔整理",
+            history: []
+          };
+        });
+
+        const btc = fullMarketData.crypto.find(x => x.symbol === 'BTC');
+        if (btc) {
+          document.getElementById('ticker-btc-price').textContent = `$${btc.price}`;
+          const btcEl = document.getElementById('ticker-btc-change');
+          btcEl.textContent = `${btc.change >= 0 ? '+' : ''}${btc.change.toFixed(2)}%`;
+          btcEl.className = `font-mono font-medium ${btc.change >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+        document.getElementById('badge-crypto').textContent = fullMarketData.crypto.length + ' 檔';
+        if (currentMarket === 'crypto') renderAll();
+      } catch (err) {}
+    }
+
+    function renderTableRow(item, rightValueHtml) {
+      const isFav = userWatchlist.includes(item.id);
+      return `
+        <tr data-stock-id="${item.id}" class="hover:bg-slate-800/80 cursor-pointer transition select-none">
+          <td class="py-2.5 pl-1">
+            <div class="flex items-center gap-1.5">
+              <button data-fav-btn="true" onclick="toggleWatchlist('${item.id}', event)" class="text-xs transition ${isFav ? 'text-amber-400' : 'text-slate-600 hover:text-slate-400'}">
+                ${isFav ? '★' : '☆'}
+              </button>
+              <div>
+                <div class="font-bold text-slate-100 group-hover:text-sky-400 transition">${item.name}</div>
+                <div class="text-[10px] text-slate-500 font-mono">${item.symbol}</div>
+              </div>
+            </div>
+          </td>
+          <td class="py-2.5 text-right font-semibold text-slate-200">${item.price}</td>
+          <td class="py-2.5 text-right pr-1">${rightValueHtml}</td>
+        </tr>
+      `;
+    }
+
+    function renderAll() {
+      document.getElementById('badge-fav').textContent = userWatchlist.length;
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+
+      // 自選清單渲染
+      if (currentMarket === 'watchlist') {
+        const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto, ...fullMarketData.us];
+        const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
+        let favList = uniqueItems.filter(item => userWatchlist.includes(item.id));
+        if (currentWatchlistFilter !== 'all') favList = favList.filter(item => item.type === currentWatchlistFilter);
+        if (q) favList = favList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
+
+        const cardsContainer = document.getElementById('watchlist-cards-container');
+        const emptyState = document.getElementById('empty-state');
+        if (favList.length === 0) {
+          cardsContainer.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+        emptyState.classList.add('hidden');
+
+        cardsContainer.innerHTML = favList.map(item => {
+          const isFav = userWatchlist.includes(item.id);
+          const isTw = item.type === 'tw';
+          const isPos = item.change >= 0;
+          const colorClass = isTw ? (isPos ? 'text-rose-400' : 'text-emerald-400') : (isPos ? 'text-emerald-400' : 'text-rose-400');
+          const unit = isTw ? '億' : (item.type === 'crypto' ? 'M' : '億');
+
+          return `
+            <div data-stock-id="${item.id}" class="bg-[#0d1117] border border-slate-800 hover:border-slate-700 p-4 rounded-lg cursor-pointer transition flex flex-col justify-between group">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="text-xs font-mono text-slate-400">${item.symbol}</div>
+                  <div class="text-base font-bold text-white mt-0.5 group-hover:text-sky-400 transition">${item.name}</div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${item.badge || '人氣'}</span>
+                  <button data-fav-btn="true" onclick="toggleWatchlist('${item.id}', event)" class="p-1 rounded text-sm transition ${isFav ? 'text-amber-400' : 'text-slate-600'}">★</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 my-3 p-2 bg-[#070a0f] rounded border border-slate-800/80 text-[11px]">
+                <div><span class="text-slate-500">成交值：</span><span class="text-slate-200 font-mono font-medium">${item.volumeVal} ${unit}</span></div>
+                <div class="text-right"><span class="text-slate-500">振幅：</span><span class="text-amber-400 font-mono font-medium">${item.ampVal}%</span></div>
+              </div>
+              <div class="flex items-end justify-between mt-2">
+                <div><div class="text-[10px] text-slate-500">現價</div><div class="text-lg font-mono font-bold text-slate-100">${item.price}</div></div>
+                <div class="text-right"><div class="text-[10px] text-slate-500">漲跌幅</div><div class="text-sm font-mono font-bold ${colorClass}">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div></div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-sky-400">
+                <span>查看技術圖表與 SMC 計劃</span>
+                <span>→</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        return;
+      }
+
+      // 一般市場渲染
+      let baseList = [...(fullMarketData[currentMarket] || [])];
+      if (q) baseList = baseList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
+      if (baseList.length === 0) return;
+
+      const isTw = currentMarket === 'tw';
+      const getColor = (val) => isTw ? (val >= 0 ? 'text-rose-400' : 'text-emerald-400') : (val >= 0 ? 'text-emerald-400' : 'text-rose-400');
+      const unit = isTw ? '億' : (currentMarket === 'crypto' ? 'M' : '億');
+
+      document.getElementById('table-gainers').innerHTML = [...baseList].sort((a, b) => b.change - a.change).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+
+      document.getElementById('table-losers').innerHTML = [...baseList].sort((a, b) => a.change - b.change).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+
+      document.getElementById('table-volume').innerHTML = [...baseList].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-sky-300 font-bold font-mono">${item.volumeVal.toLocaleString()} ${unit}</div>
+          <div class="text-[9px] ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+        </div>
+      `)).join('');
+
+      document.getElementById('table-amplitude').innerHTML = [...baseList].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-amber-400 font-bold font-mono">${item.ampVal}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+    }
+
+    function handleSearch() {
+      renderTWLiveSection();
+      renderAll();
+    }
+
+    function switchMarket(market) {
+      currentMarket = market;
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('nav-active');
+        b.classList.add('text-slate-400');
+      });
+      const activeBtn = document.getElementById(`nav-${market}`);
+      if (activeBtn) {
+        activeBtn.classList.add('nav-active');
+        activeBtn.classList.remove('text-slate-400');
+      }
+
+      const twLiveSection = document.getElementById('tw-live-section');
+      const genSection = document.getElementById('general-scan-section');
+      const watchlistCards = document.getElementById('watchlist-cards-container');
+      const wSubtabs = document.getElementById('watchlist-subtabs');
+
+      if (market === 'tw') {
+        twLiveSection.classList.remove('hidden');
+        genSection.classList.remove('hidden');
+        watchlistCards.classList.add('hidden');
+        wSubtabs.classList.add('hidden');
+
+        document.getElementById('page-title').textContent = '📊 台股市況雙軌掃描';
+        document.getElementById('general-source-tag').textContent = '全市場矩陣';
+        document.getElementById('general-section-title').textContent = '昨日收盤各項指標排行 (以成交金額為基準篩選)';
+        document.getElementById('general-volume-unit').textContent = '單位：億元 (NTD)';
+        document.getElementById('label-rank-gainers').textContent = '昨日收盤漲幅排行';
+        document.getElementById('label-rank-losers').textContent = '昨日收盤跌幅排行';
+        document.getElementById('label-rank-volume').textContent = '昨日成交值龍頭排行';
+        document.getElementById('label-rank-amplitude').textContent = '昨日振幅排行';
+      } else if (market === 'watchlist') {
+        twLiveSection.classList.add('hidden');
+        genSection.classList.add('hidden');
+        watchlistCards.classList.remove('hidden');
+        wSubtabs.classList.remove('hidden');
+        document.getElementById('page-title').textContent = '⭐ 我的自選標的';
+      } else {
+        twLiveSection.classList.add('hidden');
+        genSection.classList.remove('hidden');
+        watchlistCards.classList.add('hidden');
+        wSubtabs.classList.add('hidden');
+
+        if (market === 'crypto') {
+          document.getElementById('page-title').textContent = '⚡ 加密貨幣即時掃描';
+          document.getElementById('general-source-tag').textContent = 'Binance API';
+          document.getElementById('general-section-title').textContent = '24H 全市場指標排行 (成交額 > 500萬 USDT)';
+          document.getElementById('general-volume-unit').textContent = '單位：M USDT';
+          document.getElementById('label-rank-gainers').textContent = '24H 漲幅排行';
+          document.getElementById('label-rank-losers').textContent = '24H 跌幅排行';
+          document.getElementById('label-rank-volume').textContent = '24H 成交額排行';
+          document.getElementById('label-rank-amplitude').textContent = '24H 振幅排行';
+        } else {
+          document.getElementById('page-title').textContent = '🇺🇸 美股市況掃描';
+          document.getElementById('general-source-tag').textContent = 'US Market';
+          document.getElementById('general-section-title').textContent = '美股核心指標排行';
+          document.getElementById('general-volume-unit').textContent = '單位：億美元';
+          document.getElementById('label-rank-gainers').textContent = '美股漲幅排行';
+          document.getElementById('label-rank-losers').textContent = '美股跌幅排行';
+          document.getElementById('label-rank-volume').textContent = '美股成交額排行';
+          document.getElementById('label-rank-amplitude').textContent = '美股振幅排行';
+        }
+      }
+      renderAll();
+    }
+
+    function filterWatchlist(type) {
+      currentWatchlistFilter = type;
+      ['all', 'tw', 'us', 'crypto'].forEach(t => {
+        const btn = document.getElementById(`wtab-${t}`);
+        if (btn) btn.className = (t === type) ? "px-2.5 py-1 rounded subtab-active" : "px-2.5 py-1 rounded text-slate-400 hover:text-white";
+      });
+      renderAll();
+    }
+
+    // ================= 6. 雲端自選股與帳號管理 =================
+    function loadCloudWatchlist(uid) {
+      if (!db) return;
+      db.collection('user_watchlists').doc(uid).get().then(doc => {
+        if (doc.exists) userWatchlist = doc.data().items || [];
+        renderAll();
+      });
+    }
+
+    function saveWatchlist() {
+      localStorage.setItem('user_watchlist', JSON.stringify(userWatchlist));
+      if (currentUser && db) {
+        db.collection('user_watchlists').doc(currentUser.uid).set({ items: userWatchlist });
+      }
+      renderAll();
+    }
+
+    function toggleWatchlist(id, event) {
+      if (event) event.stopPropagation();
+      userWatchlist = userWatchlist.includes(id) ? userWatchlist.filter(x => x !== id) : [...userWatchlist, id];
+      saveWatchlist();
+    }
+
+    function openAuthModal() { document.getElementById('auth-modal').classList.add('is-open'); }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.remove('is-open'); }
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('auth-modal-title').textContent = isRegisterMode ? '註冊新帳號' : '會員登入';
+      document.getElementById('auth-submit-btn').textContent = isRegisterMode ? '立即註冊' : '登入';
+      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? '已有帳號？前往登入' : '還沒有帳號？免費註冊';
+    }
+
+    function submitAuth() {
+      const email = document.getElementById('auth-email').value.trim();
+      const pass = document.getElementById('auth-password').value.trim();
+      const errBox = document.getElementById('auth-error');
+      errBox.classList.add('hidden');
+      if (!auth) return;
+
+      const p = isRegisterMode ? auth.createUserWithEmailAndPassword(email, pass) : auth.signInWithEmailAndPassword(email, pass);
+      p.then(() => closeAuthModal()).catch(err => {
+        errBox.textContent = "操作失敗：" + err.message;
+        errBox.classList.remove('hidden');
+      });
+    }
+
+    function handleLogout() { if (auth) auth.signOut(); }
+
+    // ================= 7. 啟動定時循環 =================
+    function startRefreshCycle() {
+      fetchRealMarketIndices();
+      syncMarketDataFromJson();
+      fetchRealCryptoData();
+    }
+    startRefreshCycle();
+    setInterval(startRefreshCycle, 15000);
+  </script>
+</body>
+</html>
