@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>市場 AI 智慧量化掃描終端 (完全隔離穩定版)</title>
+  <title>市場 AI 智慧量化掃描</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- TradingView Lightweight Charts CDN (台股專用) -->
@@ -19,6 +19,8 @@
     .nav-active { background-color: #1e293b; color: #38bdf8; border-left: 3px solid #38bdf8; font-weight: 600; }
     .subtab-active { background-color: #38bdf8; color: #0f172a; font-weight: 600; }
     .tf-active { background-color: #38bdf8 !important; color: #090d14 !important; font-weight: 700 !important; }
+    .side-active-long { background-color: #10b981 !important; color: #ffffff !important; font-weight: 700 !important; }
+    .side-active-short { background-color: #ef4444 !important; color: #ffffff !important; font-weight: 700 !important; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #0b0e14; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 2px; }
@@ -341,9 +343,17 @@
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <div class="flex items-center gap-2">
               <span class="px-1.5 py-0.5 text-[10px] rounded bg-amber-950 text-amber-400 border border-amber-800 font-semibold font-mono">SMC & POC 量化引擎</span>
-              <span class="text-xs font-bold text-slate-200">流動性結構與關鍵點位推演</span>
+              <span id="smc-section-title" class="text-xs font-bold text-slate-200">流動性結構與關鍵點位推演</span>
             </div>
-            <div id="smc-bias-badge" class="text-[11px] px-2 py-0.5 rounded-full font-medium"></div>
+            
+            <div class="flex items-center gap-2">
+              <!-- 加密貨幣專屬：多空切換按鈕 -->
+              <div id="crypto-side-controls" class="hidden flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded text-xs">
+                <button onclick="setCryptoSide('long')" id="side-btn-long" class="px-2 py-0.5 rounded side-active-long transition">🟢 多單計劃</button>
+                <button onclick="setCryptoSide('short')" id="side-btn-short" class="px-2 py-0.5 rounded text-slate-400 hover:text-white transition">🔴 空單計劃</button>
+              </div>
+              <div id="smc-bias-badge" class="text-[11px] px-2 py-0.5 rounded-full font-medium"></div>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
@@ -366,7 +376,7 @@
 
           <div class="mt-2 p-2.5 bg-slate-900/90 rounded border border-sky-900/50">
             <div class="text-[11px] font-bold text-sky-400 mb-1.5 flex items-center justify-between">
-              <span>🎯 AI 建議交易計劃 (Trade Setup)</span>
+              <span id="plan-setup-title">🎯 AI 建議交易計劃 (Trade Setup)</span>
               <span id="smc-rr" class="text-[10px] text-emerald-400 font-mono font-semibold"></span>
             </div>
             <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
@@ -449,9 +459,9 @@
 
   <script>
     // -------------------------------------------------------------
-    // 👉 請在此替換成你在 Cloudflare 建立的 Worker 網址
+    // 👉 固定你的專屬 Cloudflare Worker 端點
     // -------------------------------------------------------------
-    const WORKER_PROXY_URL = "https://hidden-flower-5136.crypto-pisces315.workers.dev/"; 
+    const WORKER_PROXY_URL = "https://hidden-flower-5136.crypto-pisces315.workers.dev"; 
 
     // Firebase 初始化
     const firebaseConfig = {
@@ -507,12 +517,45 @@
     let currentWatchlistFilter = 'all';
     let currentModalItem = null;
     let currentTimeframe = '1d';
+    let currentCryptoSide = 'long'; // 'long' 或 'short'
     let isRegisterMode = false;
 
     // 台股專用圖表實例
     let chartMain = null;
     let chartVolume = null;
     let chartMacd = null;
+
+    // ================= 台灣證交所標準升降單位 (Tick Size) 格式化 =================
+    function formatTWPrice(price) {
+      const p = parseFloat(price);
+      if (isNaN(p) || p <= 0) return "0";
+
+      let tick = 0.01;
+      let decimals = 2;
+
+      if (p < 10) {
+        tick = 0.01;
+        decimals = 2;
+      } else if (p < 50) {
+        tick = 0.05;
+        decimals = 2;
+      } else if (p < 100) {
+        tick = 0.1;
+        decimals = 1;
+      } else if (p < 500) {
+        tick = 0.5;
+        decimals = 1;
+      } else if (p < 1000) {
+        tick = 1;
+        decimals = 0; // 500元以上純整數
+      } else {
+        tick = 5;
+        decimals = 0; // 1000元以上以5元為跳動整數
+      }
+
+      const rounded = Math.round(p / tick) * tick;
+      return rounded.toFixed(decimals);
+    }
 
     // 全域點擊監聽 (委派給每一列)
     document.addEventListener('click', function(e) {
@@ -535,48 +578,38 @@
     async function openAnalysisModal(item) {
       currentModalItem = item;
       currentTimeframe = '1d';
+      currentCryptoSide = 'long';
       updateTfButtonStyles();
 
       const p = parseFloat(String(item.price).replace(/,/g, '')) || 100;
       const isTw = item.type === 'tw';
-      const unit = isTw ? '億元' : (item.type === 'crypto' ? 'M USDT' : '億美元');
+      const isCrypto = item.type === 'crypto';
+      const unit = isTw ? '億元' : (isCrypto ? 'M USDT' : '億美元');
 
       document.getElementById('modal-title').textContent = `${item.name} (${item.symbol})`;
       document.getElementById('modal-subtitle').textContent = `現價：${item.price} ｜ 當日漲跌：${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}% ｜ 成交值：${item.volumeVal} ${unit} ｜ 振幅：${item.ampVal || '0.00'}%`;
 
-      // SMC 與 POC 數據
-      const isBull = item.change >= 0;
-      const poc = (p * 0.985).toFixed(2);
-      const obLow = (p * 0.965).toFixed(2);
-      const obHigh = (p * 0.978).toFixed(2);
-      const fvgLow = (p * 0.972).toFixed(2);
-      const fvgHigh = (p * 0.982).toFixed(2);
-      const entryLow = (p * 0.975).toFixed(2);
-      const entryHigh = (p * 0.985).toFixed(2);
-      const sl = (p * 0.955).toFixed(2);
-      const tp1 = (p * 1.035).toFixed(2);
-      const tp2 = (p * 1.070).toFixed(2);
+      // 幣圈多空切換按鈕顯示控制
+      const cryptoSideControls = document.getElementById('crypto-side-controls');
+      if (isCrypto) {
+        cryptoSideControls.classList.remove('hidden');
+        updateCryptoSideButtons();
+      } else {
+        cryptoSideControls.classList.add('hidden');
+      }
 
-      const badge = document.getElementById('smc-bias-badge');
-      badge.textContent = isBull ? "多頭結構延續 (BOS 向上)" : "回踩折價區 (Discount Retest)";
-      badge.className = `text-[11px] px-2 py-0.5 rounded-full font-medium ${isBull ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}`;
-
-      document.getElementById('smc-poc').textContent = `${poc}`;
-      document.getElementById('smc-ob').textContent = `${obLow} ~ ${obHigh}`;
-      document.getElementById('smc-fvg').textContent = `${fvgLow} ~ ${fvgHigh}`;
-      document.getElementById('plan-entry').textContent = `${entryLow} ~ ${entryHigh}`;
-      document.getElementById('plan-sl').textContent = `${sl}`;
-      document.getElementById('plan-tp').textContent = `${tp1} / ${tp2}`;
-      document.getElementById('smc-rr').textContent = "預估盈虧比 (R:R) 1 : 2.8";
+      // 更新 SMC 點位
+      updateSMCLimits(p, item);
 
       // AI 報告
+      const isBull = item.change >= 0;
       const ai = item.ai || {
         valuation: isBull ? "強勢多頭排列" : "區間震盪整理",
         catalyst: `即時成交金額突破 ${item.volumeVal} ${unit}，盤中大額買單進駐，市場資金關注度極高。`,
         fundamentals: `籌碼面維持法人加碼格局，關鍵支撐位具備紮實買盤護盤。`,
-        bear: `${(p * 0.92).toFixed(1)} (-8.0%)`,
-        base: `${(p * 1.06).toFixed(1)} (+6.0%)`,
-        bull: `${(p * 1.22).toFixed(1)} (+22.0%)`
+        bear: isTw ? `${formatTWPrice(p * 0.92)} (-8.0%)` : `${(p * 0.92).toFixed(2)} (-8.0%)`,
+        base: isTw ? `${formatTWPrice(p * 1.06)} (+6.0%)` : `${(p * 1.06).toFixed(2)} (+6.0%)`,
+        bull: isTw ? `${formatTWPrice(p * 1.22)} (+22.0%)` : `${(p * 1.22).toFixed(2)} (+22.0%)`
       };
 
       document.getElementById('ai-valuation').textContent = ai.valuation;
@@ -589,13 +622,12 @@
       const modal = document.getElementById('detail-modal');
       modal.classList.add('is-open');
 
-      // 核心隔離：以 style.display 實體切換，徹底杜絕寬度為 0 的死結！
+      // 核心隔離：以 style.display 實體切換
       const twChartEl = document.getElementById('container-tw-chart');
       const tvChartEl = document.getElementById('container-tv-chart');
       const twControls = document.getElementById('tw-tf-controls');
 
       if (isTw) {
-        // 清理美股
         const box = document.getElementById('tradingview-embed-box');
         if (box) box.innerHTML = '';
 
@@ -603,14 +635,12 @@
         tvChartEl.style.display = 'none';
         twControls.style.display = 'flex';
 
-        // 核心保護：等瀏覽器把 DOM 算好寬度後才執行台股圖表繪製
         requestAnimationFrame(() => {
           setTimeout(async () => {
             await fetchAndDrawTwCandles(item.symbol, currentTimeframe, p);
           }, 60);
         });
       } else {
-        // 清理台股圖表
         destroyTwCharts();
 
         twChartEl.style.display = 'none';
@@ -618,6 +648,124 @@
         twControls.style.display = 'none';
 
         renderTradingViewNative(item);
+      }
+    }
+
+    // 更新 SMC 點位 (台股走 Tick Size，幣圈支援多單/空單)
+    function updateSMCLimits(p, item) {
+      const isTw = item.type === 'tw';
+      const isCrypto = item.type === 'crypto';
+
+      if (isTw) {
+        // 台股：單向現貨做多，嚴格套用台股跳動檔位
+        document.getElementById('smc-section-title').textContent = "流動性結構與關鍵點位推演 (日K基準)";
+        document.getElementById('plan-setup-title').textContent = "🎯 現貨建議交易計劃 (Trade Setup)";
+        
+        const poc = formatTWPrice(p * 0.985);
+        const obLow = formatTWPrice(p * 0.965);
+        const obHigh = formatTWPrice(p * 0.978);
+        const fvgLow = formatTWPrice(p * 0.972);
+        const fvgHigh = formatTWPrice(p * 0.982);
+        const entryLow = formatTWPrice(p * 0.975);
+        const entryHigh = formatTWPrice(p * 0.985);
+        const sl = formatTWPrice(p * 0.955);
+        const tp1 = formatTWPrice(p * 1.035);
+        const tp2 = formatTWPrice(p * 1.070);
+
+        const isBull = item.change >= 0;
+        const badge = document.getElementById('smc-bias-badge');
+        badge.textContent = isBull ? "多頭結構延續 (BOS 向上)" : "回踩折價區 (Discount Retest)";
+        badge.className = `text-[11px] px-2 py-0.5 rounded-full font-medium ${isBull ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}`;
+
+        document.getElementById('smc-poc').textContent = `${poc}`;
+        document.getElementById('smc-ob').textContent = `${obLow} ~ ${obHigh}`;
+        document.getElementById('smc-fvg').textContent = `${fvgLow} ~ ${fvgHigh}`;
+        document.getElementById('plan-entry').textContent = `${entryLow} ~ ${entryHigh}`;
+        document.getElementById('plan-sl').textContent = `${sl}`;
+        document.getElementById('plan-tp').textContent = `${tp1} / ${tp2}`;
+        document.getElementById('smc-rr').textContent = "預估盈虧比 (R:R) 1 : 2.8";
+      } else if (isCrypto) {
+        // 幣圈：支援多單/空單雙向切換 (UTC 00:00 / 台北時間 08:00 日換日基準)
+        if (currentCryptoSide === 'long') {
+          document.getElementById('plan-setup-title').textContent = "🎯 做多合約計劃 (Long Setup)";
+          const poc = (p * 0.985).toFixed(2);
+          const obLow = (p * 0.965).toFixed(2);
+          const obHigh = (p * 0.978).toFixed(2);
+          const fvgLow = (p * 0.972).toFixed(2);
+          const fvgHigh = (p * 0.982).toFixed(2);
+          const entryLow = (p * 0.978).toFixed(2);
+          const entryHigh = (p * 0.988).toFixed(2);
+          const sl = (p * 0.960).toFixed(2);
+          const tp1 = (p * 1.040).toFixed(2);
+          const tp2 = (p * 1.080).toFixed(2);
+
+          const badge = document.getElementById('smc-bias-badge');
+          badge.textContent = "多頭回踩需求塊 (Demand OB)";
+          badge.className = "text-[11px] px-2 py-0.5 rounded-full font-medium bg-emerald-950 text-emerald-400 border border-emerald-800";
+
+          document.getElementById('smc-poc').textContent = `$${poc}`;
+          document.getElementById('smc-ob').textContent = `$${obLow} ~ $${obHigh}`;
+          document.getElementById('smc-fvg').textContent = `$${fvgLow} ~ $${fvgHigh}`;
+          document.getElementById('plan-entry').textContent = `$${entryLow} ~ $${entryHigh}`;
+          document.getElementById('plan-sl').textContent = `$${sl}`;
+          document.getElementById('plan-tp').textContent = `$${tp1} / $${tp2}`;
+          document.getElementById('smc-rr').textContent = "做多盈虧比 (R:R) 1 : 2.6";
+        } else {
+          document.getElementById('plan-setup-title').textContent = "🎯 做空合約計劃 (Short Setup)";
+          const poc = (p * 1.015).toFixed(2);
+          const obLow = (p * 1.022).toFixed(2);
+          const obHigh = (p * 1.035).toFixed(2);
+          const fvgLow = (p * 1.018).toFixed(2);
+          const fvgHigh = (p * 1.028).toFixed(2);
+          const entryLow = (p * 1.012).toFixed(2);
+          const entryHigh = (p * 1.022).toFixed(2);
+          const sl = (p * 1.040).toFixed(2);
+          const tp1 = (p * 0.960).toFixed(2);
+          const tp2 = (p * 0.920).toFixed(2);
+
+          const badge = document.getElementById('smc-bias-badge');
+          badge.textContent = "空頭反彈供應塊 (Supply OB)";
+          badge.className = "text-[11px] px-2 py-0.5 rounded-full font-medium bg-rose-950 text-rose-400 border border-rose-800";
+
+          document.getElementById('smc-poc').textContent = `$${poc}`;
+          document.getElementById('smc-ob').textContent = `$${obLow} ~ $${obHigh}`;
+          document.getElementById('smc-fvg').textContent = `$${fvgLow} ~ $${fvgHigh}`;
+          document.getElementById('plan-entry').textContent = `$${entryLow} ~ $${entryHigh}`;
+          document.getElementById('plan-sl').textContent = `$${sl}`;
+          document.getElementById('plan-tp').textContent = `$${tp1} / $${tp2}`;
+          document.getElementById('smc-rr').textContent = "做空盈虧比 (R:R) 1 : 2.7";
+        }
+      } else {
+        // 美股
+        document.getElementById('plan-setup-title').textContent = "🎯 建議交易計劃 (Trade Setup)";
+        document.getElementById('smc-poc').textContent = `$${(p * 0.985).toFixed(2)}`;
+        document.getElementById('smc-ob').textContent = `$${(p * 0.965).toFixed(2)} ~ $${(p * 0.978).toFixed(2)}`;
+        document.getElementById('smc-fvg').textContent = `$${(p * 0.972).toFixed(2)} ~ $${(p * 0.982).toFixed(2)}`;
+        document.getElementById('plan-entry').textContent = `$${(p * 0.975).toFixed(2)} ~ $${(p * 0.985).toFixed(2)}`;
+        document.getElementById('plan-sl').textContent = `$${(p * 0.955).toFixed(2)}`;
+        document.getElementById('plan-tp').textContent = `$${(p * 1.035).toFixed(2)} / $${(p * 1.070).toFixed(2)}`;
+        document.getElementById('smc-rr').textContent = "預估盈虧比 (R:R) 1 : 2.8";
+      }
+    }
+
+    function setCryptoSide(side) {
+      currentCryptoSide = side;
+      updateCryptoSideButtons();
+      if (currentModalItem) {
+        const p = parseFloat(String(currentModalItem.price).replace(/,/g, '')) || 100;
+        updateSMCLimits(p, currentModalItem);
+      }
+    }
+
+    function updateCryptoSideButtons() {
+      const btnLong = document.getElementById('side-btn-long');
+      const btnShort = document.getElementById('side-btn-short');
+      if (currentCryptoSide === 'long') {
+        btnLong.className = "px-2 py-0.5 rounded side-active-long transition";
+        btnShort.className = "px-2 py-0.5 rounded text-slate-400 hover:text-white transition";
+      } else {
+        btnLong.className = "px-2 py-0.5 rounded text-slate-400 hover:text-white transition";
+        btnShort.className = "px-2 py-0.5 rounded side-active-short transition";
       }
     }
 
@@ -1165,6 +1313,7 @@
       renderAll();
     }
 
+    // 帳號與自選雲端管理
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
