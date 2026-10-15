@@ -1,1 +1,2496 @@
-
+{
+  "crypto": [],
+  "tw": [
+    {
+      "id": "2033",
+      "type": "tw",
+      "symbol": "2033",
+      "name": "佳大",
+      "price": "49.50",
+      "change": 10.0,
+      "volumeVal": 0.28,
+      "ampVal": 7.78,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 0.28 億元，波幅 7.78%。",
+        "fundamentals": "最高 49.50，最低 46.00，多空量能激戰。",
+        "bear": "45.5 (-8%)",
+        "base": "52.0 (+5%)",
+        "bull": "59.4 (+20%)"
+      }
+    },
+    {
+      "id": "2478",
+      "type": "tw",
+      "symbol": "2478",
+      "name": "大毅",
+      "price": "137.50",
+      "change": 10.0,
+      "volumeVal": 12.45,
+      "ampVal": 7.6,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 12.45 億元，波幅 7.6%。",
+        "fundamentals": "最高 137.50，最低 128.00，多空量能激戰。",
+        "bear": "126.5 (-8%)",
+        "base": "144.4 (+5%)",
+        "bull": "165.0 (+20%)"
+      }
+    },
+    {
+      "id": "6885",
+      "type": "tw",
+      "symbol": "6885",
+      "name": "全福生技",
+      "price": "31.90",
+      "change": 10.0,
+      "volumeVal": 1.02,
+      "ampVal": 9.48,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 1.02 億元，波幅 9.48%。",
+        "fundamentals": "最高 31.90，最低 29.15，多空量能激戰。",
+        "bear": "29.3 (-8%)",
+        "base": "33.5 (+5%)",
+        "bull": "38.3 (+20%)"
+      }
+    },
+    {
+      "id": "6225",
+      "type": "tw",
+      "symbol": "6225",
+      "name": "天瀚",
+      "price": "88.20",
+      "change": 9.98,
+      "volumeVal": 0.31,
+      "ampVal": 9.35,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 0.31 億元，波幅 9.35%。",
+        "fundamentals": "最高 88.20，最低 80.70，多空量能激戰。",
+        "bear": "81.1 (-8%)",
+        "base": "92.6 (+5%)",
+        "bull": "105.8 (+20%)"
+      }
+    },
+    {
+      "id": "8039",
+      "type": "tw",
+      "symbol": "8039",
+      "name": "台虹",
+      "price": "303.00",
+      "change": 9.98,
+      "volumeVal": 23.19,
+      "ampVal": 0.36,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 23.19 億元，波幅 0.36%。",
+        "fundamentals": "最高 303.00，最低 302.00，多空量能激戰。",
+        "bear": "278.8 (-8%)",
+        "base": "318.2 (+5%)",
+        "bull": "363.6 (+20%)"
+      }
+    },
+    {
+      "id": "6933",
+      "type": "tw",
+      "symbol": "6933",
+      "name": "AMAX-KY",
+      "price": "414.50",
+      "change": 9.95,
+      "volumeVal": 4.25,
+      "ampVal": 5.17,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 4.25 億元，波幅 5.17%。",
+        "fundamentals": "最高 414.50，最低 395.00，多空量能激戰。",
+        "bear": "381.3 (-8%)",
+        "base": "435.2 (+5%)",
+        "bull": "497.4 (+20%)"
+      }
+    },
+    {
+      "id": "1528",
+      "type": "tw",
+      "symbol": "1528",
+      "name": "恩德",
+      "price": "24.90",
+      "change": 9.93,
+      "volumeVal": 2.02,
+      "ampVal": 8.83,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 2.02 億元，波幅 8.83%。",
+        "fundamentals": "最高 24.90，最低 22.90，多空量能激戰。",
+        "bear": "22.9 (-8%)",
+        "base": "26.1 (+5%)",
+        "bull": "29.9 (+20%)"
+      }
+    },
+    {
+      "id": "1597",
+      "type": "tw",
+      "symbol": "1597",
+      "name": "直得",
+      "price": "160.50",
+      "change": 9.93,
+      "volumeVal": 6.96,
+      "ampVal": 5.82,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 6.96 億元，波幅 5.82%。",
+        "fundamentals": "最高 160.50，最低 152.00，多空量能激戰。",
+        "bear": "147.7 (-8%)",
+        "base": "168.5 (+5%)",
+        "bull": "192.6 (+20%)"
+      }
+    },
+    {
+      "id": "6415",
+      "type": "tw",
+      "symbol": "6415",
+      "name": "矽力*-KY",
+      "price": "471.00",
+      "change": 9.92,
+      "volumeVal": 14.55,
+      "ampVal": 9.1,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 14.55 億元，波幅 9.1%。",
+        "fundamentals": "最高 471.00，最低 432.00，多空量能激戰。",
+        "bear": "433.3 (-8%)",
+        "base": "494.6 (+5%)",
+        "bull": "565.2 (+20%)"
+      }
+    },
+    {
+      "id": "2429",
+      "type": "tw",
+      "symbol": "2429",
+      "name": "銘旺科",
+      "price": "34.95",
+      "change": 9.91,
+      "volumeVal": 0.29,
+      "ampVal": 10.22,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 0.29 億元，波幅 10.22%。",
+        "fundamentals": "最高 34.95，最低 31.70，多空量能激戰。",
+        "bear": "32.2 (-8%)",
+        "base": "36.7 (+5%)",
+        "bull": "41.9 (+20%)"
+      }
+    },
+    {
+      "id": "1326",
+      "type": "tw",
+      "symbol": "1326",
+      "name": "台化",
+      "price": "85.50",
+      "change": 9.9,
+      "volumeVal": 87.48,
+      "ampVal": 9.64,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 87.48 億元，波幅 9.64%。",
+        "fundamentals": "最高 85.50，最低 78.00，多空量能激戰。",
+        "bear": "78.7 (-8%)",
+        "base": "89.8 (+5%)",
+        "bull": "102.6 (+20%)"
+      }
+    },
+    {
+      "id": "3035",
+      "type": "tw",
+      "symbol": "3035",
+      "name": "智原",
+      "price": "211.00",
+      "change": 9.9,
+      "volumeVal": 11.63,
+      "ampVal": 9.9,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 11.63 億元，波幅 9.9%。",
+        "fundamentals": "最高 211.00，最低 192.00，多空量能激戰。",
+        "bear": "194.1 (-8%)",
+        "base": "221.6 (+5%)",
+        "bull": "253.2 (+20%)"
+      }
+    },
+    {
+      "id": "6108",
+      "type": "tw",
+      "symbol": "6108",
+      "name": "競國",
+      "price": "28.85",
+      "change": 9.9,
+      "volumeVal": 2.21,
+      "ampVal": 9.14,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 2.21 億元，波幅 9.14%。",
+        "fundamentals": "最高 28.85，最低 26.45，多空量能激戰。",
+        "bear": "26.5 (-8%)",
+        "base": "30.3 (+5%)",
+        "bull": "34.6 (+20%)"
+      }
+    },
+    {
+      "id": "1301",
+      "type": "tw",
+      "symbol": "1301",
+      "name": "台塑",
+      "price": "88.90",
+      "change": 9.89,
+      "volumeVal": 167.48,
+      "ampVal": 10.51,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 167.48 億元，波幅 10.51%。",
+        "fundamentals": "最高 88.90，最低 80.40，多空量能激戰。",
+        "bear": "81.8 (-8%)",
+        "base": "93.3 (+5%)",
+        "bull": "106.7 (+20%)"
+      }
+    },
+    {
+      "id": "3090",
+      "type": "tw",
+      "symbol": "3090",
+      "name": "日電貿",
+      "price": "183.50",
+      "change": 9.88,
+      "volumeVal": 34.58,
+      "ampVal": 6.29,
+      "badge": "漲停表態",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 34.58 億元，波幅 6.29%。",
+        "fundamentals": "最高 183.50，最低 173.00，多空量能激戰。",
+        "bear": "168.8 (-8%)",
+        "base": "192.7 (+5%)",
+        "bull": "220.2 (+20%)"
+      }
+    },
+    {
+      "id": "9103",
+      "type": "tw",
+      "symbol": "9103",
+      "name": "美德醫療-DR",
+      "price": "6.32",
+      "change": -9.97,
+      "volumeVal": 0.39,
+      "ampVal": 9.97,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 0.39 億元，波幅 9.97%。",
+        "fundamentals": "最高 7.02，最低 6.32，多空量能激戰。",
+        "bear": "5.8 (-8%)",
+        "base": "6.6 (+5%)",
+        "bull": "7.6 (+20%)"
+      }
+    },
+    {
+      "id": "3055",
+      "type": "tw",
+      "symbol": "3055",
+      "name": "蔚華科",
+      "price": "163.00",
+      "change": -9.94,
+      "volumeVal": 1.78,
+      "ampVal": 0.0,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 1.78 億元，波幅 0.0%。",
+        "fundamentals": "最高 163.00，最低 163.00，多空量能激戰。",
+        "bear": "150.0 (-8%)",
+        "base": "171.2 (+5%)",
+        "bull": "195.6 (+20%)"
+      }
+    },
+    {
+      "id": "2466",
+      "type": "tw",
+      "symbol": "2466",
+      "name": "冠西電",
+      "price": "213.50",
+      "change": -9.92,
+      "volumeVal": 2.89,
+      "ampVal": 13.29,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 2.89 億元，波幅 13.29%。",
+        "fundamentals": "最高 245.00，最低 213.50，多空量能激戰。",
+        "bear": "196.4 (-8%)",
+        "base": "224.2 (+5%)",
+        "bull": "256.2 (+20%)"
+      }
+    },
+    {
+      "id": "3406",
+      "type": "tw",
+      "symbol": "3406",
+      "name": "玉晶光",
+      "price": "1,065.00",
+      "change": -9.36,
+      "volumeVal": 116.49,
+      "ampVal": 8.94,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 116.49 億元，波幅 8.94%。",
+        "fundamentals": "最高 1,165.00，最低 1,060.00，多空量能激戰。",
+        "bear": "979.8 (-8%)",
+        "base": "1118.2 (+5%)",
+        "bull": "1278.0 (+20%)"
+      }
+    },
+    {
+      "id": "6456",
+      "type": "tw",
+      "symbol": "6456",
+      "name": "GIS-KY",
+      "price": "91.20",
+      "change": -6.37,
+      "volumeVal": 25.54,
+      "ampVal": 8.01,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 25.54 億元，波幅 8.01%。",
+        "fundamentals": "最高 98.40，最低 90.60，多空量能激戰。",
+        "bear": "83.9 (-8%)",
+        "base": "95.8 (+5%)",
+        "bull": "109.4 (+20%)"
+      }
+    },
+    {
+      "id": "6949",
+      "type": "tw",
+      "symbol": "6949",
+      "name": "沛爾生醫*-創",
+      "price": "39.40",
+      "change": -6.3,
+      "volumeVal": 6.53,
+      "ampVal": 9.51,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 6.53 億元，波幅 9.51%。",
+        "fundamentals": "最高 42.00，最低 38.00，多空量能激戰。",
+        "bear": "36.2 (-8%)",
+        "base": "41.4 (+5%)",
+        "bull": "47.3 (+20%)"
+      }
+    },
+    {
+      "id": "1325",
+      "type": "tw",
+      "symbol": "1325",
+      "name": "恆大",
+      "price": "29.00",
+      "change": -5.54,
+      "volumeVal": 0.95,
+      "ampVal": 6.84,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 0.95 億元，波幅 6.84%。",
+        "fundamentals": "最高 30.55，最低 28.45，多空量能激戰。",
+        "bear": "26.7 (-8%)",
+        "base": "30.5 (+5%)",
+        "bull": "34.8 (+20%)"
+      }
+    },
+    {
+      "id": "3008",
+      "type": "tw",
+      "symbol": "3008",
+      "name": "大立光",
+      "price": "6,880.00",
+      "change": -5.43,
+      "volumeVal": 299.68,
+      "ampVal": 8.93,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 299.68 億元，波幅 8.93%。",
+        "fundamentals": "最高 7,320.00，最低 6,670.00，多空量能激戰。",
+        "bear": "6329.6 (-8%)",
+        "base": "7224.0 (+5%)",
+        "bull": "8256.0 (+20%)"
+      }
+    },
+    {
+      "id": "7769",
+      "type": "tw",
+      "symbol": "7769",
+      "name": "鴻勁",
+      "price": "5,780.00",
+      "change": -4.78,
+      "volumeVal": 43.26,
+      "ampVal": 5.85,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 43.26 億元，波幅 5.85%。",
+        "fundamentals": "最高 6,135.00，最低 5,780.00，多空量能激戰。",
+        "bear": "5317.6 (-8%)",
+        "base": "6069.0 (+5%)",
+        "bull": "6936.0 (+20%)"
+      }
+    },
+    {
+      "id": "2465",
+      "type": "tw",
+      "symbol": "2465",
+      "name": "麗臺",
+      "price": "85.50",
+      "change": -4.36,
+      "volumeVal": 1.91,
+      "ampVal": 5.03,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 1.91 億元，波幅 5.03%。",
+        "fundamentals": "最高 90.00，最低 85.50，多空量能激戰。",
+        "bear": "78.7 (-8%)",
+        "base": "89.8 (+5%)",
+        "bull": "102.6 (+20%)"
+      }
+    },
+    {
+      "id": "2241",
+      "type": "tw",
+      "symbol": "2241",
+      "name": "艾姆勒",
+      "price": "48.40",
+      "change": -4.16,
+      "volumeVal": 3.86,
+      "ampVal": 9.6,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 3.86 億元，波幅 9.6%。",
+        "fundamentals": "最高 52.00，最低 47.15，多空量能激戰。",
+        "bear": "44.5 (-8%)",
+        "base": "50.8 (+5%)",
+        "bull": "58.1 (+20%)"
+      }
+    },
+    {
+      "id": "3543",
+      "type": "tw",
+      "symbol": "3543",
+      "name": "州巧",
+      "price": "51.90",
+      "change": -4.07,
+      "volumeVal": 1.31,
+      "ampVal": 5.18,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "破線尋底",
+        "catalyst": "全市場當日成交金額達 1.31 億元，波幅 5.18%。",
+        "fundamentals": "最高 54.70，最低 51.90，多空量能激戰。",
+        "bear": "47.7 (-8%)",
+        "base": "54.5 (+5%)",
+        "bull": "62.3 (+20%)"
+      }
+    },
+    {
+      "id": "2305",
+      "type": "tw",
+      "symbol": "2305",
+      "name": "全友",
+      "price": "63.60",
+      "change": -3.78,
+      "volumeVal": 19.89,
+      "ampVal": 9.23,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 19.89 億元，波幅 9.23%。",
+        "fundamentals": "最高 69.40，最低 63.30，多空量能激戰。",
+        "bear": "58.5 (-8%)",
+        "base": "66.8 (+5%)",
+        "bull": "76.3 (+20%)"
+      }
+    },
+    {
+      "id": "6669",
+      "type": "tw",
+      "symbol": "6669",
+      "name": "緯穎",
+      "price": "2,115.00",
+      "change": -3.64,
+      "volumeVal": 161.86,
+      "ampVal": 9.11,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 161.86 億元，波幅 9.11%。",
+        "fundamentals": "最高 2,285.00，最低 2,085.00，多空量能激戰。",
+        "bear": "1945.8 (-8%)",
+        "base": "2220.8 (+5%)",
+        "bull": "2538.0 (+20%)"
+      }
+    },
+    {
+      "id": "6924",
+      "type": "tw",
+      "symbol": "6924",
+      "name": "榮惠-KY創",
+      "price": "152.50",
+      "change": -3.48,
+      "volumeVal": 0.22,
+      "ampVal": 6.96,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 0.22 億元，波幅 6.96%。",
+        "fundamentals": "最高 162.00，最低 151.00，多空量能激戰。",
+        "bear": "140.3 (-8%)",
+        "base": "160.1 (+5%)",
+        "bull": "183.0 (+20%)"
+      }
+    },
+    {
+      "id": "2330",
+      "type": "tw",
+      "symbol": "2330",
+      "name": "台積電",
+      "price": "2,490.00",
+      "change": 0.0,
+      "volumeVal": 704.86,
+      "ampVal": 1.81,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 704.86 億元，波幅 1.81%。",
+        "fundamentals": "最高 2,535.00，最低 2,490.00，多空量能激戰。",
+        "bear": "2290.8 (-8%)",
+        "base": "2614.5 (+5%)",
+        "bull": "2988.0 (+20%)"
+      }
+    },
+    {
+      "id": "1303",
+      "type": "tw",
+      "symbol": "1303",
+      "name": "南亞",
+      "price": "349.00",
+      "change": 9.4,
+      "volumeVal": 601.97,
+      "ampVal": 10.03,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 601.97 億元，波幅 10.03%。",
+        "fundamentals": "最高 350.50，最低 318.50，多空量能激戰。",
+        "bear": "321.1 (-8%)",
+        "base": "366.4 (+5%)",
+        "bull": "418.8 (+20%)"
+      }
+    },
+    {
+      "id": "2454",
+      "type": "tw",
+      "symbol": "2454",
+      "name": "聯發科",
+      "price": "4,475.00",
+      "change": -1.1,
+      "volumeVal": 355.35,
+      "ampVal": 2.76,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 355.35 億元，波幅 2.76%。",
+        "fundamentals": "最高 4,600.00，最低 4,475.00，多空量能激戰。",
+        "bear": "4117.0 (-8%)",
+        "base": "4698.8 (+5%)",
+        "bull": "5370.0 (+20%)"
+      }
+    },
+    {
+      "id": "2327",
+      "type": "tw",
+      "symbol": "2327",
+      "name": "國巨*",
+      "price": "627.00",
+      "change": 4.67,
+      "volumeVal": 294.52,
+      "ampVal": 7.01,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 294.52 億元，波幅 7.01%。",
+        "fundamentals": "最高 635.00，最低 593.00，多空量能激戰。",
+        "bear": "576.8 (-8%)",
+        "base": "658.4 (+5%)",
+        "bull": "752.4 (+20%)"
+      }
+    },
+    {
+      "id": "2408",
+      "type": "tw",
+      "symbol": "2408",
+      "name": "南亞科",
+      "price": "480.50",
+      "change": -1.54,
+      "volumeVal": 265.59,
+      "ampVal": 2.15,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 265.59 億元，波幅 2.15%。",
+        "fundamentals": "最高 491.00，最低 480.50，多空量能激戰。",
+        "bear": "442.1 (-8%)",
+        "base": "504.5 (+5%)",
+        "bull": "576.6 (+20%)"
+      }
+    },
+    {
+      "id": "2368",
+      "type": "tw",
+      "symbol": "2368",
+      "name": "金像電",
+      "price": "1,260.00",
+      "change": 7.69,
+      "volumeVal": 202.26,
+      "ampVal": 8.55,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 202.26 億元，波幅 8.55%。",
+        "fundamentals": "最高 1,275.00，最低 1,175.00，多空量能激戰。",
+        "bear": "1159.2 (-8%)",
+        "base": "1323.0 (+5%)",
+        "bull": "1512.0 (+20%)"
+      }
+    },
+    {
+      "id": "3037",
+      "type": "tw",
+      "symbol": "3037",
+      "name": "欣興",
+      "price": "1,185.00",
+      "change": 0.42,
+      "volumeVal": 202.05,
+      "ampVal": 4.66,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 202.05 億元，波幅 4.66%。",
+        "fundamentals": "最高 1,195.00，最低 1,140.00，多空量能激戰。",
+        "bear": "1090.2 (-8%)",
+        "base": "1244.2 (+5%)",
+        "bull": "1422.0 (+20%)"
+      }
+    },
+    {
+      "id": "2308",
+      "type": "tw",
+      "symbol": "2308",
+      "name": "台達電",
+      "price": "1,785.00",
+      "change": 0.56,
+      "volumeVal": 174.38,
+      "ampVal": 2.54,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 174.38 億元，波幅 2.54%。",
+        "fundamentals": "最高 1,820.00，最低 1,775.00，多空量能激戰。",
+        "bear": "1642.2 (-8%)",
+        "base": "1874.2 (+5%)",
+        "bull": "2142.0 (+20%)"
+      }
+    },
+    {
+      "id": "6505",
+      "type": "tw",
+      "symbol": "6505",
+      "name": "台塑化",
+      "price": "119.50",
+      "change": 0.42,
+      "volumeVal": 172.46,
+      "ampVal": 10.08,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 172.46 億元，波幅 10.08%。",
+        "fundamentals": "最高 129.00，最低 117.00，多空量能激戰。",
+        "bear": "109.9 (-8%)",
+        "base": "125.5 (+5%)",
+        "bull": "143.4 (+20%)"
+      }
+    },
+    {
+      "id": "2449",
+      "type": "tw",
+      "symbol": "2449",
+      "name": "京元電子",
+      "price": "296.50",
+      "change": -2.79,
+      "volumeVal": 167.99,
+      "ampVal": 3.77,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 167.99 億元，波幅 3.77%。",
+        "fundamentals": "最高 306.50，最低 295.00，多空量能激戰。",
+        "bear": "272.8 (-8%)",
+        "base": "311.3 (+5%)",
+        "bull": "355.8 (+20%)"
+      }
+    },
+    {
+      "id": "3189",
+      "type": "tw",
+      "symbol": "3189",
+      "name": "景碩",
+      "price": "1,050.00",
+      "change": 0.96,
+      "volumeVal": 161.73,
+      "ampVal": 6.73,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 161.73 億元，波幅 6.73%。",
+        "fundamentals": "最高 1,085.00，最低 1,015.00，多空量能激戰。",
+        "bear": "966.0 (-8%)",
+        "base": "1102.5 (+5%)",
+        "bull": "1260.0 (+20%)"
+      }
+    },
+    {
+      "id": "2303",
+      "type": "tw",
+      "symbol": "2303",
+      "name": "聯電",
+      "price": "142.00",
+      "change": 0.35,
+      "volumeVal": 156.9,
+      "ampVal": 2.83,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 156.9 億元，波幅 2.83%。",
+        "fundamentals": "最高 144.00，最低 140.00，多空量能激戰。",
+        "bear": "130.6 (-8%)",
+        "base": "149.1 (+5%)",
+        "bull": "170.4 (+20%)"
+      }
+    },
+    {
+      "id": "2383",
+      "type": "tw",
+      "symbol": "2383",
+      "name": "台光電",
+      "price": "5,520.00",
+      "change": -0.45,
+      "volumeVal": 129.52,
+      "ampVal": 2.43,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 129.52 億元，波幅 2.43%。",
+        "fundamentals": "最高 5,645.00，最低 5,510.00，多空量能激戰。",
+        "bear": "5078.4 (-8%)",
+        "base": "5796.0 (+5%)",
+        "bull": "6624.0 (+20%)"
+      }
+    },
+    {
+      "id": "1802",
+      "type": "tw",
+      "symbol": "1802",
+      "name": "台玻",
+      "price": "67.00",
+      "change": 8.41,
+      "volumeVal": 124.76,
+      "ampVal": 8.25,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 124.76 億元，波幅 8.25%。",
+        "fundamentals": "最高 67.90，最低 62.80，多空量能激戰。",
+        "bear": "61.6 (-8%)",
+        "base": "70.4 (+5%)",
+        "bull": "80.4 (+20%)"
+      }
+    },
+    {
+      "id": "3026",
+      "type": "tw",
+      "symbol": "3026",
+      "name": "禾伸堂",
+      "price": "854.00",
+      "change": 5.96,
+      "volumeVal": 110.0,
+      "ampVal": 10.17,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 110.0 億元，波幅 10.17%。",
+        "fundamentals": "最高 880.00，最低 798.00，多空量能激戰。",
+        "bear": "785.7 (-8%)",
+        "base": "896.7 (+5%)",
+        "bull": "1024.8 (+20%)"
+      }
+    },
+    {
+      "id": "2409",
+      "type": "tw",
+      "symbol": "2409",
+      "name": "友達",
+      "price": "36.25",
+      "change": 6.15,
+      "volumeVal": 108.14,
+      "ampVal": 5.42,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 108.14 億元，波幅 5.42%。",
+        "fundamentals": "最高 36.30，最低 34.45，多空量能激戰。",
+        "bear": "33.4 (-8%)",
+        "base": "38.1 (+5%)",
+        "bull": "43.5 (+20%)"
+      }
+    },
+    {
+      "id": "3661",
+      "type": "tw",
+      "symbol": "3661",
+      "name": "世芯-KY",
+      "price": "3,940.00",
+      "change": -2.84,
+      "volumeVal": 107.31,
+      "ampVal": 5.3,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 107.31 億元，波幅 5.3%。",
+        "fundamentals": "最高 4,140.00，最低 3,925.00，多空量能激戰。",
+        "bear": "3624.8 (-8%)",
+        "base": "4137.0 (+5%)",
+        "bull": "4728.0 (+20%)"
+      }
+    },
+    {
+      "id": "3711",
+      "type": "tw",
+      "symbol": "3711",
+      "name": "日月光投控",
+      "price": "747.00",
+      "change": 0.95,
+      "volumeVal": 101.56,
+      "ampVal": 2.84,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 101.56 億元，波幅 2.84%。",
+        "fundamentals": "最高 763.00，最低 742.00，多空量能激戰。",
+        "bear": "687.2 (-8%)",
+        "base": "784.4 (+5%)",
+        "bull": "896.4 (+20%)"
+      }
+    },
+    {
+      "id": "8046",
+      "type": "tw",
+      "symbol": "8046",
+      "name": "南電",
+      "price": "1,430.00",
+      "change": -0.69,
+      "volumeVal": 101.22,
+      "ampVal": 3.12,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 101.22 億元，波幅 3.12%。",
+        "fundamentals": "最高 1,440.00，最低 1,395.00，多空量能激戰。",
+        "bear": "1315.6 (-8%)",
+        "base": "1501.5 (+5%)",
+        "bull": "1716.0 (+20%)"
+      }
+    },
+    {
+      "id": "2345",
+      "type": "tw",
+      "symbol": "2345",
+      "name": "智邦",
+      "price": "2,050.00",
+      "change": 0.49,
+      "volumeVal": 94.91,
+      "ampVal": 2.94,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 94.91 億元，波幅 2.94%。",
+        "fundamentals": "最高 2,110.00，最低 2,050.00，多空量能激戰。",
+        "bear": "1886.0 (-8%)",
+        "base": "2152.5 (+5%)",
+        "bull": "2460.0 (+20%)"
+      }
+    },
+    {
+      "id": "2344",
+      "type": "tw",
+      "symbol": "2344",
+      "name": "華邦電",
+      "price": "165.00",
+      "change": 2.17,
+      "volumeVal": 93.33,
+      "ampVal": 4.64,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 93.33 億元，波幅 4.64%。",
+        "fundamentals": "最高 167.50，最低 160.00，多空量能激戰。",
+        "bear": "151.8 (-8%)",
+        "base": "173.2 (+5%)",
+        "bull": "198.0 (+20%)"
+      }
+    },
+    {
+      "id": "2484",
+      "type": "tw",
+      "symbol": "2484",
+      "name": "希華",
+      "price": "91.50",
+      "change": 6.52,
+      "volumeVal": 28.11,
+      "ampVal": 11.18,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 28.11 億元，波幅 11.18%。",
+        "fundamentals": "最高 93.70，最低 84.10，多空量能激戰。",
+        "bear": "84.2 (-8%)",
+        "base": "96.1 (+5%)",
+        "bull": "109.8 (+20%)"
+      }
+    },
+    {
+      "id": "6834",
+      "type": "tw",
+      "symbol": "6834",
+      "name": "天二科技",
+      "price": "162.50",
+      "change": 1.88,
+      "volumeVal": 51.27,
+      "ampVal": 10.97,
+      "badge": "常態震盪",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 51.27 億元，波幅 10.97%。",
+        "fundamentals": "最高 168.00，最低 150.50，多空量能激戰。",
+        "bear": "149.5 (-8%)",
+        "base": "170.6 (+5%)",
+        "bull": "195.0 (+20%)"
+      }
+    },
+    {
+      "id": "4720",
+      "type": "tw",
+      "symbol": "4720",
+      "name": "德淵",
+      "price": "25.85",
+      "change": 5.94,
+      "volumeVal": 1.84,
+      "ampVal": 10.86,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 1.84 億元，波幅 10.86%。",
+        "fundamentals": "最高 26.60，最低 23.95，多空量能激戰。",
+        "bear": "23.8 (-8%)",
+        "base": "27.1 (+5%)",
+        "bull": "31.0 (+20%)"
+      }
+    },
+    {
+      "id": "1312",
+      "type": "tw",
+      "symbol": "1312",
+      "name": "國喬",
+      "price": "18.90",
+      "change": 7.08,
+      "volumeVal": 38.39,
+      "ampVal": 10.2,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "動能突破",
+        "catalyst": "全市場當日成交金額達 38.39 億元，波幅 10.2%。",
+        "fundamentals": "最高 19.10，最低 17.30，多空量能激戰。",
+        "bear": "17.4 (-8%)",
+        "base": "19.8 (+5%)",
+        "bull": "22.7 (+20%)"
+      }
+    },
+    {
+      "id": "6117",
+      "type": "tw",
+      "symbol": "6117",
+      "name": "迎廣",
+      "price": "74.00",
+      "change": 4.08,
+      "volumeVal": 3.52,
+      "ampVal": 9.99,
+      "badge": "強勢突破",
+      "ai": {
+        "valuation": "合理估值",
+        "catalyst": "全市場當日成交金額達 3.52 億元，波幅 9.99%。",
+        "fundamentals": "最高 78.20，最低 71.10，多空量能激戰。",
+        "bear": "68.1 (-8%)",
+        "base": "77.7 (+5%)",
+        "bull": "88.8 (+20%)"
+      }
+    }
+  ],
+  "us": [
+    {
+      "id": "BSP",
+      "type": "us",
+      "symbol": "BSP",
+      "name": "Bending Spoons S.p.A.",
+      "price": "53.46",
+      "change": 41.2,
+      "volumeVal": 10.5,
+      "ampVal": 19.0,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 10.5 億美元。",
+        "fundamentals": "日內高點 58.56，低點 49.21，波幅 19.0%。",
+        "bear": "48.11 (-10%)",
+        "base": "56.67 (+6%)",
+        "bull": "66.83 (+25%)"
+      }
+    },
+    {
+      "id": "LQDA",
+      "type": "us",
+      "symbol": "LQDA",
+      "name": "Liquidia Corporation",
+      "price": "33.94",
+      "change": 26.59,
+      "volumeVal": 7.17,
+      "ampVal": 16.67,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 7.17 億美元。",
+        "fundamentals": "日內高點 38.64，低點 33.12，波幅 16.67%。",
+        "bear": "30.55 (-10%)",
+        "base": "35.98 (+6%)",
+        "bull": "42.42 (+25%)"
+      }
+    },
+    {
+      "id": "DAO",
+      "type": "us",
+      "symbol": "DAO",
+      "name": "Youdao, Inc.",
+      "price": "19.50",
+      "change": 7.62,
+      "volumeVal": 0.01,
+      "ampVal": 8.73,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.01 億美元。",
+        "fundamentals": "日內高點 19.50，低點 17.93，波幅 8.73%。",
+        "bear": "17.55 (-10%)",
+        "base": "20.67 (+6%)",
+        "bull": "24.38 (+25%)"
+      }
+    },
+    {
+      "id": "NRIX",
+      "type": "us",
+      "symbol": "NRIX",
+      "name": "Nurix Therapeutics, Inc.",
+      "price": "23.67",
+      "change": 6.96,
+      "volumeVal": 0.9,
+      "ampVal": 12.2,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.9 億美元。",
+        "fundamentals": "日內高點 24.01，低點 21.40，波幅 12.2%。",
+        "bear": "21.3 (-10%)",
+        "base": "25.09 (+6%)",
+        "bull": "29.59 (+25%)"
+      }
+    },
+    {
+      "id": "HALO",
+      "type": "us",
+      "symbol": "HALO",
+      "name": "Halozyme Therapeutics, Inc.",
+      "price": "116.82",
+      "change": 6.57,
+      "volumeVal": 4.4,
+      "ampVal": 8.95,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.4 億美元。",
+        "fundamentals": "日內高點 119.21，低點 109.42，波幅 8.95%。",
+        "bear": "105.14 (-10%)",
+        "base": "123.83 (+6%)",
+        "bull": "146.02 (+25%)"
+      }
+    },
+    {
+      "id": "LEGN",
+      "type": "us",
+      "symbol": "LEGN",
+      "name": "Legend Biotech Corporation",
+      "price": "19.04",
+      "change": 6.49,
+      "volumeVal": 0.67,
+      "ampVal": 11.2,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.67 億美元。",
+        "fundamentals": "日內高點 19.73，低點 17.75，波幅 11.2%。",
+        "bear": "17.14 (-10%)",
+        "base": "20.18 (+6%)",
+        "bull": "23.8 (+25%)"
+      }
+    },
+    {
+      "id": "USB-PP",
+      "type": "us",
+      "symbol": "USB-PP",
+      "name": "U.S. Bancorp Depositary Shares ",
+      "price": "20.97",
+      "change": 6.02,
+      "volumeVal": 0.03,
+      "ampVal": 7.87,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.03 億美元。",
+        "fundamentals": "日內高點 20.97，低點 19.44，波幅 7.87%。",
+        "bear": "18.87 (-10%)",
+        "base": "22.23 (+6%)",
+        "bull": "26.21 (+25%)"
+      }
+    },
+    {
+      "id": "CHWY",
+      "type": "us",
+      "symbol": "CHWY",
+      "name": "Chewy, Inc.",
+      "price": "20.83",
+      "change": 5.68,
+      "volumeVal": 1.83,
+      "ampVal": 6.46,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.83 億美元。",
+        "fundamentals": "日內高點 20.84，低點 19.58，波幅 6.46%。",
+        "bear": "18.75 (-10%)",
+        "base": "22.08 (+6%)",
+        "bull": "26.04 (+25%)"
+      }
+    },
+    {
+      "id": "WGS",
+      "type": "us",
+      "symbol": "WGS",
+      "name": "GeneDx Holdings Corp.",
+      "price": "68.61",
+      "change": 5.62,
+      "volumeVal": 0.66,
+      "ampVal": 9.17,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.66 億美元。",
+        "fundamentals": "日內高點 69.33，低點 63.50，波幅 9.17%。",
+        "bear": "61.75 (-10%)",
+        "base": "72.73 (+6%)",
+        "bull": "85.76 (+25%)"
+      }
+    },
+    {
+      "id": "OLLI",
+      "type": "us",
+      "symbol": "OLLI",
+      "name": "Ollie's Bargain Outlet Holdings",
+      "price": "93.12",
+      "change": 5.42,
+      "volumeVal": 2.0,
+      "ampVal": 5.83,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.0 億美元。",
+        "fundamentals": "日內高點 93.22，低點 88.09，波幅 5.83%。",
+        "bear": "83.81 (-10%)",
+        "base": "98.71 (+6%)",
+        "bull": "116.4 (+25%)"
+      }
+    },
+    {
+      "id": "BBWI",
+      "type": "us",
+      "symbol": "BBWI",
+      "name": "Bath & Body Works, Inc.",
+      "price": "18.95",
+      "change": 5.28,
+      "volumeVal": 1.54,
+      "ampVal": 5.56,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.54 億美元。",
+        "fundamentals": "日內高點 18.96，低點 17.96，波幅 5.56%。",
+        "bear": "17.05 (-10%)",
+        "base": "20.09 (+6%)",
+        "bull": "23.69 (+25%)"
+      }
+    },
+    {
+      "id": "ESLT",
+      "type": "us",
+      "symbol": "ESLT",
+      "name": "Elbit Systems Ltd.",
+      "price": "701.38",
+      "change": 5.05,
+      "volumeVal": 1.15,
+      "ampVal": 3.0,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.15 億美元。",
+        "fundamentals": "日內高點 712.00，低點 691.25，波幅 3.0%。",
+        "bear": "631.24 (-10%)",
+        "base": "743.46 (+6%)",
+        "bull": "876.73 (+25%)"
+      }
+    },
+    {
+      "id": "HRB",
+      "type": "us",
+      "symbol": "HRB",
+      "name": "H&R Block, Inc.",
+      "price": "46.02",
+      "change": 5.0,
+      "volumeVal": 0.83,
+      "ampVal": 4.44,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.83 億美元。",
+        "fundamentals": "日內高點 46.10，低點 44.14，波幅 4.44%。",
+        "bear": "41.42 (-10%)",
+        "base": "48.78 (+6%)",
+        "bull": "57.53 (+25%)"
+      }
+    },
+    {
+      "id": "CHEF",
+      "type": "us",
+      "symbol": "CHEF",
+      "name": "The Chefs' Warehouse, Inc.",
+      "price": "113.00",
+      "change": 4.83,
+      "volumeVal": 0.89,
+      "ampVal": 4.94,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.89 億美元。",
+        "fundamentals": "日內高點 113.12，低點 107.79，波幅 4.94%。",
+        "bear": "101.7 (-10%)",
+        "base": "119.78 (+6%)",
+        "bull": "141.25 (+25%)"
+      }
+    },
+    {
+      "id": "GFS",
+      "type": "us",
+      "symbol": "GFS",
+      "name": "GlobalFoundries Inc.",
+      "price": "48.94",
+      "change": 4.8,
+      "volumeVal": 6.73,
+      "ampVal": 5.33,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 6.73 億美元。",
+        "fundamentals": "日內高點 49.80，低點 47.28，波幅 5.33%。",
+        "bear": "44.05 (-10%)",
+        "base": "51.88 (+6%)",
+        "bull": "61.17 (+25%)"
+      }
+    },
+    {
+      "id": "PI",
+      "type": "us",
+      "symbol": "PI",
+      "name": "Impinj, Inc.",
+      "price": "192.14",
+      "change": 4.77,
+      "volumeVal": 1.08,
+      "ampVal": 8.4,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.08 億美元。",
+        "fundamentals": "日內高點 192.82，低點 177.88，波幅 8.4%。",
+        "bear": "172.93 (-10%)",
+        "base": "203.67 (+6%)",
+        "bull": "240.17 (+25%)"
+      }
+    },
+    {
+      "id": "ACHC",
+      "type": "us",
+      "symbol": "ACHC",
+      "name": "Acadia Healthcare Company, Inc.",
+      "price": "31.67",
+      "change": 4.76,
+      "volumeVal": 0.61,
+      "ampVal": 6.87,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.61 億美元。",
+        "fundamentals": "日內高點 31.89，低點 29.84，波幅 6.87%。",
+        "bear": "28.5 (-10%)",
+        "base": "33.57 (+6%)",
+        "bull": "39.59 (+25%)"
+      }
+    },
+    {
+      "id": "UNH",
+      "type": "us",
+      "symbol": "UNH",
+      "name": "UnitedHealth Group Incorporated",
+      "price": "395.62",
+      "change": 4.73,
+      "volumeVal": 30.7,
+      "ampVal": 3.67,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 30.7 億美元。",
+        "fundamentals": "日內高點 396.42，低點 382.40，波幅 3.67%。",
+        "bear": "356.06 (-10%)",
+        "base": "419.36 (+6%)",
+        "bull": "494.52 (+25%)"
+      }
+    },
+    {
+      "id": "DLTR",
+      "type": "us",
+      "symbol": "DLTR",
+      "name": "Dollar Tree, Inc.",
+      "price": "121.76",
+      "change": 4.71,
+      "volumeVal": 2.44,
+      "ampVal": 5.2,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.44 億美元。",
+        "fundamentals": "日內高點 122.05，低點 116.02，波幅 5.2%。",
+        "bear": "109.58 (-10%)",
+        "base": "129.07 (+6%)",
+        "bull": "152.2 (+25%)"
+      }
+    },
+    {
+      "id": "MRNA",
+      "type": "us",
+      "symbol": "MRNA",
+      "name": "Moderna, Inc.",
+      "price": "226.30",
+      "change": 4.65,
+      "volumeVal": 37.52,
+      "ampVal": 7.5,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 37.52 億美元。",
+        "fundamentals": "日內高點 227.09，低點 211.24，波幅 7.5%。",
+        "bear": "203.67 (-10%)",
+        "base": "239.88 (+6%)",
+        "bull": "282.88 (+25%)"
+      }
+    },
+    {
+      "id": "BMY",
+      "type": "us",
+      "symbol": "BMY",
+      "name": "Bristol-Myers Squibb Company",
+      "price": "59.28",
+      "change": 4.61,
+      "volumeVal": 8.33,
+      "ampVal": 4.96,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 8.33 億美元。",
+        "fundamentals": "日內高點 59.38，低點 56.58，波幅 4.96%。",
+        "bear": "53.35 (-10%)",
+        "base": "62.84 (+6%)",
+        "bull": "74.1 (+25%)"
+      }
+    },
+    {
+      "id": "ETSY",
+      "type": "us",
+      "symbol": "ETSY",
+      "name": "Etsy, Inc.",
+      "price": "82.93",
+      "change": 4.6,
+      "volumeVal": 3.18,
+      "ampVal": 5.16,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 3.18 億美元。",
+        "fundamentals": "日內高點 82.99，低點 78.92，波幅 5.16%。",
+        "bear": "74.64 (-10%)",
+        "base": "87.91 (+6%)",
+        "bull": "103.66 (+25%)"
+      }
+    },
+    {
+      "id": "RPRX",
+      "type": "us",
+      "symbol": "RPRX",
+      "name": "Royalty Pharma plc",
+      "price": "58.99",
+      "change": 4.28,
+      "volumeVal": 1.67,
+      "ampVal": 4.03,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.67 億美元。",
+        "fundamentals": "日內高點 59.07，低點 56.78，波幅 4.03%。",
+        "bear": "53.09 (-10%)",
+        "base": "62.53 (+6%)",
+        "bull": "73.74 (+25%)"
+      }
+    },
+    {
+      "id": "UNFI",
+      "type": "us",
+      "symbol": "UNFI",
+      "name": "United Natural Foods, Inc.",
+      "price": "47.68",
+      "change": 4.13,
+      "volumeVal": 0.25,
+      "ampVal": 4.49,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.25 億美元。",
+        "fundamentals": "日內高點 47.72，低點 45.67，波幅 4.49%。",
+        "bear": "42.91 (-10%)",
+        "base": "50.54 (+6%)",
+        "bull": "59.6 (+25%)"
+      }
+    },
+    {
+      "id": "DOCU",
+      "type": "us",
+      "symbol": "DOCU",
+      "name": "DocuSign, Inc.",
+      "price": "75.23",
+      "change": 4.04,
+      "volumeVal": 2.53,
+      "ampVal": 4.5,
+      "badge": "漲幅榜",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.53 億美元。",
+        "fundamentals": "日內高點 75.31，低點 72.06，波幅 4.5%。",
+        "bear": "67.71 (-10%)",
+        "base": "79.74 (+6%)",
+        "bull": "94.04 (+25%)"
+      }
+    },
+    {
+      "id": "SKYD",
+      "type": "us",
+      "symbol": "SKYD",
+      "name": "Skydance Corporation",
+      "price": "7.06",
+      "change": -22.22,
+      "volumeVal": 6.51,
+      "ampVal": 19.31,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 6.51 億美元。",
+        "fundamentals": "日內高點 7.91，低點 6.63，波幅 19.31%。",
+        "bear": "6.35 (-10%)",
+        "base": "7.48 (+6%)",
+        "bull": "8.82 (+25%)"
+      }
+    },
+    {
+      "id": "CRWV",
+      "type": "us",
+      "symbol": "CRWV",
+      "name": "CoreWeave, Inc.",
+      "price": "65.78",
+      "change": -15.46,
+      "volumeVal": 71.98,
+      "ampVal": 12.48,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 71.98 億美元。",
+        "fundamentals": "日內高點 72.45，低點 64.41，波幅 12.48%。",
+        "bear": "59.2 (-10%)",
+        "base": "69.73 (+6%)",
+        "bull": "82.22 (+25%)"
+      }
+    },
+    {
+      "id": "DOCN",
+      "type": "us",
+      "symbol": "DOCN",
+      "name": "DigitalOcean Holdings, Inc.",
+      "price": "109.29",
+      "change": -14.76,
+      "volumeVal": 4.99,
+      "ampVal": 16.76,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.99 億美元。",
+        "fundamentals": "日內高點 126.19，低點 108.08，波幅 16.76%。",
+        "bear": "98.36 (-10%)",
+        "base": "115.85 (+6%)",
+        "bull": "136.61 (+25%)"
+      }
+    },
+    {
+      "id": "PENG",
+      "type": "us",
+      "symbol": "PENG",
+      "name": "Penguin Solutions, Inc.",
+      "price": "67.59",
+      "change": -13.57,
+      "volumeVal": 3.96,
+      "ampVal": 15.17,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 3.96 億美元。",
+        "fundamentals": "日內高點 77.41，低點 67.22，波幅 15.17%。",
+        "bear": "60.83 (-10%)",
+        "base": "71.65 (+6%)",
+        "bull": "84.49 (+25%)"
+      }
+    },
+    {
+      "id": "WULF",
+      "type": "us",
+      "symbol": "WULF",
+      "name": "TeraWulf Inc.",
+      "price": "11.54",
+      "change": -12.64,
+      "volumeVal": 6.65,
+      "ampVal": 11.36,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 6.65 億美元。",
+        "fundamentals": "日內高點 12.69，低點 11.39，波幅 11.36%。",
+        "bear": "10.39 (-10%)",
+        "base": "12.23 (+6%)",
+        "bull": "14.42 (+25%)"
+      }
+    },
+    {
+      "id": "GDS",
+      "type": "us",
+      "symbol": "GDS",
+      "name": "GDS Holdings Limited",
+      "price": "25.86",
+      "change": -12.64,
+      "volumeVal": 1.25,
+      "ampVal": 17.39,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.25 億美元。",
+        "fundamentals": "日內高點 29.56，低點 25.18，波幅 17.39%。",
+        "bear": "23.27 (-10%)",
+        "base": "27.41 (+6%)",
+        "bull": "32.33 (+25%)"
+      }
+    },
+    {
+      "id": "CORZ",
+      "type": "us",
+      "symbol": "CORZ",
+      "name": "Core Scientific, Inc.",
+      "price": "13.51",
+      "change": -12.44,
+      "volumeVal": 3.82,
+      "ampVal": 12.25,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 3.82 億美元。",
+        "fundamentals": "日內高點 15.07，低點 13.43，波幅 12.25%。",
+        "bear": "12.16 (-10%)",
+        "base": "14.32 (+6%)",
+        "bull": "16.89 (+25%)"
+      }
+    },
+    {
+      "id": "CIFR",
+      "type": "us",
+      "symbol": "CIFR",
+      "name": "Cipher Digital Inc.",
+      "price": "9.94",
+      "change": -12.35,
+      "volumeVal": 9.38,
+      "ampVal": 10.82,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 9.38 億美元。",
+        "fundamentals": "日內高點 10.86，低點 9.80，波幅 10.82%。",
+        "bear": "8.95 (-10%)",
+        "base": "10.54 (+6%)",
+        "bull": "12.42 (+25%)"
+      }
+    },
+    {
+      "id": "IREN",
+      "type": "us",
+      "symbol": "IREN",
+      "name": "IREN LIMITED",
+      "price": "30.56",
+      "change": -12.18,
+      "volumeVal": 23.61,
+      "ampVal": 11.39,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 23.61 億美元。",
+        "fundamentals": "日內高點 33.84，低點 30.38，波幅 11.39%。",
+        "bear": "27.5 (-10%)",
+        "base": "32.39 (+6%)",
+        "bull": "38.2 (+25%)"
+      }
+    },
+    {
+      "id": "AAOI",
+      "type": "us",
+      "symbol": "AAOI",
+      "name": "Applied Optoelectronics, Inc.",
+      "price": "86.22",
+      "change": -11.82,
+      "volumeVal": 12.74,
+      "ampVal": 12.11,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 12.74 億美元。",
+        "fundamentals": "日內高點 96.14，低點 85.75，波幅 12.11%。",
+        "bear": "77.6 (-10%)",
+        "base": "91.39 (+6%)",
+        "bull": "107.78 (+25%)"
+      }
+    },
+    {
+      "id": "XMTR",
+      "type": "us",
+      "symbol": "XMTR",
+      "name": "Xometry, Inc.",
+      "price": "95.15",
+      "change": -11.82,
+      "volumeVal": 1.11,
+      "ampVal": 13.1,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.11 億美元。",
+        "fundamentals": "日內高點 106.51，低點 94.17，波幅 13.1%。",
+        "bear": "85.64 (-10%)",
+        "base": "100.86 (+6%)",
+        "bull": "118.94 (+25%)"
+      }
+    },
+    {
+      "id": "KOD",
+      "type": "us",
+      "symbol": "KOD",
+      "name": "Kodiak Sciences Inc",
+      "price": "81.09",
+      "change": -11.5,
+      "volumeVal": 1.95,
+      "ampVal": 13.05,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.95 億美元。",
+        "fundamentals": "日內高點 90.62，低點 80.16，波幅 13.05%。",
+        "bear": "72.98 (-10%)",
+        "base": "85.96 (+6%)",
+        "bull": "101.36 (+25%)"
+      }
+    },
+    {
+      "id": "DELL",
+      "type": "us",
+      "symbol": "DELL",
+      "name": "Dell Technologies Inc.",
+      "price": "507.93",
+      "change": -11.27,
+      "volumeVal": 59.29,
+      "ampVal": 8.92,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 59.29 億美元。",
+        "fundamentals": "日內高點 547.17，低點 502.34，波幅 8.92%。",
+        "bear": "457.14 (-10%)",
+        "base": "538.41 (+6%)",
+        "bull": "634.91 (+25%)"
+      }
+    },
+    {
+      "id": "U",
+      "type": "us",
+      "symbol": "U",
+      "name": "Unity Software Inc.",
+      "price": "41.40",
+      "change": -11.22,
+      "volumeVal": 6.21,
+      "ampVal": 9.11,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 6.21 億美元。",
+        "fundamentals": "日內高點 45.14，低點 41.37，波幅 9.11%。",
+        "bear": "37.26 (-10%)",
+        "base": "43.88 (+6%)",
+        "bull": "51.75 (+25%)"
+      }
+    },
+    {
+      "id": "BTDR",
+      "type": "us",
+      "symbol": "BTDR",
+      "name": "Bitdeer Technologies Group",
+      "price": "8.18",
+      "change": -11.18,
+      "volumeVal": 1.48,
+      "ampVal": 15.93,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.48 億美元。",
+        "fundamentals": "日內高點 9.06，低點 7.82，波幅 15.93%。",
+        "bear": "7.36 (-10%)",
+        "base": "8.67 (+6%)",
+        "bull": "10.22 (+25%)"
+      }
+    },
+    {
+      "id": "MXL",
+      "type": "us",
+      "symbol": "MXL",
+      "name": "MaxLinear, Inc",
+      "price": "78.82",
+      "change": -11.08,
+      "volumeVal": 2.43,
+      "ampVal": 10.11,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.43 億美元。",
+        "fundamentals": "日內高點 86.11，低點 78.20，波幅 10.11%。",
+        "bear": "70.94 (-10%)",
+        "base": "83.55 (+6%)",
+        "bull": "98.52 (+25%)"
+      }
+    },
+    {
+      "id": "TTMI",
+      "type": "us",
+      "symbol": "TTMI",
+      "name": "TTM Technologies, Inc.",
+      "price": "103.31",
+      "change": -11.02,
+      "volumeVal": 4.43,
+      "ampVal": 11.34,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.43 億美元。",
+        "fundamentals": "日內高點 114.24，低點 102.61，波幅 11.34%。",
+        "bear": "92.98 (-10%)",
+        "base": "109.51 (+6%)",
+        "bull": "129.14 (+25%)"
+      }
+    },
+    {
+      "id": "IOND",
+      "type": "us",
+      "symbol": "IOND",
+      "name": "Ionic Digital Inc.",
+      "price": "67.33",
+      "change": -10.93,
+      "volumeVal": 0.32,
+      "ampVal": 15.14,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.32 億美元。",
+        "fundamentals": "日內高點 76.30，低點 66.27，波幅 15.14%。",
+        "bear": "60.6 (-10%)",
+        "base": "71.37 (+6%)",
+        "bull": "84.16 (+25%)"
+      }
+    },
+    {
+      "id": "SEI",
+      "type": "us",
+      "symbol": "SEI",
+      "name": "Solaris Energy Infrastructure, ",
+      "price": "69.37",
+      "change": -10.87,
+      "volumeVal": 3.66,
+      "ampVal": 14.01,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 3.66 億美元。",
+        "fundamentals": "日內高點 76.94，低點 67.48，波幅 14.01%。",
+        "bear": "62.43 (-10%)",
+        "base": "73.53 (+6%)",
+        "bull": "86.71 (+25%)"
+      }
+    },
+    {
+      "id": "EQPT",
+      "type": "us",
+      "symbol": "EQPT",
+      "name": "EquipmentShare.com Inc",
+      "price": "13.71",
+      "change": -10.8,
+      "volumeVal": 0.63,
+      "ampVal": 11.36,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 0.63 億美元。",
+        "fundamentals": "日內高點 15.20，低點 13.65，波幅 11.36%。",
+        "bear": "12.34 (-10%)",
+        "base": "14.53 (+6%)",
+        "bull": "17.14 (+25%)"
+      }
+    },
+    {
+      "id": "LEU",
+      "type": "us",
+      "symbol": "LEU",
+      "name": "Centrus Energy Corp.",
+      "price": "119.95",
+      "change": -10.67,
+      "volumeVal": 1.74,
+      "ampVal": 9.6,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.74 億美元。",
+        "fundamentals": "日內高點 130.78，低點 119.33，波幅 9.6%。",
+        "bear": "107.95 (-10%)",
+        "base": "127.15 (+6%)",
+        "bull": "149.94 (+25%)"
+      }
+    },
+    {
+      "id": "ASST",
+      "type": "us",
+      "symbol": "ASST",
+      "name": "Strive, Inc.",
+      "price": "24.68",
+      "change": -10.55,
+      "volumeVal": 4.5,
+      "ampVal": 9.78,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.5 億美元。",
+        "fundamentals": "日內高點 26.71，低點 24.33，波幅 9.78%。",
+        "bear": "22.21 (-10%)",
+        "base": "26.16 (+6%)",
+        "bull": "30.85 (+25%)"
+      }
+    },
+    {
+      "id": "NVTS",
+      "type": "us",
+      "symbol": "NVTS",
+      "name": "Navitas Semiconductor Corporati",
+      "price": "9.36",
+      "change": -10.48,
+      "volumeVal": 1.98,
+      "ampVal": 8.23,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.98 億美元。",
+        "fundamentals": "日內高點 10.00，低點 9.24，波幅 8.23%。",
+        "bear": "8.42 (-10%)",
+        "base": "9.92 (+6%)",
+        "bull": "11.69 (+25%)"
+      }
+    },
+    {
+      "id": "ASTS",
+      "type": "us",
+      "symbol": "ASTS",
+      "name": "AST SpaceMobile, Inc.",
+      "price": "42.14",
+      "change": -10.46,
+      "volumeVal": 11.47,
+      "ampVal": 9.48,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 11.47 億美元。",
+        "fundamentals": "日內高點 45.98，低點 42.00，波幅 9.48%。",
+        "bear": "37.93 (-10%)",
+        "base": "44.67 (+6%)",
+        "bull": "52.67 (+25%)"
+      }
+    },
+    {
+      "id": "HUT",
+      "type": "us",
+      "symbol": "HUT",
+      "name": "Hut 8 Corp.",
+      "price": "74.87",
+      "change": -10.45,
+      "volumeVal": 9.62,
+      "ampVal": 12.03,
+      "badge": "跌幅榜",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 9.62 億美元。",
+        "fundamentals": "日內高點 80.73，低點 72.06，波幅 12.03%。",
+        "bear": "67.38 (-10%)",
+        "base": "79.36 (+6%)",
+        "bull": "93.59 (+25%)"
+      }
+    },
+    {
+      "id": "BAC",
+      "type": "us",
+      "symbol": "BAC",
+      "name": "Bank of America Corporation",
+      "price": "51.39",
+      "change": -4.76,
+      "volumeVal": 60.61,
+      "ampVal": 4.58,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 60.61 億美元。",
+        "fundamentals": "日內高點 51.51，低點 49.26，波幅 4.58%。",
+        "bear": "46.25 (-10%)",
+        "base": "54.47 (+6%)",
+        "bull": "64.24 (+25%)"
+      }
+    },
+    {
+      "id": "NVDA",
+      "type": "us",
+      "symbol": "NVDA",
+      "name": "NVIDIA Corporation",
+      "price": "221.30",
+      "change": -3.16,
+      "volumeVal": 260.61,
+      "ampVal": 2.9,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 260.61 億美元。",
+        "fundamentals": "日內高點 226.00，低點 219.64，波幅 2.9%。",
+        "bear": "199.17 (-10%)",
+        "base": "234.58 (+6%)",
+        "bull": "276.62 (+25%)"
+      }
+    },
+    {
+      "id": "INTC",
+      "type": "us",
+      "symbol": "INTC",
+      "name": "Intel Corporation",
+      "price": "98.12",
+      "change": -4.56,
+      "volumeVal": 101.8,
+      "ampVal": 3.76,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 101.8 億美元。",
+        "fundamentals": "日內高點 101.34，低點 97.67，波幅 3.76%。",
+        "bear": "88.31 (-10%)",
+        "base": "104.01 (+6%)",
+        "bull": "122.65 (+25%)"
+      }
+    },
+    {
+      "id": "SOFI",
+      "type": "us",
+      "symbol": "SOFI",
+      "name": "SoFi Technologies, Inc.",
+      "price": "14.22",
+      "change": -6.69,
+      "volumeVal": 13.05,
+      "ampVal": 8.05,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 13.05 億美元。",
+        "fundamentals": "日內高點 15.04，低點 13.92，波幅 8.05%。",
+        "bear": "12.8 (-10%)",
+        "base": "15.07 (+6%)",
+        "bull": "17.78 (+25%)"
+      }
+    },
+    {
+      "id": "NOK",
+      "type": "us",
+      "symbol": "NOK",
+      "name": "Nokia Corporation Sponsored",
+      "price": "9.40",
+      "change": -4.67,
+      "volumeVal": 8.08,
+      "ampVal": 5.05,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 8.08 億美元。",
+        "fundamentals": "日內高點 9.77，低點 9.30，波幅 5.05%。",
+        "bear": "8.46 (-10%)",
+        "base": "9.96 (+6%)",
+        "bull": "11.75 (+25%)"
+      }
+    },
+    {
+      "id": "PLUG",
+      "type": "us",
+      "symbol": "PLUG",
+      "name": "Plug Power, Inc.",
+      "price": "1.45",
+      "change": -7.05,
+      "volumeVal": 1.2,
+      "ampVal": 7.04,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.2 億美元。",
+        "fundamentals": "日內高點 1.52，低點 1.42，波幅 7.04%。",
+        "bear": "1.3 (-10%)",
+        "base": "1.54 (+6%)",
+        "bull": "1.81 (+25%)"
+      }
+    },
+    {
+      "id": "NU",
+      "type": "us",
+      "symbol": "NU",
+      "name": "Nu Holdings Ltd.",
+      "price": "14.93",
+      "change": -4.17,
+      "volumeVal": 12.21,
+      "ampVal": 4.57,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 12.21 億美元。",
+        "fundamentals": "日內高點 15.44，低點 14.77，波幅 4.57%。",
+        "bear": "13.44 (-10%)",
+        "base": "15.83 (+6%)",
+        "bull": "18.66 (+25%)"
+      }
+    },
+    {
+      "id": "AAL",
+      "type": "us",
+      "symbol": "AAL",
+      "name": "American Airlines Group, Inc.",
+      "price": "11.79",
+      "change": -5.68,
+      "volumeVal": 9.25,
+      "ampVal": 6.31,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 9.25 億美元。",
+        "fundamentals": "日內高點 12.38，低點 11.65，波幅 6.31%。",
+        "bear": "10.61 (-10%)",
+        "base": "12.5 (+6%)",
+        "bull": "14.74 (+25%)"
+      }
+    },
+    {
+      "id": "MMED",
+      "type": "us",
+      "symbol": "MMED",
+      "name": "MiniMed Group, Inc.",
+      "price": "16.81",
+      "change": -8.64,
+      "volumeVal": 11.37,
+      "ampVal": 11.14,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 11.37 億美元。",
+        "fundamentals": "日內高點 18.40，低點 16.55，波幅 11.14%。",
+        "bear": "15.13 (-10%)",
+        "base": "17.82 (+6%)",
+        "bull": "21.01 (+25%)"
+      }
+    },
+    {
+      "id": "SPCX",
+      "type": "us",
+      "symbol": "SPCX",
+      "name": "Space Exploration Technologies ",
+      "price": "152.16",
+      "change": -2.8,
+      "volumeVal": 102.86,
+      "ampVal": 2.87,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 102.86 億美元。",
+        "fundamentals": "日內高點 155.44，低點 151.10，波幅 2.87%。",
+        "bear": "136.94 (-10%)",
+        "base": "161.29 (+6%)",
+        "bull": "190.2 (+25%)"
+      }
+    },
+    {
+      "id": "ONDS",
+      "type": "us",
+      "symbol": "ONDS",
+      "name": "Ondas Inc",
+      "price": "6.14",
+      "change": -8.49,
+      "volumeVal": 4.12,
+      "ampVal": 8.81,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.12 億美元。",
+        "fundamentals": "日內高點 6.67，低點 6.13，波幅 8.81%。",
+        "bear": "5.53 (-10%)",
+        "base": "6.51 (+6%)",
+        "bull": "7.67 (+25%)"
+      }
+    },
+    {
+      "id": "GRAB",
+      "type": "us",
+      "symbol": "GRAB",
+      "name": "Grab Holdings Limited",
+      "price": "2.91",
+      "change": -2.35,
+      "volumeVal": 1.82,
+      "ampVal": 5.26,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.82 億美元。",
+        "fundamentals": "日內高點 3.00，低點 2.85，波幅 5.26%。",
+        "bear": "2.62 (-10%)",
+        "base": "3.08 (+6%)",
+        "bull": "3.64 (+25%)"
+      }
+    },
+    {
+      "id": "RIG",
+      "type": "us",
+      "symbol": "RIG",
+      "name": "Transocean Ltd (Switzerland)",
+      "price": "5.58",
+      "change": -1.24,
+      "volumeVal": 3.23,
+      "ampVal": 4.49,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 3.23 億美元。",
+        "fundamentals": "日內高點 5.82，低點 5.57，波幅 4.49%。",
+        "bear": "5.02 (-10%)",
+        "base": "5.91 (+6%)",
+        "bull": "6.97 (+25%)"
+      }
+    },
+    {
+      "id": "T",
+      "type": "us",
+      "symbol": "T",
+      "name": "AT&T Inc.",
+      "price": "23.05",
+      "change": 0.88,
+      "volumeVal": 13.31,
+      "ampVal": 2.36,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 13.31 億美元。",
+        "fundamentals": "日內高點 23.19，低點 22.65，波幅 2.36%。",
+        "bear": "20.75 (-10%)",
+        "base": "24.43 (+6%)",
+        "bull": "28.81 (+25%)"
+      }
+    },
+    {
+      "id": "ORCL",
+      "type": "us",
+      "symbol": "ORCL",
+      "name": "Oracle Corporation",
+      "price": "130.55",
+      "change": -8.83,
+      "volumeVal": 67.9,
+      "ampVal": 9.14,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 67.9 億美元。",
+        "fundamentals": "日內高點 141.04，低點 129.23，波幅 9.14%。",
+        "bear": "117.5 (-10%)",
+        "base": "138.38 (+6%)",
+        "bull": "163.19 (+25%)"
+      }
+    },
+    {
+      "id": "AAPL",
+      "type": "us",
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "price": "342.96",
+      "change": 0.5,
+      "volumeVal": 171.11,
+      "ampVal": 1.57,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 171.11 億美元。",
+        "fundamentals": "日內高點 347.07，低點 341.72，波幅 1.57%。",
+        "bear": "308.66 (-10%)",
+        "base": "363.54 (+6%)",
+        "bull": "428.7 (+25%)"
+      }
+    },
+    {
+      "id": "MDT",
+      "type": "us",
+      "symbol": "MDT",
+      "name": "Medtronic plc.",
+      "price": "94.23",
+      "change": 1.31,
+      "volumeVal": 46.98,
+      "ampVal": 2.76,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 46.98 億美元。",
+        "fundamentals": "日內高點 94.70，低點 92.16，波幅 2.76%。",
+        "bear": "84.81 (-10%)",
+        "base": "99.88 (+6%)",
+        "bull": "117.79 (+25%)"
+      }
+    },
+    {
+      "id": "SNAP",
+      "type": "us",
+      "symbol": "SNAP",
+      "name": "Snap Inc.",
+      "price": "6.10",
+      "change": -6.01,
+      "volumeVal": 2.88,
+      "ampVal": 9.72,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.88 億美元。",
+        "fundamentals": "日內高點 6.55，低點 5.97，波幅 9.72%。",
+        "bear": "5.49 (-10%)",
+        "base": "6.47 (+6%)",
+        "bull": "7.62 (+25%)"
+      }
+    },
+    {
+      "id": "RKT",
+      "type": "us",
+      "symbol": "RKT",
+      "name": "Rocket Companies, Inc.",
+      "price": "10.53",
+      "change": -2.77,
+      "volumeVal": 4.95,
+      "ampVal": 4.81,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 4.95 億美元。",
+        "fundamentals": "日內高點 10.67，低點 10.18，波幅 4.81%。",
+        "bear": "9.48 (-10%)",
+        "base": "11.16 (+6%)",
+        "bull": "13.16 (+25%)"
+      }
+    },
+    {
+      "id": "BBD",
+      "type": "us",
+      "symbol": "BBD",
+      "name": "Banco Bradesco Sa",
+      "price": "4.14",
+      "change": -1.19,
+      "volumeVal": 1.78,
+      "ampVal": 3.2,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 1.78 億美元。",
+        "fundamentals": "日內高點 4.19，低點 4.06，波幅 3.2%。",
+        "bear": "3.73 (-10%)",
+        "base": "4.39 (+6%)",
+        "bull": "5.17 (+25%)"
+      }
+    },
+    {
+      "id": "SMR",
+      "type": "us",
+      "symbol": "SMR",
+      "name": "NuScale Power Corporation",
+      "price": "5.83",
+      "change": -10.17,
+      "volumeVal": 2.47,
+      "ampVal": 10.49,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 2.47 億美元。",
+        "fundamentals": "日內高點 6.32，低點 5.72，波幅 10.49%。",
+        "bear": "5.25 (-10%)",
+        "base": "6.18 (+6%)",
+        "bull": "7.29 (+25%)"
+      }
+    },
+    {
+      "id": "CDE",
+      "type": "us",
+      "symbol": "CDE",
+      "name": "Coeur Mining, Inc.",
+      "price": "14.98",
+      "change": -7.87,
+      "volumeVal": 6.26,
+      "ampVal": 8.14,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 6.26 億美元。",
+        "fundamentals": "日內高點 15.88，低點 14.68，波幅 8.14%。",
+        "bear": "13.48 (-10%)",
+        "base": "15.88 (+6%)",
+        "bull": "18.73 (+25%)"
+      }
+    },
+    {
+      "id": "IONQ",
+      "type": "us",
+      "symbol": "IONQ",
+      "name": "IonQ, Inc.",
+      "price": "31.42",
+      "change": -9.53,
+      "volumeVal": 12.87,
+      "ampVal": 7.52,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 12.87 億美元。",
+        "fundamentals": "日內高點 33.38，低點 31.05，波幅 7.52%。",
+        "bear": "28.28 (-10%)",
+        "base": "33.31 (+6%)",
+        "bull": "39.28 (+25%)"
+      }
+    },
+    {
+      "id": "BMNR",
+      "type": "us",
+      "symbol": "BMNR",
+      "name": "BitMine Immersion Technologies,",
+      "price": "22.25",
+      "change": -5.28,
+      "volumeVal": 9.07,
+      "ampVal": 5.45,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "空方壓制",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 9.07 億美元。",
+        "fundamentals": "日內高點 23.12，低點 21.93，波幅 5.45%。",
+        "bear": "20.03 (-10%)",
+        "base": "23.59 (+6%)",
+        "bull": "27.81 (+25%)"
+      }
+    },
+    {
+      "id": "NFLX",
+      "type": "us",
+      "symbol": "NFLX",
+      "name": "Netflix, Inc.",
+      "price": "70.57",
+      "change": 0.16,
+      "volumeVal": 28.17,
+      "ampVal": 2.72,
+      "badge": "人氣核心",
+      "ai": {
+        "valuation": "動能強勢",
+        "catalyst": "全美股活躍榜標的，當日成交規模達 28.17 億美元。",
+        "fundamentals": "日內高點 71.26，低點 69.37，波幅 2.72%。",
+        "bear": "63.51 (-10%)",
+        "base": "74.8 (+6%)",
+        "bull": "88.21 (+25%)"
+      }
+    }
+  ]
+}
