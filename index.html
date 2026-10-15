@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>市場 AI 智慧量化掃描終端 (強健走勢修復版)</title>
+  <title>市場 AI 智慧量化掃描終端 (真實 K 線直連版)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- TradingView Lightweight Charts CDN -->
@@ -167,7 +167,7 @@
             <span class="px-1.5 py-0.5 text-[10px] rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold font-mono">即時盤中</span>
             <span class="text-xs font-bold text-white tracking-wide">今日開盤與即時盤中四大排行 (成交額 > 3,000 萬)</span>
           </div>
-          <span class="text-[11px] text-sky-400 font-mono">點選任一股票即彈出走勢與 SMC 交易計劃</span>
+          <span class="text-[11px] text-sky-400 font-mono">點選任一股票即彈出真實市場走勢與 SMC 交易計劃</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -245,7 +245,7 @@
         </div>
       </section>
 
-      <!-- ================= 區塊 B：下方標準區塊 (昨日結算排行 / 幣圈與美股展示) ================= -->
+      <!-- ================= 區塊 B：下方標準區塊 ================= -->
       <section id="general-scan-section" class="space-y-3">
         <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
           <div class="flex items-center gap-2">
@@ -256,73 +256,45 @@
         </div>
 
         <div id="scan-tables-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <!-- 1. 漲幅排行 -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5"><span>🚀</span> <span id="label-rank-gainers">收盤漲幅排行</span></span>
               <span class="text-[10px] text-slate-500">前 8 名</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
-                  <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">價格</th><th class="pb-1.5 font-medium text-right pr-1">漲幅 / 成交值</th></tr>
-                </thead>
-                <tbody id="table-gainers" class="divide-y divide-slate-800/40 font-mono"></tbody>
-              </table>
+              <table class="w-full text-left text-xs"><tbody id="table-gainers" class="divide-y divide-slate-800/40 font-mono"></tbody></table>
             </div>
           </div>
-
-          <!-- 2. 跌幅排行 -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5"><span>📉</span> <span id="label-rank-losers">收盤跌幅排行</span></span>
               <span class="text-[10px] text-slate-500">前 8 名</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
-                  <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">價格</th><th class="pb-1.5 font-medium text-right pr-1">跌幅 / 成交值</th></tr>
-                </thead>
-                <tbody id="table-losers" class="divide-y divide-slate-800/40 font-mono"></tbody>
-              </table>
+              <table class="w-full text-left text-xs"><tbody id="table-losers" class="divide-y divide-slate-800/40 font-mono"></tbody></table>
             </div>
           </div>
-
-          <!-- 3. 成交值排行 -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5"><span>💰</span> <span id="label-rank-volume">成交值龍頭排行</span></span>
               <span class="text-[10px] text-sky-400 font-medium">市場主力焦點</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
-                  <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">價格</th><th class="pb-1.5 font-medium text-right pr-1">成交金額 / 漲跌</th></tr>
-                </thead>
-                <tbody id="table-volume" class="divide-y divide-slate-800/40 font-mono"></tbody>
-              </table>
+              <table class="w-full text-left text-xs"><tbody id="table-volume" class="divide-y divide-slate-800/40 font-mono"></tbody></table>
             </div>
           </div>
-
-          <!-- 4. 振幅排行 -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5"><span>🔥</span> <span id="label-rank-amplitude">當日振幅排行</span></span>
               <span class="text-[10px] text-slate-500">主力劇烈拉鋸</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
-                  <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">價格</th><th class="pb-1.5 font-medium text-right pr-1">振幅 / 成交值</th></tr>
-                </thead>
-                <tbody id="table-amplitude" class="divide-y divide-slate-800/40 font-mono"></tbody>
-              </table>
+              <table class="w-full text-left text-xs"><tbody id="table-amplitude" class="divide-y divide-slate-800/40 font-mono"></tbody></table>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 自選專區卡片網格 -->
       <div id="watchlist-cards-container" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       <div id="empty-state" class="hidden text-center py-24 text-slate-500 text-xs">此分類下尚無標的，或您的自選清單為空。</div>
     </div>
@@ -331,7 +303,6 @@
   <!-- ================= 彈出視窗：三層圖表 + SMC/POC 交易計劃 + AI 報告 ================= -->
   <div id="detail-modal">
     <div class="bg-[#0d1117] border border-slate-700 w-full max-w-5xl max-h-[96vh] rounded-xl flex flex-col overflow-hidden shadow-2xl p-4">
-      <!-- 頂部標題與週期按鈕 -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <div>
           <h2 id="modal-title" class="text-base font-bold text-white flex items-center gap-2"></h2>
@@ -351,7 +322,7 @@
         <!-- 三層獨立圖表 -->
         <div class="space-y-1">
           <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
-            <span>走勢圖 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
+            <span>真實行情走勢 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
             <span id="chart-date-display" class="font-mono text-sky-400 text-xs font-bold"></span>
           </div>
           <div id="chart-main" style="height: 200px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
@@ -409,7 +380,7 @@
           </div>
         </div>
 
-        <!-- AI 報告整合區 (新聞、財務、估值、情境) -->
+        <!-- AI 報告整合區 -->
         <div class="bg-[#090d14] border border-slate-800 rounded-lg p-3 space-y-3">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <span class="text-xs font-bold text-slate-200">📈 AI 產業催化與多空估值評析</span>
@@ -445,7 +416,7 @@
     </div>
   </div>
 
-  <!-- ================= 註冊 / 登入彈窗 ================= -->
+  <!-- 登入模態框 -->
   <div id="auth-modal">
     <div class="bg-[#0d1117] border border-slate-700 w-full max-w-sm rounded-xl p-5 shadow-2xl">
       <div class="flex items-center justify-between mb-4">
@@ -471,7 +442,12 @@
   </div>
 
   <script>
-    // ================= 1. 安全初始化 Firebase =================
+    // -------------------------------------------------------------
+    // 👉 請在此替換成你在 Cloudflare 建立的 Worker 網址
+    // -------------------------------------------------------------
+    const WORKER_PROXY_URL = "https://hidden-flower-5136.crypto-pisces315.workers.dev/"; 
+
+    // Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDUtSiVeBmq2Sr1Ny2x6oi0P3usZRR24nU",
       authDomain: "market-ai-radar-abc1c.firebaseapp.com",
@@ -505,11 +481,8 @@
           }
         });
       }
-    } catch (e) {
-      console.warn("Firebase 離線或初始化跳過");
-    }
+    } catch (e) {}
 
-    // ================= 2. 市場資料中心 =================
     let twLiveStocks = [];
     let fullMarketData = { 
       crypto: [], 
@@ -534,7 +507,7 @@
     let chartVolume = null;
     let chartMacd = null;
 
-    // ================= 3. 全域點擊委派 =================
+    // 全域點擊監聽
     document.addEventListener('click', function(e) {
       const row = e.target.closest('[data-stock-id]');
       if (row && !e.target.closest('button[data-fav-btn]')) {
@@ -547,13 +520,12 @@
       const all = [...twLiveStocks, ...(fullMarketData.tw || []), ...(fullMarketData.crypto || []), ...(fullMarketData.us || [])];
       let item = all.find(x => String(x.id) === String(id) || String(x.symbol) === String(id));
       if (!item) {
-        item = { id: id, symbol: id, name: id, price: "100.00", change: 0.0, volumeVal: 1.5, ampVal: 3.2, type: "tw", history: [] };
+        item = { id: id, symbol: id, name: id, price: "100.00", change: 0.0, volumeVal: 1.5, ampVal: 3.2, type: "tw" };
       }
       openAnalysisModal(item);
     }
 
-    // ================= 4. 開啟彈窗與繪製圖表 =================
-    function openAnalysisModal(item) {
+    async function openAnalysisModal(item) {
       currentModalItem = item;
       currentTimeframe = '1d';
       updateTfButtonStyles();
@@ -607,15 +579,11 @@
       document.getElementById('ai-base').textContent = ai.base;
       document.getElementById('ai-bull').textContent = ai.bull;
 
-      // 顯示彈窗
       const modal = document.getElementById('detail-modal');
       modal.classList.add('is-open');
 
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          renderCharts(item);
-        }, 50);
-      });
+      // 載入真實 K 線並繪製
+      await fetchAndDrawCandles(item.symbol, currentTimeframe, p);
     }
 
     function closeModal() {
@@ -627,11 +595,12 @@
       currentModalItem = null;
     }
 
-    function changeTimeframe(tf) {
+    async function changeTimeframe(tf) {
       currentTimeframe = tf;
       updateTfButtonStyles();
       if (currentModalItem) {
-        renderCharts(currentModalItem);
+        const p = parseFloat(String(currentModalItem.price).replace(/,/g, '')) || 100;
+        await fetchAndDrawCandles(currentModalItem.symbol, currentTimeframe, p);
       }
     }
 
@@ -646,38 +615,32 @@
       });
     }
 
-    // 關鍵修復：防禦型數據淨化器 (保證時間嚴格遞增且無 NaN)
-    function sanitizeCandleData(rawCandles, basePrice) {
-      if (!rawCandles || rawCandles.length < 5) {
-        // 若無歷史數據，產生貼合現價的 60 根基準走勢
-        const list = [];
-        let price = basePrice * 0.9;
-        const now = new Date();
-        for (let i = 60; i >= 0; i--) {
-          const d = new Date(now);
-          d.setDate(d.getDate() - i);
-          if (d.getDay() === 0 || d.getDay() === 6) continue;
-          const delta = (Math.random() - 0.48) * (price * 0.025);
-          const o = price;
-          const c = price + delta;
-          list.push({
-            time: d.toISOString().split('T')[0],
-            open: parseFloat(o.toFixed(2)),
-            high: parseFloat((Math.max(o, c) + Math.random() * (price * 0.01)).toFixed(2)),
-            low: parseFloat((Math.min(o, c) - Math.random() * (price * 0.01)).toFixed(2)),
-            close: parseFloat(c.toFixed(2)),
-            volume: Math.floor(Math.random() * 50000) + 10000
-          });
-          price = c;
+    // 核心：透過 Worker 抓取 100% 真實歷史 K 棒
+    async function fetchAndDrawCandles(symbol, interval, basePrice) {
+      document.getElementById('chart-date-display').textContent = "連線取得真實 K 棒中...";
+      
+      const rangeMap = { '1d': '6mo', '1wk': '2y', '1mo': '5y' };
+      const range = rangeMap[interval] || '6mo';
+      let candles = [];
+
+      try {
+        const res = await fetch(`${WORKER_PROXY_URL}?symbol=${symbol}&interval=${interval}&range=${range}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.candles && data.candles.length > 0) {
+            candles = data.candles;
+          }
         }
-        list[list.length - 1].close = basePrice;
-        return list;
+      } catch (err) {
+        console.warn("Worker 連線調試中:", err);
       }
 
-      // 1. 去重並過濾無效數據
+      document.getElementById('chart-date-display').textContent = "";
+
+      // 嚴格確保時間遞增與資料純淨
       const map = new Map();
-      rawCandles.forEach(c => {
-        if (c && c.time && !isNaN(c.open) && !isNaN(c.close)) {
+      candles.forEach(c => {
+        if (c && c.time && !isNaN(c.open)) {
           map.set(c.time, {
             time: String(c.time),
             open: Number(c.open),
@@ -688,13 +651,13 @@
           });
         }
       });
+      const sortedCandles = Array.from(map.values()).sort((a, b) => new Date(a.time) - new Date(b.time));
 
-      // 2. 嚴格依時間由舊到新升序排序 (Lightweight Charts 核心要求)
-      const sorted = Array.from(map.values()).sort((a, b) => new Date(a.time) - new Date(b.time));
-      return sorted;
+      // 繪製真實圖表
+      renderMultiPaneCharts(sortedCandles);
     }
 
-    function renderCharts(item) {
+    function renderMultiPaneCharts(candles) {
       const mainEl = document.getElementById('chart-main');
       const volEl = document.getElementById('chart-volume');
       const macdEl = document.getElementById('chart-macd');
@@ -703,17 +666,13 @@
       volEl.innerHTML = '';
       macdEl.innerHTML = '';
 
+      if (candles.length === 0) {
+        mainEl.innerHTML = '<div class="text-xs text-slate-500 text-center py-20">暫無該週期真實走勢資料</div>';
+        return;
+      }
+
       const w = mainEl.clientWidth || 800;
-      if (w === 0) return;
-
-      const p = parseFloat(String(item.price).replace(/,/g, '')) || 100;
-      let rawCandles = (item.history && item.history.length > 0) ? item.history : [];
-      let candles = sanitizeCandleData(rawCandles, p);
-      
-      // 聚合週期
-      candles = aggregateTimeframe(candles, currentTimeframe);
-
-      const isTw = item.type === 'tw';
+      const isTw = currentModalItem && currentModalItem.type === 'tw';
       const upColor = isTw ? '#ef4444' : '#10b981';
       const downColor = isTw ? '#10b981' : '#ef4444';
 
@@ -724,115 +683,81 @@
         timeScale: { borderColor: '#1e293b' }
       };
 
-      try {
-        // 1. K 棒
-        chartMain = LightweightCharts.createChart(mainEl, { ...opts, width: w, height: 200, timeScale: { visible: false } });
-        const candleSeries = chartMain.addCandlestickSeries({ upColor, downColor, borderVisible: false, wickUpColor: upColor, wickDownColor: downColor });
-        const ma20 = chartMain.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
-        const ma60 = chartMain.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
-        candleSeries.setData(candles);
+      // 1. K 棒主圖
+      chartMain = LightweightCharts.createChart(mainEl, { ...opts, width: w, height: 200, timeScale: { visible: false } });
+      const candleSeries = chartMain.addCandlestickSeries({ upColor, downColor, borderVisible: false, wickUpColor: upColor, wickDownColor: downColor });
+      const ma20 = chartMain.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const ma60 = chartMain.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+      candleSeries.setData(candles);
 
-        const calcMA = (period) => candles.slice(period - 1).map((_, i) => ({
-          time: candles[i + period - 1].time,
-          value: parseFloat((candles.slice(i, i + period).reduce((a, b) => a + b.close, 0) / period).toFixed(2))
-        }));
-        if (candles.length >= 20) ma20.setData(calcMA(20));
-        if (candles.length >= 60) ma60.setData(calcMA(60));
+      const calcMA = (period) => candles.slice(period - 1).map((_, i) => ({
+        time: candles[i + period - 1].time,
+        value: parseFloat((candles.slice(i, i + period).reduce((a, b) => a + b.close, 0) / period).toFixed(2))
+      }));
+      if (candles.length >= 20) ma20.setData(calcMA(20));
+      if (candles.length >= 60) ma60.setData(calcMA(60));
 
-        // 2. Volume
-        chartVolume = LightweightCharts.createChart(volEl, { ...opts, width: w, height: 65, timeScale: { visible: false } });
-        const volSeries = chartVolume.addHistogramSeries({ priceFormat: { type: 'volume' } });
-        volSeries.setData(candles.map(c => ({
-          time: c.time,
-          value: c.volume,
-          color: c.close >= c.open ? (isTw ? '#ef444488' : '#10b98188') : (isTw ? '#10b98188' : '#ef444488')
-        })));
+      // 2. 獨立 Volume 成交量
+      chartVolume = LightweightCharts.createChart(volEl, { ...opts, width: w, height: 65, timeScale: { visible: false } });
+      const volSeries = chartVolume.addHistogramSeries({ priceFormat: { type: 'volume' } });
+      volSeries.setData(candles.map(c => ({
+        time: c.time,
+        value: c.volume,
+        color: c.close >= c.open ? (isTw ? '#ef444488' : '#10b98188') : (isTw ? '#10b98188' : '#ef444488')
+      })));
 
-        // 3. MACD
-        chartMacd = LightweightCharts.createChart(macdEl, { ...opts, width: w, height: 85 });
-        const macdFast = chartMacd.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
-        const macdSlow = chartMacd.addLineSeries({ color: '#f59e0b', lineWidth: 1.5 });
-        const macdHist = chartMacd.addHistogramSeries({ color: '#26a69a' });
+      // 3. 獨立 MACD
+      chartMacd = LightweightCharts.createChart(macdEl, { ...opts, width: w, height: 85 });
+      const macdFast = chartMacd.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const macdSlow = chartMacd.addLineSeries({ color: '#f59e0b', lineWidth: 1.5 });
+      const macdHist = chartMacd.addHistogramSeries({ color: '#26a69a' });
 
-        const calcEMA = (data, span) => {
-          const k = 2 / (span + 1);
-          let ema = data[0].close;
-          return data.map(d => {
-            ema = d.close * k + ema * (1 - k);
-            return { time: d.time, value: ema };
-          });
-        };
-        const ema12 = calcEMA(candles, 12);
-        const ema26 = calcEMA(candles, 26);
-        const dif = ema12.map((d, i) => ({ time: d.time, value: parseFloat((d.value - ema26[i].value).toFixed(2)) }));
-
-        let deaVal = dif[0].value;
-        const k9 = 2 / 10;
-        const dea = dif.map(d => {
-          deaVal = d.value * k9 + deaVal * (1 - k9);
-          return { time: d.time, value: parseFloat(deaVal.toFixed(2)) };
+      const calcEMA = (data, span) => {
+        const k = 2 / (span + 1);
+        let ema = data[0].close;
+        return data.map(d => {
+          ema = d.close * k + ema * (1 - k);
+          return { time: d.time, value: ema };
         });
-        const hist = dif.map((d, i) => {
-          const h = parseFloat(((d.value - dea[i].value) * 2).toFixed(2));
-          return { time: d.time, value: h, color: h >= 0 ? '#ef4444' : '#10b981' };
-        });
+      };
+      const ema12 = calcEMA(candles, 12);
+      const ema26 = calcEMA(candles, 26);
+      const dif = ema12.map((d, i) => ({ time: d.time, value: parseFloat((d.value - ema26[i].value).toFixed(2)) }));
 
-        macdFast.setData(dif);
-        macdSlow.setData(dea);
-        macdHist.setData(hist);
+      let deaVal = dif[0].value;
+      const k9 = 2 / 10;
+      const dea = dif.map(d => {
+        deaVal = d.value * k9 + deaVal * (1 - k9);
+        return { time: d.time, value: parseFloat(deaVal.toFixed(2)) };
+      });
+      const hist = dif.map((d, i) => {
+        const h = parseFloat(((d.value - dea[i].value) * 2).toFixed(2));
+        return { time: d.time, value: h, color: h >= 0 ? '#ef4444' : '#10b981' };
+      });
 
-        chartMain.timeScale().subscribeVisibleLogicalRangeChange(r => {
-          chartVolume.timeScale().setVisibleLogicalRange(r);
-          chartMacd.timeScale().setVisibleLogicalRange(r);
-        });
+      macdFast.setData(dif);
+      macdSlow.setData(dea);
+      macdHist.setData(hist);
 
-        chartMain.subscribeCrosshairMove(param => {
-          const dateEl = document.getElementById('chart-date-display');
-          if (param.time) {
-            const t = param.time;
-            dateEl.textContent = `日期：${t.year || t.substr(0,4)} 年 ${t.month || t.substr(5,2)} 月 ${t.day || t.substr(8,2)} 日`;
-          }
-        });
+      chartMain.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        chartVolume.timeScale().setVisibleLogicalRange(r);
+        chartMacd.timeScale().setVisibleLogicalRange(r);
+      });
 
-        chartMain.timeScale().fitContent();
-        chartVolume.timeScale().fitContent();
-        chartMacd.timeScale().fitContent();
-      } catch (err) {
-        console.error("圖表繪製攔截例外：", err);
-      }
-    }
-
-    function aggregateTimeframe(dailyList, tf) {
-      if (!dailyList || dailyList.length === 0 || tf === '1d') return dailyList;
-      const grouped = {};
-      dailyList.forEach(c => {
-        const d = new Date(c.time);
-        let key = '';
-        if (tf === '1wk') {
-          const day = d.getDay() || 7;
-          d.setDate(d.getDate() - day + 1);
-          key = d.toISOString().split('T')[0];
-        } else if (tf === '1mo') {
-          key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+      chartMain.subscribeCrosshairMove(param => {
+        const dateEl = document.getElementById('chart-date-display');
+        if (param.time) {
+          const t = param.time;
+          dateEl.textContent = `日期：${t.year || t.substr(0,4)} 年 ${t.month || t.substr(5,2)} 月 ${t.day || t.substr(8,2)} 日`;
         }
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(c);
       });
 
-      return Object.keys(grouped).map(k => {
-        const list = grouped[k];
-        return {
-          time: k,
-          open: list[0].open,
-          close: list[list.length - 1].close,
-          high: Math.max(...list.map(x => x.high)),
-          low: Math.min(...list.map(x => x.low)),
-          volume: list.reduce((sum, x) => sum + x.volume, 0)
-        };
-      });
+      chartMain.timeScale().fitContent();
+      chartVolume.timeScale().fitContent();
+      chartMacd.timeScale().fitContent();
     }
 
-    // ================= 5. 資料同步與排行榜渲染 =================
+    // 指數與市場資料
     async function fetchRealMarketIndices() {
       try {
         const payload = {
@@ -943,8 +868,7 @@
             id: item.symbol, type: "crypto", symbol: sym, name: sym,
             price: last > 1 ? last.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : last.toString(),
             change: pct, volumeVal: parseFloat(volM), ampVal: 4.5,
-            badge: pct >= 0 ? "多頭動能" : "回檔整理",
-            history: []
+            badge: pct >= 0 ? "多頭動能" : "回檔整理"
           };
         });
 
@@ -985,7 +909,6 @@
       document.getElementById('badge-fav').textContent = userWatchlist.length;
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
-      // 自選清單渲染
       if (currentMarket === 'watchlist') {
         const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto, ...fullMarketData.us];
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
@@ -1039,7 +962,6 @@
         return;
       }
 
-      // 一般市場渲染
       let baseList = [...(fullMarketData[currentMarket] || [])];
       if (q) baseList = baseList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
       if (baseList.length === 0) return;
@@ -1157,7 +1079,7 @@
       renderAll();
     }
 
-    // ================= 6. 雲端自選股與帳號管理 =================
+    // 帳號與自選雲端管理
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
@@ -1205,7 +1127,6 @@
 
     function handleLogout() { if (auth) auth.signOut(); }
 
-    // ================= 7. 啟動定時循環 =================
     function startRefreshCycle() {
       fetchRealMarketIndices();
       syncMarketDataFromJson();
