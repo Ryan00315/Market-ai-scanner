@@ -1,7 +1,6 @@
 import os
 import json
 import requests
-import yfinance as yf
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -9,7 +8,7 @@ HEADERS = {
     "Referer": "https://tw.tradingview.com/"
 }
 
-# 1. 抓取 TradingView 盤中即時熱門活躍股 (以盤中成交量動能篩選)
+# 1. 抓取 TradingView 盤中即時活躍榜
 def fetch_tw_live():
     print("正在抓取【今日即時盤中】數據...")
     url = "https://scanner.tradingview.com/taiwan/scan"
@@ -21,7 +20,7 @@ def fetch_tw_live():
         ],
         "columns": ["name", "description", "close", "change", "Value", "Volatility.D"],
         "sort": {"sortBy": "Value", "sortOrder": "desc"},
-        "range": [0, 50]
+        "range": [0, 40]
     }
     try:
         res = requests.post(url, json=payload, headers=HEADERS, timeout=15)
@@ -46,7 +45,7 @@ def fetch_tw_live():
             })
         return stocks
     except Exception as e:
-        print(f"即時盤中抓取失敗: {e}")
+        print(f"即時盤中抓取異常: {e}")
         return []
 
 # 2. 抓取台灣證交所官方 OpenAPI【昨日收盤結算數據】
@@ -87,11 +86,10 @@ def fetch_tw_settlement():
                 })
             except Exception:
                 continue
-        # 依結算成交值排序
         stocks.sort(key=lambda x: x["volumeVal"], reverse=True)
-        return stocks[:50]
+        return stocks[:40]
     except Exception as e:
-        print(f"收盤結算抓取失敗: {e}")
+        print(f"收盤結算抓取異常: {e}")
         return []
 
 def main():
@@ -99,15 +97,15 @@ def main():
     tw_settled = fetch_tw_settlement()
 
     payload = {
-        "tw_live": tw_live,         # 真正的今日盤中即時榜
-        "tw": tw_settled,           # 真正的昨日官方結算榜 (來源與數據徹底分開)
+        "tw_live": tw_live,
+        "tw": tw_settled,
         "crypto": [],
         "us": []
     }
     os.makedirs("data", exist_ok=True)
     with open("data/market_data.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print("雙軌獨立市場資料產出完畢！")
+    print("market_data.json 更新完成！")
 
 if __name__ == "__main__":
     main()
