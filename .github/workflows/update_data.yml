@@ -1,29 +1,48 @@
-name: Scheduled Market Collector
+name: Scheduled Market Collector & AI Analysis
 
+# 觸發條件
 on:
   schedule:
-    - cron: '0 8,21 * * 1-5'  # 每天盤後自動跑
-  workflow_dispatch:           # 允許手動在網頁點擊執行
+    # 每天台股與美股收盤後定時執行 (UTC 08:00 與 21:00，換算台灣時間約 16:00 與 05:00)
+    - cron: '0 8,21 * * 1-5'
+  workflow_dispatch: # 支援在 GitHub 網頁上隨時手動點「Run workflow」按鈕
+
+# 關鍵：必須給予寫入權限，才能把爬完的資料 git commit 推回倉庫！
+permissions:
+  contents: write
 
 jobs:
-  run-scan:
+  run-crawler:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      # 1. 下載專案代碼
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. 安裝 Python 環境
       - name: Set up Python
         uses: setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install requests yfinance google-genai pandas
-      - name: Run script
+
+      # 3. 安裝爬蟲與 AI 套件
+      - name: Install Dependencies
+        run: |
+          pip install requests yfinance google-genai pandas
+
+      # 4. 執行抓取與 AI 產出腳本
+      - name: Run Market Collector
         env:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
-        run: python scripts/update_market.py
-      - name: Commit and push changes
         run: |
-          git config --global user.name "MarketBot"
-          git config --global user.email "bot@github.com"
+          python scripts/update_market.py
+
+      # 5. 將產生的 data/market_data.json 推回 GitHub
+      - name: Commit and Push Updated Data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/market_data.json
-          git commit -m "chore: update market snapshot & AI report" || exit 0
+          git commit -m "chore: auto-update market data and AI insights" || exit 0
           git push
