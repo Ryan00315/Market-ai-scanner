@@ -35,7 +35,7 @@
       <div class="text-[10px] font-semibold text-slate-500 uppercase px-2 mb-2 tracking-wider">即時市場矩陣</div>
       <nav class="space-y-1">
         <button onclick="switchMarket('tw')" id="nav-tw" class="nav-btn w-full flex items-center justify-between px-2.5 py-2 rounded text-xs nav-active transition">
-          <span class="flex items-center gap-2"><span>📊</span> 台股市況 (開盤即時/昨日)</span>
+          <span class="flex items-center gap-2"><span>📊</span> 台股市況 (雙軌掃描)</span>
           <span id="badge-tw" class="text-[10px] bg-slate-800/80 px-1.5 py-0.5 rounded text-sky-400 font-mono">載入中</span>
         </button>
         <button onclick="switchMarket('crypto')" id="nav-crypto" class="nav-btn w-full flex items-center justify-between px-2.5 py-2 rounded text-xs text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition">
@@ -109,7 +109,7 @@
         <h2 id="page-title" class="text-sm font-bold text-white flex items-center gap-2">📊 台股市況雙軌掃描</h2>
         <div id="status-indicator" class="text-[11px] text-slate-400 hidden sm:flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="status-text">已自動依照成交金額 > 3,000 萬元篩選市場焦點</span>
+          <span id="status-text">全市場依成交金額 > 3,000 萬篩選主流焦點</span>
         </div>
       </div>
 
@@ -121,14 +121,14 @@
     <!-- 主內容區 -->
     <div class="flex-1 p-6 overflow-y-auto space-y-8">
       
-      <!-- ================= 區塊 A：台股開盤/盤中即時四大排行榜 (完整具備：漲幅、跌幅、成交值、振幅) ================= -->
+      <!-- ================= 區塊 A：TradingView 台股開盤/盤中即時四大排行 ================= -->
       <section id="tw-live-section" class="space-y-3">
         <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
           <div class="flex items-center gap-2">
-            <span class="px-1.5 py-0.5 text-[10px] rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold font-mono">開盤即時直連</span>
+            <span class="px-1.5 py-0.5 text-[10px] rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold font-mono">TradingView 即時</span>
             <span class="text-xs font-bold text-white tracking-wide">今日開盤與即時盤中四大排行 (成交值 > 3,000 萬)</span>
           </div>
-          <span class="text-[11px] text-sky-400 font-mono">每 5 分鐘自動刷新 ｜ 0 額度消耗</span>
+          <span class="text-[11px] text-sky-400 font-mono">官方即時引擎 ｜ 0 額度消耗</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -138,7 +138,7 @@
               <span class="text-xs font-bold text-rose-400 flex items-center gap-1.5">
                 <span>🚀</span> 開盤即時漲幅排行
               </span>
-              <span class="text-[10px] text-slate-500">強勢領漲</span>
+              <span class="text-[10px] text-slate-500">強勢表態</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
               <table class="w-full text-left text-xs">
@@ -150,7 +150,7 @@
                   </tr>
                 </thead>
                 <tbody id="table-tw-live-gainers" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">即時盤中計算中...</td></tr>
+                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -162,7 +162,7 @@
               <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
                 <span>📉</span> 開盤即時跌幅排行
               </span>
-              <span class="text-[10px] text-slate-500">弱勢回檔</span>
+              <span class="text-[10px] text-slate-500">弱勢修正</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
               <table class="w-full text-left text-xs">
@@ -174,13 +174,13 @@
                   </tr>
                 </thead>
                 <tbody id="table-tw-live-losers" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">即時盤中計算中...</td></tr>
+                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- 3. 開盤成交值排行 (人氣股) -->
+          <!-- 3. 開盤即時成交值排行 (人氣股) -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-sky-400 flex items-center gap-1.5">
@@ -198,13 +198,13 @@
                   </tr>
                 </thead>
                 <tbody id="table-tw-live-volume" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">即時盤中計算中...</td></tr>
+                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- 4. 開盤振幅排行 (波動大) -->
+          <!-- 4. 開盤即時振幅排行 (波動大) -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -222,7 +222,7 @@
                   </tr>
                 </thead>
                 <tbody id="table-tw-live-amplitude" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">即時盤中計算中...</td></tr>
+                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -230,11 +230,11 @@
         </div>
       </section>
 
-      <!-- ================= 區塊 B：下方標準區塊 (台股為昨日官方盤後收盤四大排行 / 幣圈與美股標準展示) ================= -->
+      <!-- ================= 區塊 B：下方標準區塊 (台股昨日收盤四大排行 / 幣圈與美股標準展示) ================= -->
       <section id="general-scan-section" class="space-y-3">
         <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
           <div class="flex items-center gap-2">
-            <span id="general-source-tag" class="px-1.5 py-0.5 text-[10px] rounded bg-slate-800 text-slate-300 border border-slate-700 font-semibold font-mono">昨日官方結算</span>
+            <span id="general-source-tag" class="px-1.5 py-0.5 text-[10px] rounded bg-slate-800 text-slate-300 border border-slate-700 font-semibold font-mono">全市場矩陣</span>
             <span id="general-section-title" class="text-xs font-bold text-white tracking-wide">昨日收盤各項指標排行 (以成交金額為基準篩選)</span>
           </div>
           <span id="general-volume-unit" class="text-[11px] text-sky-400 font-mono">單位：億元 (NTD)</span>
@@ -254,7 +254,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr>
                     <th class="pb-1.5 font-medium pl-1">標的</th>
-                    <th class="pb-1.5 font-medium text-right">收盤價</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
                     <th class="pb-1.5 font-medium text-right pr-1">漲幅 / 成交值</th>
                   </tr>
                 </thead>
@@ -276,7 +276,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr>
                     <th class="pb-1.5 font-medium pl-1">標的</th>
-                    <th class="pb-1.5 font-medium text-right">收盤價</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
                     <th class="pb-1.5 font-medium text-right pr-1">跌幅 / 成交值</th>
                   </tr>
                 </thead>
@@ -285,20 +285,20 @@
             </div>
           </div>
 
-          <!-- 3. 成交值排行 -->
+          <!-- 3. 成交值排行 (人氣股) -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                 <span>💰</span> <span id="label-rank-volume">成交值龍頭排行</span>
               </span>
-              <span class="text-[10px] text-sky-400 font-medium">昨日主力焦點</span>
+              <span class="text-[10px] text-sky-400 font-medium">市場主力焦點</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr>
                     <th class="pb-1.5 font-medium pl-1">標的</th>
-                    <th class="pb-1.5 font-medium text-right">收盤價</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
                     <th class="pb-1.5 font-medium text-right pr-1">成交金額 / 漲跌</th>
                   </tr>
                 </thead>
@@ -307,20 +307,20 @@
             </div>
           </div>
 
-          <!-- 4. 振幅排行 -->
+          <!-- 4. 振幅排行 (波動大) -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
             <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
               <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                 <span>🔥</span> <span id="label-rank-amplitude">當日振幅排行</span>
               </span>
-              <span class="text-[10px] text-slate-500">前 8 名</span>
+              <span class="text-[10px] text-slate-500">主力劇烈拉鋸</span>
             </div>
             <div class="p-2 flex-1 overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr>
                     <th class="pb-1.5 font-medium pl-1">標的</th>
-                    <th class="pb-1.5 font-medium text-right">收盤價</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
                     <th class="pb-1.5 font-medium text-right pr-1">振幅 / 成交值</th>
                   </tr>
                 </thead>
@@ -428,74 +428,78 @@
       });
     } catch (e) {}
 
-    // 數據中心：上方為真實即時開盤數據，下方為昨日官方數據
-    let twLiveStocks = []; 
-    let fullMarketData = { crypto: [], tw: [], us: [] };
+    // 數據中心
+    let twLiveStocks = []; // 上方：TradingView 開盤即時四大排行
+    let fullMarketData = { crypto: [], tw: [], us: [] }; // 下方：昨日官方基準四大排行
     let currentMarket = 'tw';
     let chartInstance = null;
 
-    // ================= 1. 抓取上方「開盤即時盤中真實數據」 (Yahoo Finance 免 CORS 官方開放 API) =================
-    // 包含熱門焦點權值與活躍股，動態取得今日真正最新現價、漲跌與成交金額
-    const activeTaiwanTickers = [
-      "2330.TW", "2317.TW", "2454.TW", "2382.TW", "3017.TW", "2345.TW", 
-      "2603.TW", "3231.TW", "2609.TW", "2615.TW", "3443.TW", "3661.TW", 
-      "2308.TW", "2357.TW", "2881.TW", "2882.TW", "2303.TW", "3711.TW",
-      "2408.TW", "3037.TW", "2002.TW", "2886.TW", "2891.TW", "3035.TW"
-    ];
-
-    async function fetchRealTaiwanLiveOpenData() {
+    // 讀取大盤指數真實行情
+    async function fetchRealMarketIndices() {
       try {
-        const symbolsParam = activeTaiwanTickers.join(",");
-        // Yahoo Finance 公開即時報價介面 (無 CORS 阻擋)
-        const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolsParam}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Yahoo API 異常");
+        const payload = {
+          "symbols": { "tickers": ["TWSE:TAIEX", "SP:SPX", "NASDAQ:IXIC"], "query": { "types": [] } },
+          "columns": ["close", "change"]
+        };
+        const res = await fetch('https://scanner.tradingview.com/global/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) return;
         const data = await res.json();
-        const results = data.quoteResponse ? data.quoteResponse.result : [];
+        data.data.forEach(item => {
+          const s = item.s;
+          const close = item.d[0];
+          const chg = item.d[1];
+          const isPos = chg >= 0;
+          const chgStr = (isPos ? '+' : '') + chg.toFixed(2) + '%';
+          
+          if (s === "TWSE:TAIEX") {
+            document.getElementById('idx-tw-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-tw-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-rose-400' : 'text-emerald-400'}`;
+          } else if (s === "SP:SPX") {
+            document.getElementById('idx-spx-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-spx-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          } else if (s === "NASDAQ:IXIC") {
+            document.getElementById('idx-ixic-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-ixic-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          }
+        });
+      } catch (e) {}
+    }
 
-        twLiveStocks = results.map(q => {
-          const sym = q.symbol.replace(".TW", "");
-          const name = q.shortName || sym;
-          const curr = q.regularMarketPrice || 0;
-          const pct = q.regularMarketChangePercent || 0;
-          const vol = q.regularMarketVolume || 0;
-          const high = q.regularMarketDayHigh || curr;
-          const low = q.regularMarketDayLow || curr;
-          const prev = q.regularMarketPreviousClose || curr;
-
-          // 真實計算當日即時成交金額 (億元)
-          const valYi = parseFloat(((curr * vol) / 100000000).toFixed(2));
-          // 真實計算當日即時振幅 %
-          const amp = prev > 0 ? parseFloat((((high - low) / prev) * 100).toFixed(2)) : 0;
-
-          return {
-            id: sym,
-            type: "tw",
-            symbol: sym,
-            name: name,
-            price: curr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            change: parseFloat(pct.toFixed(2)),
-            volumeVal: valYi, // 即時億元
-            ampVal: amp,      // 即時振幅
-            badge: pct >= 9.5 ? "漲停強勢" : (pct > 3 ? "多頭突破" : "常態整理"),
-            ai: {
-              valuation: pct > 4 ? "動能擴張" : "震盪整理",
-              catalyst: `開盤盤中成交額約 ${valYi} 億元，當日高低振幅達 ${amp}%。`,
-              fundamentals: `盤中焦點股，多空交易熱絡。`,
-              bear: `${(curr * 0.92).toFixed(1)} (-8%)`,
-              base: `${(curr * 1.05).toFixed(1)} (+5%)`,
-              bull: `${(curr * 1.20).toFixed(1)} (+20%)`
-            }
-          };
-        }).filter(item => item.volumeVal > 0.3); // 篩選成交金額大於 3,000 萬元以上的主流股
-
-        renderTWLiveSection();
+    // 核心資料同步：讀取由 Python 抓取 TradingView 產出的真實 JSON
+    async function syncMarketDataFromJson() {
+      try {
+        const res = await fetch('./data/market_data.json?t=' + Date.now());
+        if (res.ok) {
+          const remote = await res.json();
+          if (remote.tw_live && remote.tw_live.length > 0) {
+            twLiveStocks = remote.tw_live;
+          }
+          if (remote.tw && remote.tw.length > 0) {
+            fullMarketData.tw = remote.tw;
+            document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
+          }
+          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
+            fullMarketData.crypto = remote.crypto;
+          }
+          renderTWLiveSection();
+          renderAll();
+        }
       } catch (err) {
-        console.warn("即時開盤數據連線調整中，改以盤後庫同步：", err);
+        console.warn("等待後端產出 market_data.json");
       }
     }
 
-    // 渲染上方即時開盤四大排行 (漲幅、跌幅、成交值、振幅全部到位！)
+    // 渲染上方開盤即時四大排行 (漲幅、跌幅、成交值、振幅完整到位)
     function renderTWLiveSection() {
       if (!twLiveStocks || twLiveStocks.length === 0) return;
 
@@ -536,25 +540,7 @@
       `)).join('');
     }
 
-    // ================= 2. 抓取下方「昨日官方盤後收盤排行榜」 =================
-    async function syncMarketDataFromJson() {
-      try {
-        const res = await fetch('./data/market_data.json?t=' + Date.now());
-        if (res.ok) {
-          const remote = await res.json();
-          if (remote.tw && remote.tw.length > 0) {
-            fullMarketData.tw = remote.tw;
-            document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
-          }
-          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
-            fullMarketData.crypto = remote.crypto;
-          }
-          renderAll();
-        }
-      } catch (err) {}
-    }
-
-    // ================= 3. 幣安即時 API (加密貨幣市場) =================
+    // 幣安即時 API (補充即時跳動)
     async function fetchRealCryptoData() {
       try {
         const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
@@ -597,16 +583,14 @@
       } catch (err) {}
     }
 
-    // 啟動全市場循環
     function startRefreshCycle() {
-      fetchRealTaiwanLiveOpenData(); // 開盤即時四大排行
-      syncMarketDataFromJson();      // 昨日收盤四大排行
-      fetchRealCryptoData();         // 幣圈即時
+      fetchRealMarketIndices();
+      syncMarketDataFromJson();
+      fetchRealCryptoData();
     }
     startRefreshCycle();
-    setInterval(startRefreshCycle, 300000); // 每 5 分鐘刷新一次
+    setInterval(startRefreshCycle, 15000);
 
-    // ================= 4. 雲端自選股 =================
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
@@ -629,7 +613,6 @@
       saveWatchlist();
     }
 
-    // ================= 5. 市場切換控制 =================
     function switchMarket(market) {
       currentMarket = market;
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -687,12 +670,11 @@
       `;
     }
 
-    // 渲染下方昨日官方收盤四大排行
     function renderAll() {
       document.getElementById('badge-fav').textContent = userWatchlist.length;
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
-      // 自選清單獨立渲染
+      // 自選清單渲染
       if (currentMarket === 'watchlist') {
         const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto];
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
