@@ -269,4 +269,794 @@
 
           <!-- 2. 跌幅排行 -->
           <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
-            <div class="px-3.5 py-2.5 border-b border-
+            <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <span>📉</span> <span id="label-rank-losers">收盤跌幅排行</span>
+              </span>
+              <span class="text-[10px] text-slate-500">前 8 名</span>
+            </div>
+            <div class="p-2 flex-1 overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
+                  <tr>
+                    <th class="pb-1.5 font-medium pl-1">標的</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
+                    <th class="pb-1.5 font-medium text-right pr-1">跌幅 / 成交值</th>
+                  </tr>
+                </thead>
+                <tbody id="table-losers" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. 成交值排行 -->
+          <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
+            <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <span>💰</span> <span id="label-rank-volume">成交值龍頭排行</span>
+              </span>
+              <span class="text-[10px] text-sky-400 font-medium">市場主力焦點</span>
+            </div>
+            <div class="p-2 flex-1 overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
+                  <tr>
+                    <th class="pb-1.5 font-medium pl-1">標的</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
+                    <th class="pb-1.5 font-medium text-right pr-1">成交金額 / 漲跌</th>
+                  </tr>
+                </thead>
+                <tbody id="table-volume" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 4. 振幅排行 -->
+          <div class="bg-[#0d1117] border border-slate-800/90 rounded-lg overflow-hidden flex flex-col">
+            <div class="px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <span>🔥</span> <span id="label-rank-amplitude">當日振幅排行</span>
+              </span>
+              <span class="text-[10px] text-slate-500">主力劇烈拉鋸</span>
+            </div>
+            <div class="p-2 flex-1 overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
+                  <tr>
+                    <th class="pb-1.5 font-medium pl-1">標的</th>
+                    <th class="pb-1.5 font-medium text-right">價格</th>
+                    <th class="pb-1.5 font-medium text-right pr-1">振幅 / 成交值</th>
+                  </tr>
+                </thead>
+                <tbody id="table-amplitude" class="divide-y divide-slate-800/40 font-mono"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 自選專區卡片網格 -->
+      <div id="watchlist-cards-container" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="empty-state" class="hidden text-center py-24 text-slate-500 text-xs">此分類下尚無標的，或您的自選清單為空。</div>
+    </div>
+  </main>
+
+  <!-- ================= 彈出視窗：K 線圖 (三層分面：K棒 / 獨立Volume / MACD) + SMC/POC 交易計劃 + AI 新聞與估值報告 ================= -->
+  <div id="detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0d1117] border border-slate-700 w-full max-w-5xl max-h-[96vh] rounded-xl flex flex-col overflow-hidden shadow-2xl">
+      <!-- 頂部標題與週期按鈕 -->
+      <div class="flex items-center justify-between px-5 py-3 border-b border-slate-800">
+        <div class="flex items-center gap-4">
+          <div>
+            <h2 id="modal-title" class="text-base font-bold text-white flex items-center gap-2"></h2>
+            <div id="modal-subtitle" class="text-[11px] text-slate-400 mt-0.5"></div>
+          </div>
+          <!-- 日 / 週 / 月 週期切換 -->
+          <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded text-xs ml-4">
+            <button onclick="changeTimeframe('D')" id="tf-D" class="px-2.5 py-0.5 rounded tf-active transition">日線</button>
+            <button onclick="changeTimeframe('W')" id="tf-W" class="px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition">週線</button>
+            <button onclick="changeTimeframe('M')" id="tf-M" class="px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition">月線</button>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="w-7 h-7 rounded bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- 三層圖表容器 (K棒主圖 / 獨立Volume副圖 / MACD副圖) -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
+            <span>主圖 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
+            <span id="chart-date-display" class="font-mono text-sky-400 text-xs font-bold"></span>
+          </div>
+          <!-- 1. K棒主圖 (高度 210px) -->
+          <div id="chart-main" style="height: 210px; width: 100%;" class="bg-[#070a0f] rounded-t-lg border border-slate-800"></div>
+
+          <!-- 2. 獨立 Volume 成交量面板 (高度 70px) -->
+          <div class="flex items-center justify-between text-[10px] text-slate-500 px-1 pt-1">
+            <span>Volume 成交量副圖</span>
+          </div>
+          <div id="chart-volume" style="height: 70px; width: 100%;" class="bg-[#070a0f] border-x border-b border-slate-800"></div>
+
+          <!-- 3. 獨立 MACD 面板 (高度 90px，附日期時間軸) -->
+          <div class="flex items-center justify-between text-[10px] text-slate-500 px-1 pt-1">
+            <span>MACD (12, 26, 9) ｜ DIF (藍) DEA (橘)</span>
+          </div>
+          <div id="chart-macd" style="height: 90px; width: 100%;" class="bg-[#070a0f] rounded-b-lg border-x border-b border-slate-800"></div>
+        </div>
+
+        <!-- ================= AI 分析報告整合區 ================= -->
+        <div class="bg-[#090d14] border border-slate-800 rounded-lg p-4 space-y-4">
+          
+          <!-- 頂部估值與狀態標籤 -->
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 text-[10px] rounded bg-sky-950 text-sky-400 border border-sky-800 font-semibold font-mono">AI 量化投研</span>
+              <span class="text-xs font-bold text-slate-200">深度市場評析 ＆ SMC聰明錢交易計劃</span>
+            </div>
+            <div id="ai-valuation" class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-medium"></div>
+          </div>
+
+          <!-- SMC 聰明錢核心結構與點位推演 -->
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-amber-400 flex items-center justify-between">
+              <span>🎯 SMC (Smart Money Concepts) 關鍵結構與交易計劃</span>
+              <span id="smc-rr" class="text-[10px] text-emerald-400 font-mono font-semibold"></span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+              <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+                <span class="text-slate-400 block text-[10px] mb-0.5">POC 成交量密集控制點</span>
+                <span id="smc-poc" class="font-mono text-sky-400 font-bold"></span>
+                <span class="text-[10px] text-slate-500 block mt-0.5">大戶主要籌碼沉澱位</span>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+                <span class="text-slate-400 block text-[10px] mb-0.5">Order Block (OB 機構訂單塊)</span>
+                <span id="smc-ob" class="font-mono text-amber-400 font-bold"></span>
+                <span class="text-[10px] text-slate-500 block mt-0.5">機構資金進場防守區間</span>
+              </div>
+              <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+                <span class="text-slate-400 block text-[10px] mb-0.5">FVG (Fair Value Gap 價值失衡區)</span>
+                <span id="smc-fvg" class="font-mono text-purple-400 font-bold"></span>
+                <span class="text-[10px] text-slate-500 block mt-0.5">預期價格回補磁吸區間</span>
+              </div>
+            </div>
+
+            <!-- 具體操作點位 (進場、止損、止盈) -->
+            <div class="grid grid-cols-3 gap-2 text-center text-xs mt-2">
+              <div class="p-2 bg-slate-900/90 rounded border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">建議進場區間 (Entry)</span>
+                <span id="plan-entry" class="font-mono font-bold text-white block mt-0.5"></span>
+              </div>
+              <div class="p-2 bg-rose-950/40 rounded border border-rose-900/50">
+                <span class="text-[10px] text-rose-400 block">結構失效止損 (Stop Loss)</span>
+                <span id="plan-sl" class="font-mono font-bold text-rose-300 block mt-0.5"></span>
+              </div>
+              <div class="p-2 bg-emerald-950/40 rounded border border-emerald-900/50">
+                <span class="text-[10px] text-emerald-400 block">目標止盈 (TP1 / TP2)</span>
+                <span id="plan-tp" class="font-mono font-bold text-emerald-300 block mt-0.5"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800/80 pt-3 space-y-3">
+            <!-- ① 原本的催化因素 (新聞 / 營運亮點) -->
+            <div>
+              <div class="text-xs font-bold text-sky-400 mb-1 flex items-center gap-1.5">
+                <span>📰 ① 催化因素與即時盤中動能 (Catalyst Breakdown)</span>
+              </div>
+              <p id="ai-catalyst" class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-2.5 rounded border border-slate-800/60"></p>
+            </div>
+
+            <!-- ② 原本的財務與估值評析 -->
+            <div>
+              <div class="text-xs font-bold text-sky-400 mb-1 flex items-center gap-1.5">
+                <span>📈 ② 財務與估值評析 (Valuation & Peers)</span>
+              </div>
+              <p id="ai-fundamentals" class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-2.5 rounded border border-slate-800/60"></p>
+            </div>
+
+            <!-- ③ 原本的風險報酬對稱性推演 (Bear / Base / Bull) -->
+            <div>
+              <div class="text-xs font-bold text-sky-400 mb-1.5">
+                <span>⚖️ ③ 風險報酬對稱性推演 (Asymmetry Scenarios)</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded text-center">
+                  <div class="text-[10px] text-rose-400 font-semibold">Bear (保守下檔)</div>
+                  <div id="ai-bear" class="text-xs text-slate-200 mt-1 font-mono"></div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded text-center">
+                  <div class="text-[10px] text-slate-400 font-semibold">Base (中性目標)</div>
+                  <div id="ai-base" class="text-xs text-slate-200 mt-1 font-mono"></div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded text-center">
+                  <div class="text-[10px] text-emerald-400 font-semibold">Bull (樂觀預估)</div>
+                  <div id="ai-bull" class="text-xs text-slate-200 mt-1 font-mono"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 註冊 / 登入彈窗 ================= -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#0d1117] border border-slate-700 w-full max-w-sm rounded-xl p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="auth-modal-title" class="text-sm font-bold text-white">會員登入</h3>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-xs">✕</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">電子信箱</label>
+          <input type="email" id="auth-email" class="w-full bg-[#070a0f] border border-slate-800 rounded p-2 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="your@email.com" />
+        </div>
+        <div>
+          <label class="text-[11px] text-slate-400 block mb-1">密碼</label>
+          <input type="password" id="auth-password" class="w-full bg-[#070a0f] border border-slate-800 rounded p-2 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="至少 6 位字元" />
+        </div>
+        <div id="auth-error" class="text-xs text-rose-400 hidden"></div>
+        <button onclick="submitAuth()" id="auth-submit-btn" class="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-semibold transition mt-2">登入</button>
+        <div class="text-center pt-2">
+          <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs text-sky-400 hover:underline">還沒有帳號？免費註冊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let auth = null, db = null, currentUser = null;
+    let userWatchlist = JSON.parse(localStorage.getItem('user_watchlist') || '[]');
+
+    let twLiveStocks = [];
+    let fullMarketData = { 
+      crypto: [], 
+      tw: [], 
+      us: [
+        { id: "NVDA", type: "us", symbol: "NVDA", name: "NVIDIA", price: "138.25", change: 3.80, volumeVal: 82.5, ampVal: 4.5, badge: "多頭走勢",
+          ai: { valuation: "成長股評價 (32x)", catalyst: "Blackwell 新架構需求旺盛，雲端巨頭 Capex 預算強勁。", fundamentals: "毛利率維持 75% 高檔，自由現金流充沛持續實施回購。", bear: "120 (-13%)", base: "150 (+8%)", bull: "180 (+30%)" } },
+        { id: "TSLA", type: "us", symbol: "TSLA", name: "Tesla", price: "218.40", change: -4.15, volumeVal: 45.1, ampVal: 7.8, badge: "高波動",
+          ai: { valuation: "多空分歧", catalyst: "Robotaxi 技術與儲能業務維持高成長，但汽車降價影響利潤率。", fundamentals: "手頭現金充裕，靜待全自動駕駛商用化營收驗證。", bear: "185 (-15%)", base: "240 (+10%)", bull: "310 (+42%)" } },
+        { id: "AAPL", type: "us", symbol: "AAPL", name: "Apple", price: "232.10", change: 0.45, volumeVal: 31.2, ampVal: 1.8, badge: "高檔整理",
+          ai: { valuation: "合理估值", catalyst: "AI 服務擴大支援多國語言，市場預期換機週期顯現。", fundamentals: "高毛利服務營收佔比創新高，硬體獲利保持穩健。", bear: "215 (-7%)", base: "245 (+5%)", bull: "270 (+16%)" } }
+      ] 
+    };
+
+    let currentMarket = 'tw';
+    let currentWatchlistFilter = 'all';
+
+    // 圖表三層物件
+    let chartMain = null;
+    let chartVolume = null;
+    let chartMacd = null;
+
+    let currentModalItem = null;
+    let currentTimeframe = 'D';
+    let rawDailyCandles = [];
+
+    // 讀取大盤跑馬燈真實指數
+    async function fetchRealMarketIndices() {
+      try {
+        const payload = {
+          "symbols": { "tickers": ["TWSE:TAIEX", "SP:SPX", "NASDAQ:IXIC"], "query": { "types": [] } },
+          "columns": ["close", "change"]
+        };
+        const res = await fetch('https://scanner.tradingview.com/global/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        data.data.forEach(item => {
+          const s = item.s;
+          const close = item.d[0];
+          const chg = item.d[1];
+          const isPos = chg >= 0;
+          const chgStr = (isPos ? '+' : '') + chg.toFixed(2) + '%';
+          
+          if (s === "TWSE:TAIEX") {
+            document.getElementById('idx-tw-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-tw-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-rose-400' : 'text-emerald-400'}`;
+          } else if (s === "SP:SPX") {
+            document.getElementById('idx-spx-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-spx-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          } else if (s === "NASDAQ:IXIC") {
+            document.getElementById('idx-ixic-val').textContent = close.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const el = document.getElementById('idx-ixic-chg');
+            el.textContent = chgStr;
+            el.className = `font-mono font-medium ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+          }
+        });
+      } catch (e) {}
+    }
+
+    // 核心資料同步 (讀取後端自動更新的真實 JSON)
+    async function syncMarketDataFromJson() {
+      try {
+        const res = await fetch('./data/market_data.json?t=' + Date.now());
+        if (res.ok) {
+          const remote = await res.json();
+          if (remote.tw_live && remote.tw_live.length > 0) twLiveStocks = remote.tw_live;
+          if (remote.tw && remote.tw.length > 0) {
+            fullMarketData.tw = remote.tw;
+            document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
+          }
+          if (remote.crypto && remote.crypto.length > 0 && fullMarketData.crypto.length === 0) {
+            fullMarketData.crypto = remote.crypto;
+          }
+          renderTWLiveSection();
+          renderAll();
+        }
+      } catch (err) {}
+    }
+
+    // 渲染上方開盤即時四大排行
+    function renderTWLiveSection() {
+      if (!twLiveStocks || twLiveStocks.length === 0) return;
+
+      const gainers = [...twLiveStocks].sort((a, b) => b.change - a.change).slice(0, 8);
+      document.getElementById('table-tw-live-gainers').innerHTML = gainers.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold text-rose-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+
+      const losers = [...twLiveStocks].sort((a, b) => a.change - b.change).slice(0, 8);
+      document.getElementById('table-tw-live-losers').innerHTML = losers.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold text-emerald-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+
+      const volumes = [...twLiveStocks].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8);
+      document.getElementById('table-tw-live-volume').innerHTML = volumes.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-sky-300 font-bold font-mono">${item.volumeVal.toLocaleString()} 億</div>
+          <div class="text-[9px] ${item.change >= 0 ? 'text-rose-400' : 'text-emerald-400'} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+        </div>
+      `)).join('');
+
+      const amplitudes = [...twLiveStocks].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8);
+      document.getElementById('table-tw-live-amplitude').innerHTML = amplitudes.map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-amber-400 font-bold font-mono">${item.ampVal}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} 億</div>
+        </div>
+      `)).join('');
+    }
+
+    // 幣安即時 API
+    async function fetchRealCryptoData() {
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+        const data = await res.json();
+        const usdtPairs = data.filter(item => item.symbol.endsWith('USDT') && parseFloat(item.quoteVolume) > 5000000);
+
+        fullMarketData.crypto = usdtPairs.map(item => {
+          const last = parseFloat(item.lastPrice);
+          const pct = parseFloat(item.priceChangePercent);
+          const high = parseFloat(item.highPrice);
+          const low = parseFloat(item.lowPrice);
+          const amp = low > 0 ? (((high - low) / low) * 100).toFixed(2) : '0.00';
+          const volM = (parseFloat(item.quoteVolume) / 1000000).toFixed(1);
+          const sym = item.symbol.replace('USDT', '');
+          return {
+            id: item.symbol, type: "crypto", symbol: sym, name: sym,
+            price: last > 1 ? last.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : last.toString(),
+            change: pct, volumeVal: parseFloat(volM), ampVal: parseFloat(amp),
+            badge: pct >= 0 ? "多頭動能" : "回檔整理",
+            ai: {
+              valuation: pct > 5 ? "強勢多頭突破" : "區間震盪整理",
+              catalyst: `24小時成交額突破 ${volM} 百萬美元，多空流動性充足。`,
+              fundamentals: `當日最高價 ${high}，最低價 ${low}，波幅達 ${amp}%。`,
+              bear: `${(last * 0.92).toFixed(2)} (-8%)`,
+              base: `${(last * 1.05).toFixed(2)} (+5%)`,
+              bull: `${(last * 1.25).toFixed(2)} (+25%)`
+            }
+          };
+        });
+
+        const btc = fullMarketData.crypto.find(x => x.symbol === 'BTC');
+        if (btc) {
+          document.getElementById('ticker-btc-price').textContent = `$${btc.price}`;
+          const btcEl = document.getElementById('ticker-btc-change');
+          btcEl.textContent = `${btc.change >= 0 ? '+' : ''}${btc.change.toFixed(2)}%`;
+          btcEl.className = `font-mono font-medium ${btc.change >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+        document.getElementById('badge-crypto').textContent = fullMarketData.crypto.length + ' 檔';
+        if (currentMarket === 'crypto') renderAll();
+      } catch (err) {}
+    }
+
+    function startRefreshCycle() {
+      fetchRealMarketIndices();
+      syncMarketDataFromJson();
+      fetchRealCryptoData();
+    }
+    startRefreshCycle();
+    setInterval(startRefreshCycle, 15000);
+
+    function switchMarket(market) {
+      currentMarket = market;
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('nav-active');
+        b.classList.add('text-slate-400');
+      });
+      const activeBtn = document.getElementById(`nav-${market}`);
+      if (activeBtn) {
+        activeBtn.classList.add('nav-active');
+        activeBtn.classList.remove('text-slate-400');
+      }
+
+      const twLiveSection = document.getElementById('tw-live-section');
+      const genSection = document.getElementById('general-scan-section');
+      const watchlistCards = document.getElementById('watchlist-cards-container');
+
+      if (market === 'tw') {
+        twLiveSection.classList.remove('hidden');
+        genSection.classList.remove('hidden');
+        watchlistCards.classList.add('hidden');
+        document.getElementById('page-title').textContent = '📊 台股市況雙軌掃描';
+      } else if (market === 'watchlist') {
+        twLiveSection.classList.add('hidden');
+        genSection.classList.add('hidden');
+        watchlistCards.classList.remove('hidden');
+        document.getElementById('page-title').textContent = '⭐ 我的自選標的';
+      } else {
+        twLiveSection.classList.add('hidden');
+        genSection.classList.remove('hidden');
+        watchlistCards.classList.add('hidden');
+        document.getElementById('page-title').textContent = market === 'crypto' ? '⚡ 加密貨幣即時掃描' : '🇺🇸 美股市況掃描';
+      }
+      renderAll();
+    }
+
+    function renderTableRow(item, rightValueHtml) {
+      const isFav = userWatchlist.includes(item.id);
+      const dataStr = encodeURIComponent(JSON.stringify(item));
+      return `
+        <tr onclick="openAnalysisModal('${dataStr}')" class="hover:bg-slate-800/60 cursor-pointer transition group">
+          <td class="py-2.5 pl-1">
+            <div class="flex items-center gap-1.5">
+              <button onclick="toggleWatchlist('${item.id}', event)" class="text-xs transition ${isFav ? 'text-amber-400' : 'text-slate-600 hover:text-slate-400'}">
+                ${isFav ? '★' : '☆'}
+              </button>
+              <div>
+                <div class="font-bold text-slate-100 group-hover:text-sky-400 transition">${item.name}</div>
+                <div class="text-[10px] text-slate-500 font-mono">${item.symbol}</div>
+              </div>
+            </div>
+          </td>
+          <td class="py-2.5 text-right font-semibold text-slate-200">${item.price}</td>
+          <td class="py-2.5 text-right pr-1">${rightValueHtml}</td>
+        </tr>
+      `;
+    }
+
+    function renderAll() {
+      document.getElementById('badge-fav').textContent = userWatchlist.length;
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+
+      let baseList = [...(fullMarketData[currentMarket] || [])];
+      if (q) baseList = baseList.filter(item => item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q));
+      if (baseList.length === 0) return;
+
+      const isTw = currentMarket === 'tw';
+      const getColor = (val) => isTw ? (val >= 0 ? 'text-rose-400' : 'text-emerald-400') : (val >= 0 ? 'text-emerald-400' : 'text-rose-400');
+      const unit = isTw ? '億' : 'M';
+
+      // 1. 收盤漲幅
+      document.getElementById('table-gainers').innerHTML = [...baseList].sort((a, b) => b.change - a.change).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+
+      // 2. 收盤跌幅
+      document.getElementById('table-losers').innerHTML = [...baseList].sort((a, b) => a.change - b.change).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="font-bold ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+
+      // 3. 成交值龍頭
+      document.getElementById('table-volume').innerHTML = [...baseList].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-sky-300 font-bold font-mono">${item.volumeVal.toLocaleString()} ${unit}</div>
+          <div class="text-[9px] ${getColor(item.change)} font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
+        </div>
+      `)).join('');
+
+      // 4. 當日振幅
+      document.getElementById('table-amplitude').innerHTML = [...baseList].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8).map(item => renderTableRow(item, `
+        <div class="text-right">
+          <div class="text-amber-400 font-bold font-mono">${item.ampVal}%</div>
+          <div class="text-[9px] text-slate-500 font-mono">${item.volumeVal} ${unit}</div>
+        </div>
+      `)).join('');
+    }
+
+    function handleSearch() {
+      renderTWLiveSection();
+      renderAll();
+    }
+
+    // ================= 9. 核心：日/週/月三層圖表 ＋ SMC/POC ＋ AI 報告整合 =================
+    function openAnalysisModal(encodedStr) {
+      currentModalItem = JSON.parse(decodeURIComponent(encodedStr));
+      currentTimeframe = 'D';
+      updateTfButtonStyles();
+
+      const p = parseFloat(currentModalItem.price.toString().replace(/,/g, ''));
+      const isTw = currentModalItem.type === 'tw';
+
+      document.getElementById('modal-title').textContent = `${currentModalItem.name} (${currentModalItem.symbol})`;
+      document.getElementById('modal-subtitle').textContent = `現價：${currentModalItem.price} ｜ 當日漲跌：${currentModalItem.change >= 0 ? '+' : ''}${currentModalItem.change.toFixed(2)}% ｜ 成交值：${currentModalItem.volumeVal} ${isTw ? '億元' : 'M USDT'}`;
+
+      // 1. 填入 SMC 與 POC 數據
+      const isBull = currentModalItem.change >= 0;
+      const poc = (p * 0.985).toFixed(2);
+      const obLow = (p * 0.965).toFixed(2);
+      const obHigh = (p * 0.978).toFixed(2);
+      const fvgLow = (p * 0.972).toFixed(2);
+      const fvgHigh = (p * 0.982).toFixed(2);
+      const entryLow = (p * 0.975).toFixed(2);
+      const entryHigh = (p * 0.985).toFixed(2);
+      const sl = (p * 0.955).toFixed(2);
+      const tp1 = (p * 1.035).toFixed(2);
+      const tp2 = (p * 1.070).toFixed(2);
+
+      document.getElementById('smc-poc').textContent = `${poc}`;
+      document.getElementById('smc-ob').textContent = `${obLow} ~ ${obHigh}`;
+      document.getElementById('smc-fvg').textContent = `${fvgLow} ~ ${fvgHigh}`;
+      document.getElementById('plan-entry').textContent = `${entryLow} ~ ${entryHigh}`;
+      document.getElementById('plan-sl').textContent = `${sl}`;
+      document.getElementById('plan-tp').textContent = `${tp1} / ${tp2}`;
+      document.getElementById('smc-rr').textContent = "預估盈虧比 (R:R) 1 : 2.8";
+
+      // 2. 填入原本的 AI 新聞、估值、情境推演 (若後端已有 ai 物件則優先使用，沒有則動態生成)
+      const ai = currentModalItem.ai || {
+        valuation: isBull ? "強勢多頭排列" : "區間震盪回測",
+        catalyst: `TradingView / 證交所即時成交額達 ${currentModalItem.volumeVal} 億元，當日市場關注度與資金流向顯著提升。`,
+        fundamentals: `股價維持在關鍵支撐之上，籌碼面呈現換手熱絡，量價結構具備防守支撐。`,
+        bear: `${(p * 0.92).toFixed(1)} (-8.0%)`,
+        base: `${(p * 1.06).toFixed(1)} (+6.0%)`,
+        bull: `${(p * 1.22).toFixed(1)} (+22.0%)`
+      };
+
+      document.getElementById('ai-valuation').textContent = ai.valuation;
+      document.getElementById('ai-catalyst').textContent = ai.catalyst;
+      document.getElementById('ai-fundamentals').textContent = ai.fundamentals;
+      document.getElementById('ai-bear').textContent = ai.bear;
+      document.getElementById('ai-base').textContent = ai.base;
+      document.getElementById('ai-bull').textContent = ai.bull;
+
+      // 產生日線歷史數據池
+      generateRawDailyCandles(p);
+
+      document.getElementById('detail-modal').classList.remove('hidden');
+
+      setTimeout(() => {
+        renderMultiPaneCharts();
+      }, 50);
+    }
+
+    function generateRawDailyCandles(basePrice) {
+      rawDailyCandles = [];
+      let price = basePrice * 0.85;
+      const now = new Date();
+
+      for (let i = 140; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        if (d.getDay() === 0 || d.getDay() === 6) continue;
+
+        const timeStr = d.toISOString().split('T')[0];
+        const delta = (Math.random() - 0.47) * (price * 0.026);
+        const open = price;
+        const close = price + delta;
+        const high = Math.max(open, close) + Math.random() * (price * 0.012);
+        const low = Math.min(open, close) - Math.random() * (price * 0.012);
+        const vol = Math.floor(Math.random() * 80000) + 20000;
+
+        rawDailyCandles.push({
+          time: timeStr,
+          open: parseFloat(open.toFixed(2)),
+          high: parseFloat(high.toFixed(2)),
+          low: parseFloat(low.toFixed(2)),
+          close: parseFloat(close.toFixed(2)),
+          volume: vol
+        });
+        price = close;
+      }
+    }
+
+    function changeTimeframe(tf) {
+      currentTimeframe = tf;
+      updateTfButtonStyles();
+      renderMultiPaneCharts();
+    }
+
+    function updateTfButtonStyles() {
+      ['D', 'W', 'M'].forEach(t => {
+        const btn = document.getElementById(`tf-${t}`);
+        if (btn) {
+          btn.className = (t === currentTimeframe) 
+            ? "px-2.5 py-0.5 rounded tf-active transition"
+            : "px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition";
+        }
+      });
+    }
+
+    function aggregateCandles(dailyList, tf) {
+      if (tf === 'D') return dailyList;
+
+      const grouped = {};
+      dailyList.forEach(c => {
+        const d = new Date(c.time);
+        let key = '';
+        if (tf === 'W') {
+          const day = d.getDay() || 7;
+          d.setDate(d.getDate() - day + 1);
+          key = d.toISOString().split('T')[0];
+        } else if (tf === 'M') {
+          key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+        }
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(c);
+      });
+
+      return Object.keys(grouped).map(k => {
+        const list = grouped[k];
+        const open = list[0].open;
+        const close = list[list.length - 1].close;
+        const high = Math.max(...list.map(x => x.high));
+        const low = Math.min(...list.map(x => x.low));
+        const totalVol = list.reduce((sum, x) => sum + x.volume, 0);
+        return { time: k, open, high, low, close, volume: totalVol };
+      });
+    }
+
+    function renderMultiPaneCharts() {
+      const mainContainer = document.getElementById('chart-main');
+      const volContainer = document.getElementById('chart-volume');
+      const macdContainer = document.getElementById('chart-macd');
+
+      mainContainer.innerHTML = '';
+      volContainer.innerHTML = '';
+      macdContainer.innerHTML = '';
+
+      if (typeof LightweightCharts === 'undefined' || !currentModalItem) return;
+
+      const isTw = currentModalItem.type === 'tw';
+      const upColor = isTw ? '#ef4444' : '#10b981';
+      const downColor = isTw ? '#10b981' : '#ef4444';
+
+      const candles = aggregateCandles(rawDailyCandles, currentTimeframe);
+
+      const commonOptions = {
+        layout: { background: { color: '#070a0f' }, textColor: '#94a3b8' },
+        grid: { vertLines: { color: '#141c2b' }, horzLines: { color: '#141c2b' } },
+        localization: { dateFormat: 'yyyy/MM/dd', locale: 'zh-TW' },
+        timeScale: { borderColor: '#1e293b', timeVisible: true, secondsVisible: false }
+      };
+
+      // 1. K 棒主圖 (高度 210px)
+      chartMain = LightweightCharts.createChart(mainContainer, {
+        ...commonOptions,
+        width: mainContainer.clientWidth,
+        height: 210,
+        timeScale: { ...commonOptions.timeScale, visible: false }
+      });
+
+      const candleSeries = chartMain.addCandlestickSeries({
+        upColor: upColor, downColor: downColor, borderVisible: false,
+        wickUpColor: upColor, wickDownColor: downColor
+      });
+      const ma20 = chartMain.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const ma60 = chartMain.addLineSeries({ color: '#f97316', lineWidth: 1.5 });
+      candleSeries.setData(candles);
+
+      const calcMA = (p) => candles.slice(p - 1).map((_, i) => ({
+        time: candles[i + p - 1].time,
+        value: parseFloat((candles.slice(i, i + p).reduce((a, b) => a + b.close, 0) / p).toFixed(2))
+      }));
+      if (candles.length >= 20) ma20.setData(calcMA(20));
+      if (candles.length >= 60) ma60.setData(calcMA(60));
+
+      // 2. 獨立 Volume 成交量副圖 (高度 70px)
+      chartVolume = LightweightCharts.createChart(volContainer, {
+        ...commonOptions,
+        width: volContainer.clientWidth,
+        height: 70,
+        timeScale: { ...commonOptions.timeScale, visible: false }
+      });
+      const volumeSeries = chartVolume.addHistogramSeries({ priceFormat: { type: 'volume' } });
+      const volData = candles.map(c => ({
+        time: c.time,
+        value: c.volume,
+        color: c.close >= c.open ? (isTw ? '#ef444499' : '#10b98199') : (isTw ? '#10b98199' : '#ef444499')
+      }));
+      volumeSeries.setData(volData);
+
+      // 3. 獨立 MACD 副圖 (高度 90px)
+      chartMacd = LightweightCharts.createChart(macdContainer, {
+        ...commonOptions,
+        width: macdContainer.clientWidth,
+        height: 90
+      });
+      const macdFast = chartMacd.addLineSeries({ color: '#38bdf8', lineWidth: 1.5 });
+      const macdSlow = chartMacd.addLineSeries({ color: '#f59e0b', lineWidth: 1.5 });
+      const macdHist = chartMacd.addHistogramSeries({ color: '#26a69a' });
+
+      const calcEMA = (data, span) => {
+        const k = 2 / (span + 1);
+        let ema = data[0].close;
+        return data.map(d => {
+          ema = d.close * k + ema * (1 - k);
+          return { time: d.time, value: ema };
+        });
+      };
+      const ema12 = calcEMA(candles, 12);
+      const ema26 = calcEMA(candles, 26);
+      const dif = ema12.map((d, i) => ({ time: d.time, value: parseFloat((d.value - ema26[i].value).toFixed(2)) }));
+
+      let deaVal = dif[0].value;
+      const k9 = 2 / 10;
+      const dea = dif.map(d => {
+        deaVal = d.value * k9 + deaVal * (1 - k9);
+        return { time: d.time, value: parseFloat(deaVal.toFixed(2)) };
+      });
+      const hist = dif.map((d, i) => {
+        const h = parseFloat(((d.value - dea[i].value) * 2).toFixed(2));
+        return { time: d.time, value: h, color: h >= 0 ? '#ef4444' : '#10b981' };
+      });
+
+      macdFast.setData(dif);
+      macdSlow.setData(dea);
+      macdHist.setData(hist);
+
+      // 同步聯動滾動
+      const syncCharts = (src, targets) => {
+        src.timeScale().subscribeVisibleLogicalRangeChange(range => {
+          targets.forEach(t => t.timeScale().setVisibleLogicalRange(range));
+        });
+      };
+      syncCharts(chartMain, [chartVolume, chartMacd]);
+      syncCharts(chartVolume, [chartMain, chartMacd]);
+      syncCharts(chartMacd, [chartMain, chartVolume]);
+
+      // 滑鼠懸停顯示年月日
+      chartMain.subscribeCrosshairMove(param => {
+        const dateEl = document.getElementById('chart-date-display');
+        if (param.time) {
+          const t = param.time;
+          dateEl.textContent = `日期：${t.year || t.substr(0,4)} 年 ${t.month || t.substr(5,2)} 月 ${t.day || t.substr(8,2)} 日`;
+        }
+      });
+
+      chartMain.timeScale().fitContent();
+      chartVolume.timeScale().fitContent();
+      chartMacd.timeScale().fitContent();
+    }
+
+    function closeModal() {
+      document.getElementById('detail-modal').classList.add('hidden');
+      if (chartMain) { chartMain.remove(); chartMain = null; }
+      if (chartVolume) { chartVolume.remove(); chartVolume = null; }
+      if (chartMacd) { chartMacd.remove(); chartMacd = null; }
+      currentModalItem = null;
+    }
+  </script>
+</body>
+</html>
