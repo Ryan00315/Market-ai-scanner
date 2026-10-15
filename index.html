@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>市場 AI 智慧量化掃描終端 (真實 K 線直連版)</title>
+  <title>市場 AI 智慧量化掃描終端</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- TradingView Lightweight Charts CDN -->
+  <!-- TradingView Lightweight Charts CDN (台股專用) -->
   <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- TradingView 官方高級 Widget CDN (美股與幣圈專用) -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -182,9 +184,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">現價</th><th class="pb-1.5 font-medium text-right pr-1">漲幅 / 成交值</th></tr>
                 </thead>
-                <tbody id="table-tw-live-gainers" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
-                </tbody>
+                <tbody id="table-tw-live-gainers" class="divide-y divide-slate-800/40 font-mono"></tbody>
               </table>
             </div>
           </div>
@@ -200,9 +200,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">現價</th><th class="pb-1.5 font-medium text-right pr-1">跌幅 / 成交值</th></tr>
                 </thead>
-                <tbody id="table-tw-live-losers" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
-                </tbody>
+                <tbody id="table-tw-live-losers" class="divide-y divide-slate-800/40 font-mono"></tbody>
               </table>
             </div>
           </div>
@@ -218,9 +216,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">現價</th><th class="pb-1.5 font-medium text-right pr-1">成交金額 / 漲跌</th></tr>
                 </thead>
-                <tbody id="table-tw-live-volume" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
-                </tbody>
+                <tbody id="table-tw-live-volume" class="divide-y divide-slate-800/40 font-mono"></tbody>
               </table>
             </div>
           </div>
@@ -236,9 +232,7 @@
                 <thead class="text-[10px] text-slate-500 border-b border-slate-800/60 pb-1">
                   <tr><th class="pb-1.5 font-medium pl-1">標的</th><th class="pb-1.5 font-medium text-right">現價</th><th class="pb-1.5 font-medium text-right pr-1">振幅 / 成交值</th></tr>
                 </thead>
-                <tbody id="table-tw-live-amplitude" class="divide-y divide-slate-800/40 font-mono">
-                  <tr><td colspan="3" class="text-center py-6 text-slate-500 text-xs">載入即時行情中...</td></tr>
-                </tbody>
+                <tbody id="table-tw-live-amplitude" class="divide-y divide-slate-800/40 font-mono"></tbody>
               </table>
             </div>
           </div>
@@ -300,7 +294,7 @@
     </div>
   </main>
 
-  <!-- ================= 彈出視窗：三層圖表 + SMC/POC 交易計劃 + AI 報告 ================= -->
+  <!-- ================= 彈出視窗：智慧分流 (台股：自建三層圖 / 美股與幣圈：TradingView 原生圖) ================= -->
   <div id="detail-modal">
     <div class="bg-[#0d1117] border border-slate-700 w-full max-w-5xl max-h-[96vh] rounded-xl flex flex-col overflow-hidden shadow-2xl p-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -309,7 +303,8 @@
           <div id="modal-subtitle" class="text-[11px] text-slate-400 mt-0.5 font-mono"></div>
         </div>
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded text-xs">
+          <!-- 台股專用日/週/月切換 -->
+          <div id="tw-tf-controls" class="flex items-center gap-1 bg-slate-900 border border-slate-800 p-0.5 rounded text-xs">
             <button onclick="changeTimeframe('1d')" id="tf-1d" class="px-2.5 py-0.5 rounded tf-active transition">日線</button>
             <button onclick="changeTimeframe('1wk')" id="tf-1wk" class="px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition">週線</button>
             <button onclick="changeTimeframe('1mo')" id="tf-1mo" class="px-2.5 py-0.5 rounded text-slate-400 hover:text-white transition">月線</button>
@@ -319,15 +314,24 @@
       </div>
 
       <div class="flex-1 overflow-y-auto pt-4 space-y-4">
-        <!-- 三層獨立圖表 -->
-        <div class="space-y-1">
+        
+        <!-- 容器 1：台股專用 Lightweight Charts 三層獨立面板 -->
+        <div id="container-tw-chart" class="space-y-1">
           <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
-            <span>真實行情走勢 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
+            <span>台股真實走勢 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
             <span id="chart-date-display" class="font-mono text-sky-400 text-xs font-bold"></span>
           </div>
           <div id="chart-main" style="height: 200px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
           <div id="chart-volume" style="height: 65px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
           <div id="chart-macd" style="height: 85px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
+        </div>
+
+        <!-- 容器 2：美股與加密貨幣專用 TradingView 官方高級 Widget -->
+        <div id="container-tv-chart" class="hidden">
+          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-1 px-1">
+            <span>TradingView 官方即時撮合走勢圖 (內建即時成交量、完整指標與週期切換)</span>
+          </div>
+          <div id="tradingview-embed-box" style="height: 380px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800 overflow-hidden"></div>
         </div>
 
         <!-- SMC 聰明錢概念 & 交易架構推演 -->
@@ -445,7 +449,7 @@
     // -------------------------------------------------------------
     // 👉 請在此替換成你在 Cloudflare 建立的 Worker 網址
     // -------------------------------------------------------------
-    const WORKER_PROXY_URL = "https://hidden-flower-5136.crypto-pisces315.workers.dev/"; 
+    const WORKER_PROXY_URL = "https://tw-stock-proxy.你的帳號.workers.dev"; 
 
     // Firebase
     const firebaseConfig = {
@@ -582,8 +586,59 @@
       const modal = document.getElementById('detail-modal');
       modal.classList.add('is-open');
 
-      // 載入真實 K 線並繪製
-      await fetchAndDrawCandles(item.symbol, currentTimeframe, p);
+      // 核心：智能分流！台股用自建圖表，美股與幣圈直接用 TradingView 原生圖表！
+      const twChartEl = document.getElementById('container-tw-chart');
+      const tvChartEl = document.getElementById('container-tv-chart');
+      const twControls = document.getElementById('tw-tf-controls');
+
+      if (isTw) {
+        twChartEl.classList.remove('hidden');
+        tvChartEl.classList.add('hidden');
+        twControls.classList.remove('hidden');
+        await fetchAndDrawCandles(item.symbol, currentTimeframe, p);
+      } else {
+        twChartEl.classList.add('hidden');
+        tvChartEl.classList.remove('hidden');
+        twControls.classList.add('hidden');
+        renderTradingViewNative(item);
+      }
+    }
+
+    // 渲染美股與加密貨幣的 TradingView 原生高級圖表
+    function renderTradingViewNative(item) {
+      let tvSymbol = "";
+      if (item.type === 'crypto') {
+        tvSymbol = `BINANCE:${item.symbol}USDT`;
+      } else {
+        tvSymbol = `NASDAQ:${item.symbol}`;
+      }
+
+      const box = document.getElementById('tradingview-embed-box');
+      box.innerHTML = `<div id="tv_native_widget" style="height:100%;width:100%;"></div>`;
+
+      if (typeof TradingView !== 'undefined') {
+        new TradingView.widget({
+          "autosize": true,
+          "symbol": tvSymbol,
+          "interval": "D",
+          "timezone": "Asia/Taipei",
+          "theme": "dark",
+          "style": "1",
+          "locale": "zh_TW",
+          "toolbar_bg": "#0d1117",
+          "enable_publishing": false,
+          "hide_side_toolbar": false,
+          "allow_symbol_change": true,
+          "details": false,
+          "hotlist": false,
+          "calendar": false,
+          "studies": [
+            "Volume@tv-basicstudies",
+            "MACD@tv-basicstudies"
+          ],
+          "container_id": "tv_native_widget"
+        });
+      }
     }
 
     function closeModal() {
@@ -592,13 +647,15 @@
       if (chartMain) { chartMain.remove(); chartMain = null; }
       if (chartVolume) { chartVolume.remove(); chartVolume = null; }
       if (chartMacd) { chartMacd.remove(); chartMacd = null; }
+      const box = document.getElementById('tradingview-embed-box');
+      if (box) box.innerHTML = '';
       currentModalItem = null;
     }
 
     async function changeTimeframe(tf) {
       currentTimeframe = tf;
       updateTfButtonStyles();
-      if (currentModalItem) {
+      if (currentModalItem && currentModalItem.type === 'tw') {
         const p = parseFloat(String(currentModalItem.price).replace(/,/g, '')) || 100;
         await fetchAndDrawCandles(currentModalItem.symbol, currentTimeframe, p);
       }
@@ -615,7 +672,7 @@
       });
     }
 
-    // 核心：透過 Worker 抓取 100% 真實歷史 K 棒
+    // 台股：透過 Worker 抓取 100% 真實歷史 K 棒
     async function fetchAndDrawCandles(symbol, interval, basePrice) {
       document.getElementById('chart-date-display').textContent = "連線取得真實 K 棒中...";
       
@@ -653,7 +710,6 @@
       });
       const sortedCandles = Array.from(map.values()).sort((a, b) => new Date(a.time) - new Date(b.time));
 
-      // 繪製真實圖表
       renderMultiPaneCharts(sortedCandles);
     }
 
@@ -798,12 +854,18 @@
       } catch (e) {}
     }
 
+    // 核心修復：雙軌平滑機制，徹底告別「載入即時行情中...」
     async function syncMarketDataFromJson() {
       try {
         const res = await fetch('./data/market_data.json?t=' + Date.now());
         if (res.ok) {
           const remote = await res.json();
-          if (remote.tw_live && remote.tw_live.length > 0) twLiveStocks = remote.tw_live;
+          // 若無 tw_live 則自動平滑退回使用 remote.tw
+          if (remote.tw_live && remote.tw_live.length > 0) {
+            twLiveStocks = remote.tw_live;
+          } else if (remote.tw && remote.tw.length > 0) {
+            twLiveStocks = remote.tw;
+          }
           if (remote.tw && remote.tw.length > 0) {
             fullMarketData.tw = remote.tw;
             document.getElementById('badge-tw').textContent = remote.tw.length + ' 檔';
@@ -818,9 +880,11 @@
     }
 
     function renderTWLiveSection() {
-      if (!twLiveStocks || twLiveStocks.length === 0) return;
+      // 若尚未拿到，拿 fullMarketData.tw 當備用，絕不留白
+      const list = (twLiveStocks && twLiveStocks.length > 0) ? twLiveStocks : (fullMarketData.tw || []);
+      if (!list || list.length === 0) return;
 
-      const gainers = [...twLiveStocks].sort((a, b) => b.change - a.change).slice(0, 8);
+      const gainers = [...list].sort((a, b) => b.change - a.change).slice(0, 8);
       document.getElementById('table-tw-live-gainers').innerHTML = gainers.map(item => renderTableRow(item, `
         <div class="text-right">
           <div class="font-bold text-rose-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
@@ -828,7 +892,7 @@
         </div>
       `)).join('');
 
-      const losers = [...twLiveStocks].sort((a, b) => a.change - b.change).slice(0, 8);
+      const losers = [...list].sort((a, b) => a.change - b.change).slice(0, 8);
       document.getElementById('table-tw-live-losers').innerHTML = losers.map(item => renderTableRow(item, `
         <div class="text-right">
           <div class="font-bold text-emerald-400 font-mono">${item.change >= 0 ? '+' : ''}${item.change.toFixed(2)}%</div>
@@ -836,7 +900,7 @@
         </div>
       `)).join('');
 
-      const volumes = [...twLiveStocks].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8);
+      const volumes = [...list].sort((a, b) => b.volumeVal - a.volumeVal).slice(0, 8);
       document.getElementById('table-tw-live-volume').innerHTML = volumes.map(item => renderTableRow(item, `
         <div class="text-right">
           <div class="text-sky-300 font-bold font-mono">${item.volumeVal.toLocaleString()} 億</div>
@@ -844,7 +908,7 @@
         </div>
       `)).join('');
 
-      const amplitudes = [...twLiveStocks].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8);
+      const amplitudes = [...list].sort((a, b) => b.ampVal - a.ampVal).slice(0, 8);
       document.getElementById('table-tw-live-amplitude').innerHTML = amplitudes.map(item => renderTableRow(item, `
         <div class="text-right">
           <div class="text-amber-400 font-bold font-mono">${item.ampVal}%</div>
@@ -909,6 +973,7 @@
       document.getElementById('badge-fav').textContent = userWatchlist.length;
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
+      // 自選清單渲染
       if (currentMarket === 'watchlist') {
         const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto, ...fullMarketData.us];
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
@@ -1079,7 +1144,6 @@
       renderAll();
     }
 
-    // 帳號與自選雲端管理
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
