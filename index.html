@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>市場 AI 智慧量化掃描終端</title>
+  <title>市場 AI 智慧量化掃描終端 (完全隔離穩定版)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- TradingView Lightweight Charts CDN (台股專用) -->
@@ -89,7 +89,7 @@
       </nav>
     </div>
 
-    <!-- 會員帳號狀態與登入 -->
+    <!-- 會員狀態 -->
     <div class="border-t border-slate-800/80 pt-3">
       <div id="user-info-area" class="hidden">
         <div class="text-[10px] text-slate-400 mb-1">雲端已同步：</div>
@@ -316,18 +316,20 @@
       <div class="flex-1 overflow-y-auto pt-4 space-y-4">
         
         <!-- 【分流 1】台股專用 Lightweight Charts 三層獨立面板 -->
-        <div id="container-tw-chart" class="space-y-1">
-          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
+        <div id="container-tw-chart" style="display: block;">
+          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 mb-1">
             <span>台股真實走勢 ｜ ━ MA20 (藍) ━ MA60 (橘)</span>
             <span id="chart-date-display" class="font-mono text-sky-400 text-xs font-bold"></span>
           </div>
-          <div id="chart-main" style="height: 200px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
-          <div id="chart-volume" style="height: 65px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
-          <div id="chart-macd" style="height: 85px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
+          <div class="space-y-1">
+            <div id="chart-main" style="height: 200px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
+            <div id="chart-volume" style="height: 65px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
+            <div id="chart-macd" style="height: 85px; width: 100%;" class="bg-[#070a0f] rounded border border-slate-800"></div>
+          </div>
         </div>
 
         <!-- 【分流 2】美股與加密貨幣專用 TradingView 官方 Widget -->
-        <div id="container-tv-chart" class="hidden">
+        <div id="container-tv-chart" style="display: none;">
           <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 mb-1 px-1">
             <span>TradingView 官方即時撮合走勢圖 (內建 Volume、完整指標與週期切換)</span>
           </div>
@@ -449,7 +451,7 @@
     // -------------------------------------------------------------
     // 👉 請在此替換成你在 Cloudflare 建立的 Worker 網址
     // -------------------------------------------------------------
-    const WORKER_PROXY_URL = "https://tw-stock-proxy.你的帳號.workers.dev"; 
+    const WORKER_PROXY_URL = "https://hidden-flower-5136.crypto-pisces315.workers.dev/"; 
 
     // Firebase 初始化
     const firebaseConfig = {
@@ -587,31 +589,34 @@
       const modal = document.getElementById('detail-modal');
       modal.classList.add('is-open');
 
-      // 核心隔離：台股 vs 美股/幣圈 完全物理分開
+      // 核心隔離：以 style.display 實體切換，徹底杜絕寬度為 0 的死結！
       const twChartEl = document.getElementById('container-tw-chart');
       const tvChartEl = document.getElementById('container-tv-chart');
       const twControls = document.getElementById('tw-tf-controls');
 
       if (isTw) {
-        // 銷毀舊的 TradingView Widget
+        // 清理美股
         const box = document.getElementById('tradingview-embed-box');
         if (box) box.innerHTML = '';
-        
-        twChartEl.classList.remove('hidden');
-        tvChartEl.classList.add('hidden');
-        twControls.classList.remove('hidden');
 
-        // 呼叫台股 Worker 真實抓取
-        await fetchAndDrawTwCandles(item.symbol, currentTimeframe, p);
+        twChartEl.style.display = 'block';
+        tvChartEl.style.display = 'none';
+        twControls.style.display = 'flex';
+
+        // 核心保護：等瀏覽器把 DOM 算好寬度後才執行台股圖表繪製
+        requestAnimationFrame(() => {
+          setTimeout(async () => {
+            await fetchAndDrawTwCandles(item.symbol, currentTimeframe, p);
+          }, 60);
+        });
       } else {
         // 清理台股圖表
         destroyTwCharts();
 
-        twChartEl.classList.add('hidden');
-        tvChartEl.classList.remove('hidden');
-        twControls.classList.add('hidden');
+        twChartEl.style.display = 'none';
+        tvChartEl.style.display = 'block';
+        twControls.style.display = 'none';
 
-        // 呼叫 TradingView 官方 Widget
         renderTradingViewNative(item);
       }
     }
@@ -690,7 +695,7 @@
 
     // 台股專屬：透過 Worker 抓取真實日/週/月 K 棒
     async function fetchAndDrawTwCandles(symbol, interval, basePrice) {
-      document.getElementById('chart-date-display').textContent = "正在透過專屬代理連線真實 K 線...";
+      document.getElementById('chart-date-display').textContent = "連線取得真實走勢中...";
       
       const rangeMap = { '1d': '6mo', '1wk': '2y', '1mo': '5y' };
       const range = rangeMap[interval] || '6mo';
@@ -710,7 +715,7 @@
 
       document.getElementById('chart-date-display').textContent = "";
 
-      // 嚴格確保時間遞增與資料格式正確
+      // 嚴格確保時間遞增與資料純淨
       const map = new Map();
       candles.forEach(c => {
         if (c && c.time && !isNaN(c.open)) {
@@ -989,6 +994,7 @@
       document.getElementById('badge-fav').textContent = userWatchlist.length;
       const q = document.getElementById('search-input').value.trim().toLowerCase();
 
+      // 自選清單渲染
       if (currentMarket === 'watchlist') {
         const allItems = [...twLiveStocks, ...fullMarketData.tw, ...fullMarketData.crypto, ...fullMarketData.us];
         const uniqueItems = Array.from(new Map(allItems.map(item => [item.id, item])).values());
@@ -1159,7 +1165,6 @@
       renderAll();
     }
 
-    // 帳號與自選雲端管理
     function loadCloudWatchlist(uid) {
       if (!db) return;
       db.collection('user_watchlists').doc(uid).get().then(doc => {
