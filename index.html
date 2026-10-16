@@ -1116,47 +1116,42 @@
       } catch (e) {}
     }
 
-    // ================= 核心：台股當日上市即時/休市撮合 (三重保全防空窗) =================
+    // 核心：台股當日上市即時撮合 (開盤即時連線)
     async function fetchTWLiveRealtime() {
-      let fetched = false;
-
-      // 嘗試 1：透過 Worker 代理轉發 TradingView Scanner (避開 CORS)
       try {
-        const res = await fetch(`${WORKER_PROXY_URL}?action=scanner`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.data && data.data.length > 0) {
-            twLiveStocks = data.data.map(item => {
-              const d = item.d;
-              const close = parseFloat(d[2]);
-              const chg = parseFloat(d[3]);
-              const valYi = parseFloat(((d[4] || 0) / 100000000).toFixed(1));
-              const amp = parseFloat((d[5] || 0).toFixed(2));
-              return {
-                id: String(d[0]),
-                type: "tw",
-                symbol: String(d[0]),
-                name: String(d[1]),
-                price: close.toLocaleString('en-US', { minimumFractionDigits: close < 100 ? 2 : 0 }),
-                change: chg,
-                volumeVal: valYi,
-                ampVal: amp,
-                badge: "上市個股"
-              };
-            });
-            fetched = true;
-          }
+        const res = await fetch(`${WORKER_PROXY_URL}?action=scanner&t=${Date.now()}`);
+        if (!res.ok) throw new Error("Worker scanner failed");
+        
+        const data = await res.json();
+        if (data && data.data && data.data.length > 0) {
+          twLiveStocks = data.data.map(item => {
+            const d = item.d;
+            const close = parseFloat(d[2]);
+            const chg = parseFloat(d[3]);
+            const valYi = parseFloat(((d[4] || 0) / 100000000).toFixed(1));
+            const amp = parseFloat((d[5] || 0).toFixed(2));
+            return {
+              id: String(d[0]),
+              type: "tw",
+              symbol: String(d[0]),
+              name: String(d[1]),
+              price: close.toLocaleString('en-US', { minimumFractionDigits: close < 100 ? 2 : 0 }),
+              change: chg,
+              volumeVal: valYi,
+              ampVal: amp,
+              badge: "上市個股"
+            };
+          });
+
+          const tagEl = document.getElementById('live-status-tag');
+          if (tagEl) tagEl.textContent = "LIVE 盤中撮合 (當日即時)";
+
+          // 重新繪製即時四大排行
+          renderTWLiveSection();
         }
-      } catch (e) {}
-
-      // 嘗試 2：若 Worker 暫時未響應，安全檢查標籤文字
-      const tagEl = document.getElementById('live-status-tag');
-      if (tagEl) {
-        tagEl.textContent = fetched ? "LIVE 盤中撮合 (當日即時)" : "休盤撮合 (結算快照)";
+      } catch (err) {
+        console.warn("台股即時掃描直連異常，保持快照狀態:", err);
       }
-
-      // 必定渲染，絕不中斷
-      renderTWLiveSection();
     }
 
     // 讀取昨日結算數據
@@ -1697,11 +1692,10 @@
     function startRefreshCycle() {
       fetchRealMarketIndices();
       fetchTWLiveRealtime();
-      syncMarketDataFromJson();
       fetchRealCryptoData();
     }
     startRefreshCycle();
-    setInterval(startRefreshCycle, 15000);
+    setInterval(startRefreshCycle, 10000); // 開盤期間每 10 秒刷新一次即時市況
   </script>
 </body>
 </html>
